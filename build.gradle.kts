@@ -18,8 +18,6 @@ plugins {
 
     id("nebula.javadoc-jar") version "17.3.2"
     id("nebula.source-jar") version "17.3.2"
-
-    id("com.google.cloud.artifactregistry.gradle-plugin") version "2.1.1"
 }
 
 apply(plugin = "nebula.publish-verification")
@@ -71,31 +69,9 @@ tasks.named<Test>("test") {
     jvmArgs = listOf("-XX:+UnlockDiagnosticVMOptions", "-XX:+ShowHiddenFrames")
 }
 
-tasks.named<JavaCompile>("compileJava") {
-    sourceCompatibility = JavaVersion.VERSION_1_8.toString()
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
-
-    options.isFork = true
-    options.forkOptions.executable = "javac"
-    options.compilerArgs.addAll(listOf("--release", "8"))
-    options.encoding = "UTF-8"
-    options.compilerArgs.add("-parameters")
-}
-
-tasks.withType(KotlinCompile::class.java).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
-    doFirst {
-        destinationDir.mkdirs()
-    }
-}
-
 configure<ContactsExtension> {
     val j = Contact("team@moderne.io")
     j.moniker("Team Moderne")
-
     people["team@moderne.io"] = j
 }
 
@@ -111,20 +87,8 @@ publishing {
   repositories {
       maven {
           name = "moderne"
-          url = uri("artifactregistry://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
+          url = uri("https://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
       }
   }
 }
 
-tasks.named("final") {
-  dependsOn(tasks.getByName("publishAllPublicationsToModerneRepository"))
-}
-
-tasks.named("snapshot") {
-  dependsOn(tasks.getByName("publishAllPublicationsToModerneRepository"))
-}
-
-extensions.findByName("buildScan")?.withGroovyBuilder {
-  setProperty("termsOfServiceUrl", "https://gradle.com/terms-of-service")
-  setProperty("termsOfServiceAgree", "yes")
-}

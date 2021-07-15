@@ -12,6 +12,14 @@ Fork this repository and customize by:
 
 ## To release your recipe artifact
 
-To build a snapshot, run `./gradlew snapshot` to build a snapshot and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
+### From Github Actions
 
-To build a release, run `./gradlew final` to tag a release and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
+The starter contains a Github action that will push a snapshot on every successful build.
+
+Run the release action to publish a release version of a recipe.
+
+### From the command line
+
+To build a snapshot, run `./gradlew snapshot publish` to build a snapshot and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
+
+To build a release, run `./gradlew final publish` to tag a release and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).

@@ -23,7 +23,6 @@ jobs:
         java: ["11"]
         os: ["ubuntu-latest"]
     runs-on: ${{ matrix.os }}
-    if: github.repository_owner == 'openrewrite'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -48,7 +47,7 @@ jobs:
   publish-snapshots:
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.repository_owner == 'openrewrite'
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -70,9 +69,4 @@ jobs:
       - name: publish-snapshots
         if: github.event_name == 'push'
         timeout-minutes: 30
-        run: ./gradlew ${GRADLE_SWITCHES} snapshot publish -PforceSigning
-        env:
-          ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.OSSRH_USERNAME }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSRH_TOKEN }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.OSSRH_SIGNING_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.OSSRH_SIGNING_PASSWORD }}
+        run: ./gradlew ${GRADLE_SWITCHES} snapshot
