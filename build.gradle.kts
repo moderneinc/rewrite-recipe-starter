@@ -1,7 +1,5 @@
-import com.github.jk1.license.LicenseReportExtension
 import nebula.plugin.contacts.Contact
 import nebula.plugin.contacts.ContactsExtension
-import nl.javadude.gradle.plugins.license.LicenseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.*
 
@@ -112,18 +110,18 @@ configure<PublishingExtension> {
 publishing {
   repositories {
       maven {
-          name = "moderne-recipes"
+          name = "moderne"
           url = uri("artifactregistry://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
       }
   }
 }
 
 tasks.named("final") {
-  dependsOn(tasks.getByName("publishAllPublicationsToGcpRepository"))
+  dependsOn(tasks.getByName("publishAllPublicationsToModerneRepository"))
 }
 
 tasks.named("snapshot") {
-  dependsOn(tasks.getByName("publishAllPublicationsToGcpRepository"))
+  dependsOn(tasks.getByName("publishAllPublicationsToModerneRepository"))
 }
 
 extensions.findByName("buildScan")?.withGroovyBuilder {
