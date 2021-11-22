@@ -1,7 +1,5 @@
 import nebula.plugin.contacts.Contact
 import nebula.plugin.contacts.ContactsExtension
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.util.*
 
 plugins {
     `java-library`
@@ -91,4 +89,3 @@ publishing {
       }
   }
 }
-
