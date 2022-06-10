@@ -4,7 +4,7 @@ import nebula.plugin.contacts.ContactsExtension
 plugins {
     `java-library`
 
-    id("org.jetbrains.kotlin.jvm") version "1.5.21"
+    id("org.jetbrains.kotlin.jvm") version "1.6.21"
     id("nebula.release") version "15.3.1"
 
     id("nebula.maven-manifest") version "17.3.2"
@@ -54,9 +54,9 @@ dependencies {
     implementation("org.openrewrite:rewrite-java")
     runtimeOnly("org.openrewrite:rewrite-java-11")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-reflect")
-    testImplementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
+    testImplementation(platform(kotlin("bom", "1.6.21")))
+    testImplementation(kotlin("reflect"))
+    testImplementation(kotlin("stdlib"))
     testImplementation("org.junit.jupiter:junit-jupiter-api:latest.release")
     testImplementation("org.junit.jupiter:junit-jupiter-params:latest.release")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:latest.release")
