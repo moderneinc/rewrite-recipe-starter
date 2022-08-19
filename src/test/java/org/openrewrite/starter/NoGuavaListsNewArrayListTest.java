@@ -5,6 +5,8 @@ import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
+import static org.openrewrite.java.Assertions.java;
+
 class NoGuavaListsNewArrayListTest implements RewriteTest {
 
     //Note, you can define defaults for the RecipeSpec and these defaults will be used for all tests.
