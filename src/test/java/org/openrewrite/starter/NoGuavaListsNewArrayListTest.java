@@ -18,8 +18,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
           .recipe(new NoGuavaListsNewArrayList())
           .parser(JavaParser.fromJavaVersion()
             .logCompilationWarningsAndErrors(true)
-            .classpath("guava")
-            .build());
+            .classpath("guava"));
     }
 
     @Test
@@ -30,8 +29,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
           spec -> spec
             .parser(JavaParser.fromJavaVersion()
               .logCompilationWarningsAndErrors(false)
-              .classpath("guava")
-              .build()),
+              .classpath("guava")),
           java(
             """
                   import com.google.common.collect.*;
@@ -45,7 +43,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
             """
                   import java.util.ArrayList;
                   import java.util.List;
-                  \n
+                  
                   class Test {
                       List<Integer> cardinalsWorldSeries = new ArrayList<>();
                   }
@@ -73,7 +71,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
                   import java.util.ArrayList;
                   import java.util.Collections;
                   import java.util.List;
-                  \n
+                  
                   class Test {
                       List<Integer> l = Collections.emptyList();
                       List<Integer> cardinalsWorldSeries = new ArrayList<>(l);
@@ -89,10 +87,10 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
           java(
             """
                   import com.google.common.collect.*;
-                          
+                  
                   import java.util.ArrayList;
                   import java.util.List;
-                          
+                  
                   class Test {
                       List<Integer> cardinalsWorldSeries = Lists.newArrayListWithCapacity(2);
                   }
@@ -100,7 +98,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
             """
                   import java.util.ArrayList;
                   import java.util.List;
-                          
+                  
                   class Test {
                       List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
                   }
