@@ -10,7 +10,7 @@ import static org.openrewrite.java.Assertions.java;
 class NoGuavaListsNewArrayListTest implements RewriteTest {
 
     //Note, you can define defaults for the RecipeSpec and these defaults will be used for all tests.
-    //In this case, the recipe and the parser are common. See below, on how the defaults can be overriden
+    //In this case, the recipe and the parser are common. See below, on how the defaults can be overridden
     //per test.
     @Override
     public void defaults(RecipeSpec spec) {
