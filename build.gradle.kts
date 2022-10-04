@@ -29,7 +29,8 @@ java {
     }
 }
 
-group = "org.openrewrite.recipe"
+// Set as appropriate for your organization
+group = "com.yourorg"
 description = "Rewrite recipes."
 
 repositories {
