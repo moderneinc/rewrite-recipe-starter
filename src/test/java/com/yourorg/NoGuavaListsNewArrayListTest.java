@@ -14,96 +14,91 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     //per test.
     @Override
     public void defaults(RecipeSpec spec) {
-        spec
-          .recipe(new NoGuavaListsNewArrayList())
-          .parser(JavaParser.fromJavaVersion()
-            .logCompilationWarningsAndErrors(true)
-            .classpath("guava"));
+        spec.recipe(new NoGuavaListsNewArrayList())
+            .parser(JavaParser.fromJavaVersion()
+                .logCompilationWarningsAndErrors(true)
+                .classpath("guava"));
     }
 
     @Test
     void replaceWithNewArrayList() {
         rewriteRun(
-          //There is an overloaded version or rewriteRun that allows the RecipeSpec to be customized specifically
-          //for a given test. In this case, the parser for this test is configured to not log compilation warnings.
-          spec -> spec
-            .parser(JavaParser.fromJavaVersion()
-              .logCompilationWarningsAndErrors(false)
-              .classpath("guava")),
-          java(
-            """
-                  import com.google.common.collect.*;
-                  
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> cardinalsWorldSeries = Lists.newArrayList();
-                  }
-              """,
-            """
-                  import java.util.ArrayList;
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> cardinalsWorldSeries = new ArrayList<>();
-                  }
-              """
-          )
+            //There is an overloaded version or rewriteRun that allows the RecipeSpec to be customized specifically
+            //for a given test. In this case, the parser for this test is configured to not log compilation warnings.
+            spec -> spec
+                .parser(JavaParser.fromJavaVersion()
+                    .logCompilationWarningsAndErrors(false)
+                    .classpath("guava")),
+            java("""
+                        import com.google.common.collect.*;
+                        
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> cardinalsWorldSeries = Lists.newArrayList();
+                        }
+                    """,
+                """
+                        import java.util.ArrayList;
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> cardinalsWorldSeries = new ArrayList<>();
+                        }
+                    """
+            )
         );
     }
 
     @Test
     void replaceWithNewArrayListIterable() {
         rewriteRun(
-          java(
-            """
-                  import com.google.common.collect.*;
-                  
-                  import java.util.Collections;
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> l = Collections.emptyList();
-                      List<Integer> cardinalsWorldSeries = Lists.newArrayList(l);
-                  }
-              """,
-            """
-                  import java.util.ArrayList;
-                  import java.util.Collections;
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> l = Collections.emptyList();
-                      List<Integer> cardinalsWorldSeries = new ArrayList<>(l);
-                  }
-              """
-          )
+            java("""
+                        import com.google.common.collect.*;
+                        
+                        import java.util.Collections;
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> l = Collections.emptyList();
+                            List<Integer> cardinalsWorldSeries = Lists.newArrayList(l);
+                        }
+                    """,
+                """
+                        import java.util.ArrayList;
+                        import java.util.Collections;
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> l = Collections.emptyList();
+                            List<Integer> cardinalsWorldSeries = new ArrayList<>(l);
+                        }
+                    """
+            )
         );
     }
 
     @Test
     void replaceWithNewArrayListWithCapacity() {
         rewriteRun(
-          java(
-            """
-                  import com.google.common.collect.*;
-                  
-                  import java.util.ArrayList;
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> cardinalsWorldSeries = Lists.newArrayListWithCapacity(2);
-                  }
-              """,
-            """
-                  import java.util.ArrayList;
-                  import java.util.List;
-                  
-                  class Test {
-                      List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
-                  }
-              """
-          )
+            java("""
+                        import com.google.common.collect.*;
+                        
+                        import java.util.ArrayList;
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> cardinalsWorldSeries = Lists.newArrayListWithCapacity(2);
+                        }
+                    """,
+                """
+                        import java.util.ArrayList;
+                        import java.util.List;
+                        
+                        class Test {
+                            List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
+                        }
+                    """)
         );
     }
 }
