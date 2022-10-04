@@ -15,6 +15,8 @@
  */
 package org.openrewrite.starter;
 
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
@@ -25,6 +27,8 @@ import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 
+@Value
+@EqualsAndHashCode(callSuper = true)
 public class NoGuavaListsNewArrayList extends Recipe {
     private static final MethodMatcher NEW_ARRAY_LIST = new MethodMatcher("com.google.common.collect.Lists newArrayList()");
     private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
@@ -41,7 +45,9 @@ public class NoGuavaListsNewArrayList extends Recipe {
     }
 
     @Override
-    protected TreeVisitor<?, ExecutionContext> getApplicableTest() {
+    protected TreeVisitor<?, ExecutionContext> getSingleSourceApplicableTest() {
+        // Any change to the AST made by the applicability test will lead to the visitor returned by Recipe.getVisitor() being applied
+        // No changes made by the applicability test will be kept
         return new JavaIsoVisitor<ExecutionContext>() {
             @Override
             public J.CompilationUnit visitCompilationUnit(J.CompilationUnit cu, ExecutionContext executionContext) {
@@ -55,6 +61,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
 
     @Override
     protected TreeVisitor<?, ExecutionContext> getVisitor() {
+        // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of its visitor
         return new JavaVisitor<ExecutionContext>() {
             private final JavaTemplate newArrayList = JavaTemplate.builder(this::getCursor, "new ArrayList<>()")
                     .imports("java.util.ArrayList")

@@ -72,6 +72,10 @@ tasks.named<Test>("test") {
     jvmArgs = listOf("-XX:+UnlockDiagnosticVMOptions", "-XX:+ShowHiddenFrames")
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add("-parameters")
+}
 tasks.named<JavaCompile>("compileJava") {
     options.release.set(8)
 }
