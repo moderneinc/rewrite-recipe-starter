@@ -430,4 +430,20 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
             )
         );
     }
+
+    @Test
+    void methodNameIsSameWithInstanceVariable() {
+        rewriteRun(
+            java("""
+                    class A {
+                      int count = 1;
+                    
+                      private int count(int x) {
+                        return count + x;
+                      }
+                    }
+                    """
+            )
+        );
+    }
 }

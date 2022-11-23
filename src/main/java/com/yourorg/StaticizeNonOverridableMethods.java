@@ -155,11 +155,17 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       J.Identifier id = super.visitIdentifier(identifier, hasInstanceDataAccess);
 
-      // skip the method itself identifier.
-      if (id.getSimpleName().equals(currentMethod.getSimpleName()) && id.getId().equals(currentMethod.getId())) {
+      // Skip the method itself identifier.
+      // UUID check is necessary to make sure it's the identifier of the method we are checking here.
+      // to cover the scenario that the variable and method having the same name.
+      if (id.getSimpleName().equals(currentMethod.getSimpleName())
+          && id.getId().equals(currentMethod.getId())
+          && id.getType() == null
+      ) {
         return id;
       }
 
+      // Do name matching here, since the loose checking conditions here makes lower false rewrites.
       boolean isInstanceVariable =
           instanceVariables.stream().anyMatch(v -> v.getSimpleName().equals(id.getSimpleName()));
 
