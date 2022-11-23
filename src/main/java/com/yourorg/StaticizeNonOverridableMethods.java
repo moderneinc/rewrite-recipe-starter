@@ -38,12 +38,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
   @Override
   public String getDisplayName() {
-    return "Add `static` to private or final method that don't access instance data";
+    return "Add `static` modifiers to private or final methods that don't access instance data";
   }
 
   @Override
   public String getDescription() {
-    return "Add the `static` modifier keyword to non-overridable methods (private or final) that don’t access instance data.";
+    return "Add `static` modifiers to non-overridable methods (private or final) that don’t access instance data.";
   }
 
   @Override
@@ -113,11 +113,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
     return m.withModifiers(ModifierOrder.sortModifiers(modifiers));
   }
 
-  private boolean isField(Cursor cursor) {
-    return cursor.dropParentUntil(parent -> parent instanceof J.ClassDeclaration || parent instanceof J.MethodDeclaration)
-        .getValue() instanceof J.ClassDeclaration;
-  }
-
   @EqualsAndHashCode(callSuper = true)
   private static class FindInstanceDataAccess extends JavaIsoVisitor<AtomicBoolean> {
     private final J.Identifier currentMethod;
@@ -166,11 +161,11 @@ public class StaticizeNonOverridableMethods extends Recipe {
       }
 
       // Do name matching here, since the loose checking conditions here makes lower false rewrites.
-      boolean isInstanceVariable =
-          instanceVariables.stream().anyMatch(v -> v.getSimpleName().equals(id.getSimpleName()));
+      boolean isInstanceVariable = instanceVariables.stream()
+          .anyMatch(v -> v.getSimpleName().equals(id.getSimpleName()));
 
-      boolean isInstanceMethod =
-          instanceMethods.stream().anyMatch(m -> m.getName().getSimpleName().equals(id.getSimpleName()));
+      boolean isInstanceMethod = instanceMethods.stream()
+          .anyMatch(m -> m.getName().getSimpleName().equals(id.getSimpleName()));
 
       if (isInstanceVariable || isInstanceMethod) {
         hasInstanceDataAccess.set(true);
@@ -188,9 +183,8 @@ public class StaticizeNonOverridableMethods extends Recipe {
      * @return a set of instance variables
      */
     static Set<J.VariableDeclarations.NamedVariable> collect(J.ClassDeclaration classDecl) {
-      Set<J.VariableDeclarations.NamedVariable> vs = new HashSet<>();
       return new CollectInstanceVariables()
-          .reduce(classDecl, vs);
+          .reduce(classDecl, new HashSet<>());
     }
 
     @Override
@@ -230,9 +224,8 @@ public class StaticizeNonOverridableMethods extends Recipe {
      * @return a set of instance methods
      */
     static Set<J.MethodDeclaration> collect(J.ClassDeclaration classDecl) {
-      Set<J.MethodDeclaration> ms = new HashSet<>();
       return new CollectInstanceMethods()
-          .reduce(classDecl, ms);
+          .reduce(classDecl, new HashSet<>());
     }
 
     @Override
@@ -248,8 +241,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
       }
 
       instanceMethods.add(method);
-
-      // skip method sub-tree traversal
       return method;
     }
   }
