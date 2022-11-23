@@ -49,12 +49,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @Override
   public JavaIsoVisitor<ExecutionContext> getVisitor() {
     return new JavaIsoVisitor<ExecutionContext>() {
-
-      private Set<J.VariableDeclarations.NamedVariable> instanceVariables = new HashSet<>();
-      private Set<J.MethodDeclaration> instanceMethods = new HashSet<>();
+      private final Set<J.VariableDeclarations.NamedVariable> instanceVariables = new HashSet<>();
+      private final Set<J.MethodDeclaration> instanceMethods = new HashSet<>();
 
       @Override
       public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+        // todo, clean up log
         System.out.println("[Kun] visitClassDeclaration : " + classDecl);
 
         // skip static class
@@ -62,17 +62,15 @@ public class StaticizeNonOverridableMethods extends Recipe {
           return classDecl;
         }
 
-        Set<J.VariableDeclarations.NamedVariable> vs = CollectInstanceVariables.collect(classDecl);
-        instanceVariables.addAll(vs);
-
-        Set<J.MethodDeclaration> ms = CollectInstanceMethods.collect(classDecl);
-        instanceMethods.addAll(ms);
+        instanceVariables.addAll(CollectInstanceVariables.collect(classDecl));
+        instanceMethods.addAll(CollectInstanceMethods.collect(classDecl));
 
         return super.visitClassDeclaration(classDecl, ctx);
       }
 
       @Override
       public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
+        // todo, clean up log
         System.out.println("[Kun] visitMethodDeclaration : " + method.toString());
 
         J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
@@ -149,6 +147,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
     @Override
     public J.Identifier visitIdentifier(J.Identifier identifier, AtomicBoolean hasInstanceDataAccess) {
+      // todo, clean up log
       System.out.println("[Kun] FindInstanceDataAccess.visitIdentifier : " + identifier);
       if (hasInstanceDataAccess.get()) {
         return identifier;
@@ -178,15 +177,13 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @Value
   @EqualsAndHashCode(callSuper = true)
   private static class CollectInstanceVariables extends JavaIsoVisitor<Set<J.VariableDeclarations.NamedVariable>> {
-    Set<J.VariableDeclarations.NamedVariable> instanceVariables;
-
     /**
      * @param classDecl The target class to collect for
      * @return a set of instance variables
      */
     static Set<J.VariableDeclarations.NamedVariable> collect(J.ClassDeclaration classDecl) {
       Set<J.VariableDeclarations.NamedVariable> vs = new HashSet<>();
-      return new CollectInstanceVariables(vs)
+      return new CollectInstanceVariables()
           .reduce(classDecl, vs);
     }
 
@@ -194,6 +191,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.VariableDeclarations visitVariableDeclarations(J.VariableDeclarations multiVariable,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
+      // todo, clean up log
       System.out.println("[Kun] CollectInstanceVariables.visitVariableDeclarations : " + multiVariable);
 
       J.VariableDeclarations mv = super.visitVariableDeclarations(multiVariable, instanceVariables);
@@ -211,6 +209,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
+      // todo, clean up log
       System.out.println("[Kun] CollectInstanceVariables.visitMethodDeclaration : " + method);
       // skip method sub-tree traversal
       return method;
@@ -220,15 +219,13 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @Value
   @EqualsAndHashCode(callSuper = true)
   private static class CollectInstanceMethods extends JavaIsoVisitor<Set<J.MethodDeclaration>> {
-    Set<J.MethodDeclaration> instanceMethods;
-
     /**
      * @param classDecl The cursor of class declaration
      * @return a set of instance methods
      */
     static Set<J.MethodDeclaration> collect(J.ClassDeclaration classDecl) {
       Set<J.MethodDeclaration> ms = new HashSet<>();
-      return new CollectInstanceMethods(ms)
+      return new CollectInstanceMethods()
           .reduce(classDecl, ms);
     }
 
@@ -236,6 +233,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.MethodDeclaration> instanceMethods
     ) {
+      // todo, clean up log
       System.out.println("[Kun] CollectInstanceMethods.visitMethodDeclaration : " + method);
 
       // skip class methods
