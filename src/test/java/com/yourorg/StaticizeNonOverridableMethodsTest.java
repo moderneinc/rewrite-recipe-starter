@@ -293,6 +293,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
+    // todo, kunli, for this case, current recipe staticize `func1` only. going to support this case,
     @Disabled
     @Test
     void nestedClassMethods() {

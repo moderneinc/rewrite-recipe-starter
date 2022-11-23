@@ -23,7 +23,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.openrewrite.Cursor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
@@ -54,9 +53,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       @Override
       public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
-        // todo, clean up log
-        System.out.println("[Kun] visitClassDeclaration : " + classDecl);
-
         // skip static class
         if (classDecl.hasModifier(J.Modifier.Type.Static)) {
           return classDecl;
@@ -70,9 +66,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       @Override
       public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
-        // todo, clean up log
-        System.out.println("[Kun] visitMethodDeclaration : " + method.toString());
-
         J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
 
         // if it already has `static` modifier, it doesn't need to add again.
@@ -142,8 +135,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
     @Override
     public J.Identifier visitIdentifier(J.Identifier identifier, AtomicBoolean hasInstanceDataAccess) {
-      // todo, clean up log
-      System.out.println("[Kun] FindInstanceDataAccess.visitIdentifier : " + identifier);
       if (hasInstanceDataAccess.get()) {
         return identifier;
       }
@@ -156,9 +147,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
       if (id.getSimpleName().equals(currentMethod.getSimpleName())
           && id.getId().equals(currentMethod.getId())
           && id.getType() == null
+          && id.getFieldType() == null
       ) {
         return id;
       }
+
+      // todo, kunli, consider J.Identifier.getFieldType()
 
       // Do name matching here, since the loose checking conditions here makes lower false rewrites.
       boolean isInstanceVariable = instanceVariables.stream()
@@ -191,9 +185,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.VariableDeclarations visitVariableDeclarations(J.VariableDeclarations multiVariable,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      // todo, clean up log
-      System.out.println("[Kun] CollectInstanceVariables.visitVariableDeclarations : " + multiVariable);
-
       J.VariableDeclarations mv = super.visitVariableDeclarations(multiVariable, instanceVariables);
 
       // skip class variables
@@ -209,8 +200,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      // todo, clean up log
-      System.out.println("[Kun] CollectInstanceVariables.visitMethodDeclaration : " + method);
       // skip method sub-tree traversal
       return method;
     }
@@ -232,9 +221,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.MethodDeclaration> instanceMethods
     ) {
-      // todo, clean up log
-      System.out.println("[Kun] CollectInstanceMethods.visitMethodDeclaration : " + method);
-
       // skip class methods
       if (method.hasModifier(J.Modifier.Type.Static)) {
         return method;
