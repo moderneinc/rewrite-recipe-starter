@@ -7,86 +7,11 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.*;
 
-
 public class StaticizeNonOverridableMethodsTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new StaticizeNonOverridableMethods());
-    }
-
-    // todo, test purpose only, to be removed
-    @Test
-    void kunTestPurposeOnly() {
-        rewriteRun(
-            java("""
-                        class A {
-                          private int a;
-                          private int b;
-                          private static int z;
-                          
-                          private int func1() {
-                            return a;
-                          }
-                        
-                          private int func2(int x) {
-                            int c = 2;
-                            return c * x;
-                          }
-                        
-                          private int func3(int x) {
-                            int c = 2;
-                            int d = 0;
-                            for (int i = 0; i < c ;i++) {
-                              int a = 1;
-                              if (d > 0) {
-                                d += a;
-                              }
-                              d += c;
-                            }
-                            return c * x + a;
-                          }
-                          
-                          private int func4() {
-                             return z + 1;
-                          }
-                        }
-                    """,
-                """
-                        class A {
-                          private int a;
-                          private int b;
-                          private static int z;
-                          
-                          private int func1() {
-                            return a;
-                          }
-                        
-                          private static int func2(int x) {
-                            int c = 2;
-                            return c * x;
-                          }
-                        
-                          private int func3(int x) {
-                            int c = 2;
-                            int d = 0;
-                            for (int i = 0; i < c ;i++) {
-                              int a = 1;
-                              if (d > 0) {
-                                d += a;
-                              }
-                              d += c;
-                            }
-                            return c * x + a;
-                          }
-                          
-                          private static int func4() {
-                             return z + 1;
-                          }
-                        }
-                    """
-            )
-        );
     }
 
     @Test
@@ -297,7 +222,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                               int a = 2;
                               c += a;
                             }
-                            return c + a;
+                            return c + 1;
                           }
                         }
                     """
@@ -305,7 +230,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    @Disabled("The same name local variable could make compile errors without a scope check.")
+    @Disabled("The same name local variable could make compile errors if without a scope check.")
     @Test
     void sameNameInstanceVariable() {
         rewriteRun(
@@ -333,7 +258,6 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    // todo, revisit to check if it's necessary
     @Test
     void sameNameClassVariableInScope() {
         rewriteRun(
@@ -369,7 +293,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    @Disabled("todo")
+    @Disabled
     @Test
     void nestedClassMethods() {
         rewriteRun(
