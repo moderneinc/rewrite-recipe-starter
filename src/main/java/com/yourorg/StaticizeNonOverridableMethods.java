@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
@@ -66,17 +67,17 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       @Override
       public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
-        J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
-
         // if it already has `static` modifier, it doesn't need to add again.
-        if (m.hasModifier(J.Modifier.Type.Static)) {
-          return m;
+        if (method.hasModifier(J.Modifier.Type.Static)) {
+          return method;
         }
 
         // if it's an overridable methods (neither `private` nor `final`), we don't want to add `static`.
-        if (!m.hasModifier(J.Modifier.Type.Private) && !m.hasModifier(J.Modifier.Type.Final)) {
-          return m;
+        if (!method.hasModifier(J.Modifier.Type.Private) && !method.hasModifier(J.Modifier.Type.Final)) {
+          return method;
         }
+
+        J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
 
         boolean hasInstanceDataAccess = FindInstanceDataAccess.find(method,
             instanceMethods,
@@ -94,15 +95,27 @@ public class StaticizeNonOverridableMethods extends Recipe {
       return m;
     }
 
-    Space singleSpace = Space.build(" ", Collections.emptyList());
-    J.Modifier staticMod = m.getModifiers().stream()
-        .findFirst()
-        .get()
-        .withId(Tree.randomId())
-        .withPrefix(singleSpace)
-        .withType(J.Modifier.Type.Static);
-    List<J.Modifier> modifiers = new ArrayList<>(m.getModifiers());
-    modifiers.add(staticMod);
+    List<J.Modifier> modifiers;
+
+    if (m.getModifiers().stream().anyMatch(mod -> mod.getType() == J.Modifier.Type.Final)) {
+      // replace `final` to `static`.
+      modifiers = m.getModifiers()
+          .stream()
+          .map(mod -> mod.getType() == J.Modifier.Type.Final ? mod.withType(J.Modifier.Type.Static) : mod)
+          .collect(Collectors.toList());
+    } else {
+      // add `static` modifier
+      Space singleSpace = Space.build(" ", Collections.emptyList());
+      J.Modifier staticMod = m.getModifiers().stream()
+          .findFirst()
+          .get()
+          .withId(Tree.randomId())
+          .withPrefix(singleSpace)
+          .withType(J.Modifier.Type.Static);
+      modifiers = new ArrayList<>(m.getModifiers());
+      modifiers.add(staticMod);
+    }
+
     return m.withModifiers(ModifierOrder.sortModifiers(modifiers));
   }
 
@@ -115,7 +128,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
     private FindInstanceDataAccess(J.Identifier currentMethod,
         Set<J.MethodDeclaration> instanceMethods,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
-        ) {
+    ) {
       this.currentMethod = currentMethod;
       this.instanceMethods = instanceMethods;
       this.instanceVariables = instanceVariables;
@@ -156,10 +169,15 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       // Do name matching here, since the loose checking conditions here makes lower false rewrites.
       boolean isInstanceVariable = instanceVariables.stream()
-          .anyMatch(v -> v.getSimpleName().equals(id.getSimpleName()));
+          .anyMatch(v -> v.getSimpleName()
+              .equals(id.getSimpleName())
+          );
 
       boolean isInstanceMethod = instanceMethods.stream()
-          .anyMatch(m -> m.getName().getSimpleName().equals(id.getSimpleName()));
+          .anyMatch(m -> m.getName()
+              .getSimpleName()
+              .equals(id.getSimpleName())
+          );
 
       if (isInstanceVariable || isInstanceMethod) {
         hasInstanceDataAccess.set(true);

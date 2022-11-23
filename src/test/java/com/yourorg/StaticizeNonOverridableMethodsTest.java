@@ -70,12 +70,12 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                             return c + b;
                           }
                           
-                          static final int func2(int b) {
+                          static int func2(int b) {
                             int c = 2;
                             return c - b;
                           }
                           
-                          private static final int func3(int b) {
+                          private static int func3(int b) {
                             int c = 2;
                             return c * b;
                           }
@@ -163,11 +163,11 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                             return a;
                           }
                           
-                          static final int func2() {
+                          static int func2() {
                             return a + 1;
                           }
                           
-                          private static final int func3() {
+                          private static int func3() {
                             return a + 2;
                           }
                         }
