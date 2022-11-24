@@ -54,13 +54,16 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       @Override
       public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+        // todo. kunli, handle inner class
+
+
         // skip static class
         if (classDecl.hasModifier(J.Modifier.Type.Static)) {
           return classDecl;
         }
 
-        instanceVariables.addAll(CollectInstanceVariables.collect(classDecl));
-        instanceMethods.addAll(CollectInstanceMethods.collect(classDecl));
+        instanceVariables.addAll(CollectInstanceVariables.collect(getCursor().getValue()));
+        instanceMethods.addAll(CollectInstanceMethods.collect(getCursor().getValue()));
 
         return super.visitClassDeclaration(classDecl, ctx);
       }
@@ -79,7 +82,8 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
         J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
 
-        boolean hasInstanceDataAccess = FindInstanceDataAccess.find(method,
+        boolean hasInstanceDataAccess = FindInstanceDataAccess.find(getCursor().getValue(),
+            method.getName(),
             instanceMethods,
             instanceVariables
         ).get();
@@ -135,15 +139,16 @@ public class StaticizeNonOverridableMethods extends Recipe {
     }
 
     /**
-     * @param method the method to search for.
+     * @param j The subtree to search.
      * @return whether has instance data access in this method
      */
-    static AtomicBoolean find(J.MethodDeclaration method,
+    static AtomicBoolean find(J j,
+        J.Identifier currentMethod,
         Set<J.MethodDeclaration> instanceMethods,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      return new FindInstanceDataAccess(method.getName(), instanceMethods, instanceVariables)
-          .reduce(method, new AtomicBoolean());
+      return new FindInstanceDataAccess(currentMethod, instanceMethods, instanceVariables)
+          .reduce(j, new AtomicBoolean());
     }
 
     @Override
@@ -191,12 +196,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @EqualsAndHashCode(callSuper = true)
   private static class CollectInstanceVariables extends JavaIsoVisitor<Set<J.VariableDeclarations.NamedVariable>> {
     /**
-     * @param classDecl The target class to collect for
+     * @param j The subtree to search
      * @return a set of instance variables
      */
-    static Set<J.VariableDeclarations.NamedVariable> collect(J.ClassDeclaration classDecl) {
+    static Set<J.VariableDeclarations.NamedVariable> collect(J j) {
       return new CollectInstanceVariables()
-          .reduce(classDecl, new HashSet<>());
+          .reduce(j, new HashSet<>());
     }
 
     @Override
@@ -227,12 +232,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @EqualsAndHashCode(callSuper = true)
   private static class CollectInstanceMethods extends JavaIsoVisitor<Set<J.MethodDeclaration>> {
     /**
-     * @param classDecl The cursor of class declaration
+     * @param j The subtree to search.
      * @return a set of instance methods
      */
-    static Set<J.MethodDeclaration> collect(J.ClassDeclaration classDecl) {
+    static Set<J.MethodDeclaration> collect(J j) {
       return new CollectInstanceMethods()
-          .reduce(classDecl, new HashSet<>());
+          .reduce(j, new HashSet<>());
     }
 
     @Override
