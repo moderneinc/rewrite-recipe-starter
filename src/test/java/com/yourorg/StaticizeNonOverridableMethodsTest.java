@@ -1,6 +1,5 @@
 package com.yourorg;
 
-import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
@@ -268,7 +267,6 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    @Disabled("The same name local variable could make compile errors if without a scope check.")
     @Test
     void sameNameInstanceVariable() {
         rewriteRun(
@@ -331,38 +329,17 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    // todo, kunli, for this case, current recipe staticize `func1` only. going to support this case,
-    @Disabled
     @Test
-    void nestedClassMethods() {
+    void InnerClassIgnored() {
         rewriteRun(
             java("""
-                        class A {
-                          private static int a = 1;
-                          private static int b = 2;
-                        
-                          private int func1() {
-                            return a * 2;
-                          }
-                        
-                          private int func2() {
-                            int x = func1();
-                            return x + b;
-                          }
-                        }
-                    """,
-                """
-                        class A {
-                          private static int a = 1;
-                          private static int b = 2;
-                        
-                          private static int func1() {
-                            return a * 2;
-                          }
-                        
-                          private static int func2() {
-                            int x = func1();
-                            return x + b;
+                        class OuterClass {
+                          int a;
+
+                          class InnerClass {
+                            private int func1(int x) {
+                              return x + 1;
+                            }
                           }
                         }
                     """
@@ -371,18 +348,13 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
     }
 
     @Test
-    void innerStaticClassIgnored() {
+    void StaticNestedClassIgnored() {
         rewriteRun(
             java("""
-                        class A {
+                        class OuterClass {
                           int a = 1;
-                        
-                          private int func1() {
-                            B b = new B();
-                            return a + 1;
-                          }
-                        
-                          private static class B {
+
+                          private static class InnerClass {
                             int b = 0;
                             int func2(int x) {
                               return x + 1;
@@ -425,6 +397,44 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                             return nums.stream().map(n -> {
                               return fun1(n);
                             }).findFirst().get();
+                          }
+                        }
+                    """
+            )
+        );
+    }
+
+    @Disabled("For this case, current recipe staticize `func1` only.")
+    @Test
+    void nestedClassMethods() {
+        rewriteRun(
+            java("""
+                        class A {
+                          private static int a = 1;
+                          private static int b = 2;
+                        
+                          private int func1() {
+                            return a * 2;
+                          }
+                        
+                          private int func2() {
+                            int x = func1();
+                            return x + b;
+                          }
+                        }
+                    """,
+                """
+                        class A {
+                          private static int a = 1;
+                          private static int b = 2;
+                        
+                          private static int func1() {
+                            return a * 2;
+                          }
+                        
+                          private static int func2() {
+                            int x = func1();
+                            return x + b;
                           }
                         }
                     """
