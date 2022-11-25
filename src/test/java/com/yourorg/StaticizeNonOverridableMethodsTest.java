@@ -1,5 +1,6 @@
 package com.yourorg;
 
+import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RecipeSpec;
@@ -397,13 +398,35 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
     void methodNameIsSameWithInstanceVariable() {
         rewriteRun(
             java("""
-                    class A {
-                      int count = 1;
-                    
-                      private int count(int x) {
-                        return count + x;
-                      }
-                    }
+                        class A {
+                          int count = 1;
+                        
+                          private int count(int x) {
+                            return count + x;
+                          }
+                        }
+                    """
+            )
+        );
+    }
+
+    @Test
+    void instanceMethodCalledInLambda() {
+        rewriteRun(
+            java("""
+                        class A {
+                          int a = 1;
+                        
+                          private int fun1(int x) {
+                            return a + x;
+                          }
+                        
+                          private int fun2(List<Integer> nums) {
+                            return nums.stream().map(n -> {
+                              return fun1(n);
+                            }).findFirst().get();
+                          }
+                        }
                     """
             )
         );

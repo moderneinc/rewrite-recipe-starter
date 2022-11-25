@@ -86,7 +86,6 @@ public class StaticizeNonOverridableMethods extends Recipe {
         J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
 
         boolean hasInstanceDataAccess = FindInstanceDataAccess.find(getCursor().getValue(),
-            method.getName(),
             instanceMethods,
             instanceVariables
         ).get();
@@ -135,15 +134,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
    */
   @EqualsAndHashCode(callSuper = true)
   private static class FindInstanceDataAccess extends JavaIsoVisitor<AtomicBoolean> {
-    private final J.Identifier currentMethod;
     private final Set<J.MethodDeclaration> instanceMethods;
     private final Set<J.VariableDeclarations.NamedVariable> instanceVariables;
 
-    private FindInstanceDataAccess(J.Identifier currentMethod,
-        Set<J.MethodDeclaration> instanceMethods,
+    private FindInstanceDataAccess(Set<J.MethodDeclaration> instanceMethods,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      this.currentMethod = currentMethod;
       this.instanceMethods = instanceMethods;
       this.instanceVariables = instanceVariables;
     }
@@ -153,11 +149,10 @@ public class StaticizeNonOverridableMethods extends Recipe {
      * @return whether has instance data access in this method
      */
     static AtomicBoolean find(J j,
-        J.Identifier currentMethod,
         Set<J.MethodDeclaration> instanceMethods,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      return new FindInstanceDataAccess(currentMethod, instanceMethods, instanceVariables)
+      return new FindInstanceDataAccess(instanceMethods, instanceVariables)
           .reduce(j, new AtomicBoolean());
     }
 
@@ -201,6 +196,8 @@ public class StaticizeNonOverridableMethods extends Recipe {
         return method;
       }
 
+      J.MethodInvocation m = super.visitMethodInvocation(method, hasInstanceDataAccess);
+
       boolean isInstanceMethod = instanceMethods.stream()
           .anyMatch(im -> im.getSimpleName().equals(method.getSimpleName()));
 
@@ -208,8 +205,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
         hasInstanceDataAccess.set(true);
       }
 
-      // skip sub-elements traversal
-      return method;
+      return m;
     }
   }
 
