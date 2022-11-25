@@ -15,7 +15,6 @@
  */
 package com.yourorg;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +26,7 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.Tree;
+import org.openrewrite.internal.ListUtils;
 import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.cleanup.ModifierOrder;
 import org.openrewrite.java.tree.J;
@@ -38,7 +38,7 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
   @Override
   public String getDisplayName() {
-    return "Add `static` modifiers to private or final methods that don't access instance data";
+    return "Staticize non-overridable methods";
   }
 
   @Override
@@ -49,11 +49,12 @@ public class StaticizeNonOverridableMethods extends Recipe {
   @Override
   public JavaIsoVisitor<ExecutionContext> getVisitor() {
     return new JavaIsoVisitor<ExecutionContext>() {
-      private final Set<J.VariableDeclarations.NamedVariable> instanceVariables = new HashSet<>();
-      private final Set<J.MethodDeclaration> instanceMethods = new HashSet<>();
+      final Set<J.VariableDeclarations.NamedVariable> instanceVariables = new HashSet<>();
+      final Set<J.MethodDeclaration> instanceMethods = new HashSet<>();
 
       @Override
       public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
+        System.out.println("[Kun] visitClassDeclaration : " + classDecl);
         // todo. kunli, handle inner class
 
 
@@ -70,6 +71,8 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
       @Override
       public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
+        System.out.println("[Kun] visitMethodDeclaration : " + method);
+
         // if it already has `static` modifier, it doesn't need to add again.
         if (method.hasModifier(J.Modifier.Type.Static)) {
           return method;
@@ -88,41 +91,48 @@ public class StaticizeNonOverridableMethods extends Recipe {
             instanceVariables
         ).get();
 
-        return hasInstanceDataAccess ? m : addStatic(m);
+        return hasInstanceDataAccess ? m : addStaticModifier(m);
       }
     };
   }
 
-  private static J.MethodDeclaration addStatic(J.MethodDeclaration m) {
+  private static J.MethodDeclaration addStaticModifier(J.MethodDeclaration m) {
+    List<J.Modifier> modifiers = m.getModifiers();
+
     // it expects the input method is non-overridable, so it should has at least one modifier(`private` or `final`)
-    if (m.getModifiers().isEmpty()) {
+    if (modifiers.isEmpty()) {
       return m;
     }
 
-    List<J.Modifier> modifiers;
+    boolean hasFinalModifier = modifiers.stream()
+        .anyMatch(mod -> mod.getType() == J.Modifier.Type.Final);
 
-    if (m.getModifiers().stream().anyMatch(mod -> mod.getType() == J.Modifier.Type.Final)) {
-      // replace `final` to `static`.
-      modifiers = m.getModifiers()
-          .stream()
-          .map(mod -> mod.getType() == J.Modifier.Type.Final ? mod.withType(J.Modifier.Type.Static) : mod)
-          .collect(Collectors.toList());
+    if (hasFinalModifier) {
+      // replace `final` with `static`, since it's redundant.
+      modifiers = ListUtils.map(m.getModifiers(),
+          (i, mod) -> mod.getType() == J.Modifier.Type.Final ? mod.withType(J.Modifier.Type.Static) : mod);
     } else {
       // add `static` modifier
-      Space singleSpace = Space.build(" ", Collections.emptyList());
-      J.Modifier staticMod = m.getModifiers().stream()
-          .findFirst()
-          .get()
-          .withId(Tree.randomId())
-          .withPrefix(singleSpace)
-          .withType(J.Modifier.Type.Static);
-      modifiers = new ArrayList<>(m.getModifiers());
-      modifiers.add(staticMod);
+      modifiers = ListUtils.concat(modifiers, buildStaticModifier(modifiers));
     }
 
     return m.withModifiers(ModifierOrder.sortModifiers(modifiers));
   }
 
+  private static J.Modifier buildStaticModifier(List<J.Modifier> ms) {
+    // ms is guaranteed not empty.
+    Space singleSpace = Space.build(" ", Collections.emptyList());
+    return ms.stream()
+        .findFirst()
+        .get()
+        .withId(Tree.randomId())
+        .withPrefix(singleSpace)
+        .withType(J.Modifier.Type.Static);
+  }
+
+  /**
+   * Visitor to find instance data access in a method
+   */
   @EqualsAndHashCode(callSuper = true)
   private static class FindInstanceDataAccess extends JavaIsoVisitor<AtomicBoolean> {
     private final J.Identifier currentMethod;
@@ -153,48 +163,60 @@ public class StaticizeNonOverridableMethods extends Recipe {
 
     @Override
     public J.Identifier visitIdentifier(J.Identifier identifier, AtomicBoolean hasInstanceDataAccess) {
+      // todo, kunli, remove log
+      System.out.println("[Kun] FindInstanceDataAccess.visitIdentifier : " + identifier
+          + " [type=" + identifier.getType() + "] [field type=" + identifier.getFieldType() + "]");
+
       if (hasInstanceDataAccess.get()) {
         return identifier;
       }
 
       J.Identifier id = super.visitIdentifier(identifier, hasInstanceDataAccess);
 
-      // Skip the method itself identifier.
-      // UUID check is necessary to make sure it's the identifier of the method we are checking here.
-      // to cover the scenario that the variable and method having the same name.
-      if (id.getSimpleName().equals(currentMethod.getSimpleName())
-          && id.getId().equals(currentMethod.getId())
-          && id.getType() == null
-          && id.getFieldType() == null
-      ) {
+      // instance method calls will be handled by `visitMethodInvocation`, handles instance variables only here.
+      boolean isNotVariable = id.getType() == null || id.getFieldType() == null;
+      if (isNotVariable) {
         return id;
       }
 
-      // todo, kunli, consider J.Identifier.getFieldType()
-
-      // Do name matching here, since the loose checking conditions here makes lower false rewrites.
       boolean isInstanceVariable = instanceVariables.stream()
-          .anyMatch(v -> v.getSimpleName()
-              .equals(id.getSimpleName())
-          );
+          .anyMatch(v -> id.getFieldType().equals(v.getName().getFieldType())
+              && id.getType().equals(v.getName().getType())
+              && id.getSimpleName().equals(v.getSimpleName()));
 
-      boolean isInstanceMethod = instanceMethods.stream()
-          .anyMatch(m -> m.getName()
-              .getSimpleName()
-              .equals(id.getSimpleName())
-          );
-
-      if (isInstanceVariable || isInstanceMethod) {
+      if (isInstanceVariable) {
         hasInstanceDataAccess.set(true);
       }
 
       return id;
+    }
+
+    @Override
+    public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, AtomicBoolean hasInstanceDataAccess) {
+      // todo, kunli. remove log
+      System.out.println("[Kun] FindInstanceDataAccess.visitMethodInvocation : " + method
+          + " [type=" + method.getType() + "] [field type=" + method.getName().getFieldType() + "]");
+
+      if (hasInstanceDataAccess.get()) {
+        return method;
+      }
+
+      boolean isInstanceMethod = instanceMethods.stream()
+          .anyMatch(im -> im.getSimpleName().equals(method.getSimpleName()));
+
+      if (isInstanceMethod) {
+        hasInstanceDataAccess.set(true);
+      }
+
+      // skip sub-elements traversal
+      return method;
     }
   }
 
   @Value
   @EqualsAndHashCode(callSuper = true)
   private static class CollectInstanceVariables extends JavaIsoVisitor<Set<J.VariableDeclarations.NamedVariable>> {
+
     /**
      * @param j The subtree to search
      * @return a set of instance variables
@@ -208,6 +230,9 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.VariableDeclarations visitVariableDeclarations(J.VariableDeclarations multiVariable,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
+      // todo, kunli. remove log
+      System.out.println("[Kun] CollectInstanceVariables.visitVariableDeclarations : " + multiVariable);
+
       J.VariableDeclarations mv = super.visitVariableDeclarations(multiVariable, instanceVariables);
 
       // skip class variables
@@ -215,7 +240,13 @@ public class StaticizeNonOverridableMethods extends Recipe {
         return mv;
       }
 
-      instanceVariables.addAll(multiVariable.getVariables());
+      // filter NULL `type` and `fieldType`, (todo, remove this check if it's guaranteed not null)
+      List<J.VariableDeclarations.NamedVariable> vs = multiVariable.getVariables()
+          .stream()
+          .filter(nv -> nv.getName().getType() != null && nv.getName().getFieldType() != null)
+          .collect(Collectors.toList());
+
+      instanceVariables.addAll(vs);
       return mv;
     }
 
@@ -223,7 +254,10 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.VariableDeclarations.NamedVariable> instanceVariables
     ) {
-      // skip method sub-tree traversal
+      // todo, kunli. remove log
+      System.out.println("[Kun] CollectInstanceVariables.visitMethodDeclaration : " + method);
+
+      // collect instance variables only , so skip method sub-tree traversal
       return method;
     }
   }
@@ -244,6 +278,9 @@ public class StaticizeNonOverridableMethods extends Recipe {
     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method,
         Set<J.MethodDeclaration> instanceMethods
     ) {
+      // todo, kunli. remove log
+      System.out.println("[Kun] CollectInstanceMethods.visitMethodDeclaration : " + method);
+
       // skip class methods
       if (method.hasModifier(J.Modifier.Type.Static)) {
         return method;

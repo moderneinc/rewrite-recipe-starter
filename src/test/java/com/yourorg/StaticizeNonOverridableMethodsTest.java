@@ -209,8 +209,9 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
+    // same name local variable with instance variable, can be static.
     @Test
-    void sameNameInstanceVariableInScope() {
+    void sameNameLocalVariable() {
         rewriteRun(
             java("""
                         class A {
@@ -223,6 +224,42 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                               c += a;
                             }
                             return c + 1;
+                          }
+                        }
+                    """,
+                    """
+                        class A {
+                          int a = 1;
+                                            
+                          private static int func(int b) {
+                            int c = 2;
+                            for (int i = 0; i < b ;i++) {
+                              int a = 2;
+                              c += a;
+                            }
+                            return c + 1;
+                          }
+                        }
+                        """
+            )
+        );
+    }
+
+    // same name local variable with instance variable, but instance variable is accessed out of scope.
+    @Test
+    void sameNameLocalVariableInScope() {
+        rewriteRun(
+            java("""
+                        class A {
+                          int a = 1;
+                        
+                          private int func(int b) {
+                            int c = 2;
+                            for (int i = 0; i < b ;i++) {
+                              int a = 2;
+                              c += a;
+                            }
+                            return c + a;
                           }
                         }
                     """
@@ -333,7 +370,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
     }
 
     @Test
-    void staticClassIgnored() {
+    void innerStaticClassIgnored() {
         rewriteRun(
             java("""
                         class A {
