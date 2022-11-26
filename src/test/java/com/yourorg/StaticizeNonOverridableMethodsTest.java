@@ -404,7 +404,7 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
         );
     }
 
-    @Disabled("For this case, current recipe staticize `func1` only.")
+    @Disabled("For this nested case (without circular reference), current recipe can staticize `func1` only. this case can be covered by running the recipe multiple times.")
     @Test
     void nestedClassMethods() {
         rewriteRun(
@@ -435,6 +435,54 @@ public class StaticizeNonOverridableMethodsTest implements RewriteTest {
                           private static int func2() {
                             int x = func1();
                             return x + b;
+                          }
+                        }
+                    """
+            )
+        );
+    }
+
+    @Disabled("nested case with circular reference, two methods call to each other, and both can be static")
+    @Test
+    void nestedCircularReferenceClassMethods() {
+        rewriteRun(
+            java("""
+                        class CollatzConjecture {
+                          private int odd(int n) {
+                            if (n != 1) {
+                              even(3 * n + 1);
+                            }
+                            return n;
+                          }
+                        
+                          private int even(int n) {
+                            n = n /2;
+                            if (n % 2 == 0) {
+                              even(n);
+                            } else {
+                              odd(n);
+                            }
+                            return n;
+                          }
+                        }
+                    """,
+                """
+                        class CollatzConjecture {
+                          private static int odd(int n) {
+                            if (n != 1) {
+                              even(3 * n + 1);
+                            }
+                            return n;
+                          }
+                        
+                          private static int even(int n) {
+                            n = n /2;
+                            if (n % 2 == 0) {
+                              even(n);
+                            } else {
+                              odd(n);
+                            }
+                            return n;
                           }
                         }
                     """
