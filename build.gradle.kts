@@ -35,6 +35,7 @@ description = "Rewrite recipes."
 
 repositories {
     mavenLocal()
+    // Needed to pick up snapshot versions of rewrite
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
     }
