@@ -60,6 +60,8 @@ dependencies {
 
     implementation("org.openrewrite:rewrite-java")
     runtimeOnly("org.openrewrite:rewrite-java-17")
+    // Need to have a slf4j binding to see any output enabled from the parser.
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:latest.release")
     testImplementation("org.junit.jupiter:junit-jupiter-params:latest.release")
