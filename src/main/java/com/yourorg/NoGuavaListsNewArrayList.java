@@ -20,12 +20,10 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.JavaTemplate;
-import org.openrewrite.java.JavaVisitor;
-import org.openrewrite.java.MethodMatcher;
+import org.openrewrite.java.*;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.JavaSourceFile;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -36,11 +34,13 @@ public class NoGuavaListsNewArrayList extends Recipe {
 
     @Override
     public String getDisplayName() {
+        //language=markdown
         return "Use `new ArrayList<>()` instead of Guava";
     }
 
     @Override
     public String getDescription() {
+        //language=markdown
         return "Prefer the Java standard library over third-party usage of Guava in simple cases like this.";
     }
 
@@ -50,7 +50,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
         // No changes made by the applicability test will be kept
         return new JavaIsoVisitor<ExecutionContext>() {
             @Override
-            public J.CompilationUnit visitCompilationUnit(J.CompilationUnit cu, ExecutionContext executionContext) {
+            public JavaSourceFile visitJavaSourceFile(JavaSourceFile cu, ExecutionContext executionContext) {
                 doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST));
                 doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE));
                 doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY));
@@ -67,7 +67,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .imports("java.util.ArrayList")
                     .build();
 
-            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.lang.Iterable)})")
+            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.util.Collection)})")
                     .imports("java.util.ArrayList")
                     .build();
 
