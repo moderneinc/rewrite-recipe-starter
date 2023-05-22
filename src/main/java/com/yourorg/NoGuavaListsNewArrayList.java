@@ -18,12 +18,14 @@ package com.yourorg;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
+import org.openrewrite.Preconditions;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.*;
+import org.openrewrite.java.JavaTemplate;
+import org.openrewrite.java.JavaVisitor;
+import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
-import org.openrewrite.java.tree.JavaSourceFile;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -45,33 +47,22 @@ public class NoGuavaListsNewArrayList extends Recipe {
     }
 
     @Override
-    protected TreeVisitor<?, ExecutionContext> getSingleSourceApplicableTest() {
-        // Any change to the AST made by the applicability test will lead to the visitor returned by Recipe.getVisitor() being applied
-        // No changes made by the applicability test will be kept
-        return new JavaIsoVisitor<ExecutionContext>() {
-            @Override
-            public JavaSourceFile visitJavaSourceFile(JavaSourceFile cu, ExecutionContext executionContext) {
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST));
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE));
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY));
-                return cu;
-            }
-        };
-    }
-
-    @Override
-    protected TreeVisitor<?, ExecutionContext> getVisitor() {
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
         // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of its visitor
-        return new JavaVisitor<ExecutionContext>() {
-            private final JavaTemplate newArrayList = JavaTemplate.builder(this::getCursor, "new ArrayList<>()")
+        return Preconditions.check(Preconditions.or(
+                new UsesMethod<>(NEW_ARRAY_LIST),
+                new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
+                new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)
+        ), new JavaVisitor<ExecutionContext>() {
+            private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
                     .imports("java.util.ArrayList")
                     .build();
 
-            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.util.Collection)})")
+            private final JavaTemplate newArrayListIterable = JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
                     .imports("java.util.ArrayList")
                     .build();
 
-            private final JavaTemplate newArrayListCapacity = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(int)})")
+            private final JavaTemplate newArrayListCapacity = JavaTemplate.builder("new ArrayList<>(#{any(int)})")
                     .imports("java.util.ArrayList")
                     .build();
 
@@ -80,20 +71,20 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 if (NEW_ARRAY_LIST.matches(method)) {
                     maybeRemoveImport("com.google.common.collect.Lists");
                     maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayList, method.getCoordinates().replace());
+                    return method.withTemplate(newArrayList, getCursor(), method.getCoordinates().replace());
                 } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
                     maybeRemoveImport("com.google.common.collect.Lists");
                     maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayListIterable, method.getCoordinates().replace(),
+                    return method.withTemplate(newArrayListIterable, getCursor(), method.getCoordinates().replace(),
                             method.getArguments().get(0));
                 } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
                     maybeRemoveImport("com.google.common.collect.Lists");
                     maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayListCapacity, method.getCoordinates().replace(),
+                    return method.withTemplate(newArrayListCapacity, getCursor(), method.getCoordinates().replace(),
                             method.getArguments().get(0));
                 }
                 return super.visitMethodInvocation(method, executionContext);
             }
-        };
+        });
     }
 }
