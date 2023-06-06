@@ -18,13 +18,9 @@ package com.yourorg;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.*;
-import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.java.*;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
-import org.openrewrite.java.tree.JavaSourceFile;
-
-import static java.util.Objects.requireNonNull;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -47,24 +43,13 @@ public class NoGuavaListsNewArrayList extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-
-        // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe.getVisitor() being applied
-        // No changes made by the preconditions check will be kept
-        TreeVisitor<?, ExecutionContext> condition =  new JavaIsoVisitor<ExecutionContext>() {
-            @Override
-            public @Nullable J visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof JavaSourceFile) {
-                    JavaSourceFile cu = (JavaSourceFile) requireNonNull(tree);
-                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST).visitNonNull(cu, ctx);
-                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE).visitNonNull(cu, ctx);
-                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY).visitNonNull(cu, ctx);
-                    return cu;
-                }
-                return (J) tree;
-            }
-        };
-
-        return Preconditions.check(condition,
+        return Preconditions.check(
+            // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe
+            // .getVisitor() being applied
+            // No changes made by the preconditions check will be kept
+            Preconditions.or(new UsesMethod<>(NEW_ARRAY_LIST),
+                new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
+                new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)),
             // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
             // its visitor
             new JavaVisitor<ExecutionContext>() {
