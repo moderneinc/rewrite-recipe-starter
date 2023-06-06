@@ -17,13 +17,14 @@ package com.yourorg;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.openrewrite.ExecutionContext;
-import org.openrewrite.Recipe;
-import org.openrewrite.TreeVisitor;
+import org.openrewrite.*;
+import org.openrewrite.internal.lang.Nullable;
 import org.openrewrite.java.*;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.java.tree.JavaSourceFile;
+
+import static java.util.Objects.requireNonNull;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
@@ -45,55 +46,62 @@ public class NoGuavaListsNewArrayList extends Recipe {
     }
 
     @Override
-    protected TreeVisitor<?, ExecutionContext> getSingleSourceApplicableTest() {
-        // Any change to the AST made by the applicability test will lead to the visitor returned by Recipe.getVisitor() being applied
-        // No changes made by the applicability test will be kept
-        return new JavaIsoVisitor<ExecutionContext>() {
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
+
+        // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe.getVisitor() being applied
+        // No changes made by the preconditions check will be kept
+        TreeVisitor<?, ExecutionContext> condition =  new JavaIsoVisitor<ExecutionContext>() {
             @Override
-            public JavaSourceFile visitJavaSourceFile(JavaSourceFile cu, ExecutionContext executionContext) {
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST));
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE));
-                doAfterVisit(new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY));
-                return cu;
-            }
-        };
-    }
-
-    @Override
-    protected TreeVisitor<?, ExecutionContext> getVisitor() {
-        // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of its visitor
-        return new JavaVisitor<ExecutionContext>() {
-            private final JavaTemplate newArrayList = JavaTemplate.builder(this::getCursor, "new ArrayList<>()")
-                    .imports("java.util.ArrayList")
-                    .build();
-
-            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.util.Collection)})")
-                    .imports("java.util.ArrayList")
-                    .build();
-
-            private final JavaTemplate newArrayListCapacity = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(int)})")
-                    .imports("java.util.ArrayList")
-                    .build();
-
-            @Override
-            public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
-                if (NEW_ARRAY_LIST.matches(method)) {
-                    maybeRemoveImport("com.google.common.collect.Lists");
-                    maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayList, method.getCoordinates().replace());
-                } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
-                    maybeRemoveImport("com.google.common.collect.Lists");
-                    maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayListIterable, method.getCoordinates().replace(),
-                            method.getArguments().get(0));
-                } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
-                    maybeRemoveImport("com.google.common.collect.Lists");
-                    maybeAddImport("java.util.ArrayList");
-                    return method.withTemplate(newArrayListCapacity, method.getCoordinates().replace(),
-                            method.getArguments().get(0));
+            public @Nullable J visit(@Nullable Tree tree, ExecutionContext ctx) {
+                if (tree instanceof JavaSourceFile) {
+                    JavaSourceFile cu = (JavaSourceFile) requireNonNull(tree);
+                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST).visitNonNull(cu, ctx);
+                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE).visitNonNull(cu, ctx);
+                    cu = (JavaSourceFile) new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY).visitNonNull(cu, ctx);
+                    return cu;
                 }
-                return super.visitMethodInvocation(method, executionContext);
+                return (J) tree;
             }
         };
+
+        return Preconditions.check(condition,
+            // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
+            // its visitor
+            new JavaVisitor<ExecutionContext>() {
+                private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
+                    .imports("java.util.ArrayList")
+                    .build();
+
+                private final JavaTemplate newArrayListIterable =
+                    JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
+                    .imports("java.util.ArrayList")
+                    .build();
+
+                private final JavaTemplate newArrayListCapacity =
+                    JavaTemplate.builder("new ArrayList<>(#{any(int)})")
+                    .imports("java.util.ArrayList")
+                    .build();
+
+                @Override
+                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
+                    if (NEW_ARRAY_LIST.matches(method)) {
+                        maybeRemoveImport("com.google.common.collect.Lists");
+                        maybeAddImport("java.util.ArrayList");
+                        return newArrayList.apply(getCursor(), method.getCoordinates().replace());
+                    } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
+                        maybeRemoveImport("com.google.common.collect.Lists");
+                        maybeAddImport("java.util.ArrayList");
+                        return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
+                            method.getArguments().get(0));
+                    } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
+                        maybeRemoveImport("com.google.common.collect.Lists");
+                        maybeAddImport("java.util.ArrayList");
+                        return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
+                            method.getArguments().get(0));
+                    }
+                    return super.visitMethodInvocation(method, executionContext);
+                }
+            }
+        );
     }
 }
