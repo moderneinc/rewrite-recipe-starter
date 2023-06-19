@@ -20,7 +20,7 @@ plugins {
 }
 
 rewrite {
-    activeRecipe("org.openrewrite.java.recipes.MigrateRecipeToRewrite8")
+    activeRecipe("org.openrewrite.java.upgrade.MigrateToRewrite8")
 }
 
 apply(plugin = "nebula.publish-verification")
@@ -65,6 +65,8 @@ dependencies {
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:1.19.4"))
 
     implementation("org.openrewrite:rewrite-java")
+    implementation("org.openrewrite:rewrite-gradle")
+
     runtimeOnly("org.openrewrite:rewrite-java-17")
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
