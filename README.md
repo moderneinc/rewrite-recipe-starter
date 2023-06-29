@@ -1,6 +1,6 @@
 ## Rewrite recipe starter
 
-This repository serves as a template for building your own recipe JARs and publishing them to a repository where they can be applied on [public.moderne.io](https://public.moderne.io) against all of the public OSS code that is included there.
+This repository serves as a template for building your own recipe JARs and publishing them to a repository where they can be applied on [app.moderne.io](https://app.moderne.io) against all of the public OSS code that is included there.
 
 We've provided a sample recipe (NoGuavaListsNewArray) and a sample test class. Both of these exist as placeholders, and they should be replaced by whatever recipe you are interested in writing.
 
@@ -31,7 +31,7 @@ In a Maven project's pom.xml, make your recipe module a plugin dependency:
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>4.38.0</version>
+                <version>5.2.4</version>
                 <configuration>
                     <activeRecipes>
                         <recipe>com.yourorg.NoGuavaListsNewArrayList</recipe>
@@ -56,7 +56,7 @@ The root project of your gradle build, make your recipe module a dependency of t
 ```groovy
 plugins {
     id("java")
-    id("org.openrewrite.rewrite") version("5.33.0")
+    id("org.openrewrite.rewrite") version("6.1.8")
 }
 
 repositories {
@@ -79,11 +79,11 @@ Now you can run `mvn rewrite:run` or `gradlew rewriteRun` to run your recipe.
 
 This project is configured to publish to Moderne's open artifact repository (via the `publishing` task at the bottom of
 the `build.gradle.kts` file). If you want to publish elsewhere, you'll want to update that task.
-[public.moderne.io](https://public.moderne.io) can draw recipes from the provided repository, as well as from [Maven Central](https://search.maven.org).
+[app.moderne.io](https://app.moderne.io) can draw recipes from the provided repository, as well as from [Maven Central](https://search.maven.org).
 
 Note:
-Running the publish task _will not_ update [public.moderne.io](https://public.moderne.io), as only Moderne employees can
-add new recipes. If you want to add your recipe to [public.moderne.io](https://public.moderne.io), please ask the
+Running the publish task _will not_ update [app.moderne.io](https://app.moderne.io), as only Moderne employees can
+add new recipes. If you want to add your recipe to [app.moderne.io](https://app.moderne.io), please ask the
 team in [Slack](https://join.slack.com/t/rewriteoss/shared_invite/zt-nj42n3ea-b~62rIHzb3Vo0E1APKCXEA) or in [Discord](https://discord.gg/xk3ZKrhWAb).
 
 These other docs might also be useful for you depending on where you want to publish the recipe:
@@ -99,6 +99,6 @@ Run the release action to publish a release version of a recipe.
 
 ### From the command line
 
-To build a snapshot, run `./gradlew snapshot publish` to build a snapshot and publish it to Moderne's open artifact repository for inclusion at [public.moderne.io](https://public.moderne.io).
+To build a snapshot, run `./gradlew snapshot publish` to build a snapshot and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
 
-To build a release, run `./gradlew final publish` to tag a release and publish it to Moderne's open artifact repository for inclusion at [public.moderne.io](https://public.moderne.io).
+To build a release, run `./gradlew final publish` to tag a release and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
