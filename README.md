@@ -31,7 +31,7 @@ In a Maven project's pom.xml, make your recipe module a plugin dependency:
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.0.0</version>
+                <version>5.2.4</version>
                 <configuration>
                     <activeRecipes>
                         <recipe>com.yourorg.NoGuavaListsNewArrayList</recipe>
@@ -56,7 +56,7 @@ The root project of your gradle build, make your recipe module a dependency of t
 ```groovy
 plugins {
     id("java")
-    id("org.openrewrite.rewrite") version("6.0.0")
+    id("org.openrewrite.rewrite") version("6.1.8")
 }
 
 repositories {
