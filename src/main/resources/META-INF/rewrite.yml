@@ -1,0 +1,12 @@
+# Include any Declarative YAML format recipes here, as per:
+# https://docs.openrewrite.org/reference/yaml-format-reference
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.RecipeA
+displayName: Recipe A
+description: Applies NoGuavaListsNewArrayList.
+tags:
+  - tag1
+  - tag2
+recipeList:
+  - com.yourorg.NoGuavaListsNewArrayList
