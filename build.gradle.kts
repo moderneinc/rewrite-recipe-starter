@@ -49,7 +49,7 @@ configurations.all {
     }
 }
 
-//The bom version can also be set to a specific version or latest.release.
+// The bom version can also be set to a specific version or latest.release.
 val rewriteBomVersion = "latest.integration"
 
 dependencies {
