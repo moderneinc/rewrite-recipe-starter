@@ -1,6 +1,6 @@
 ## Rewrite recipe starter
 
-This repository serves as a template for building your own recipe JARs and publishing them to a repository where they can be applied on [app.moderne.io](https://app.moderne.io) against all of the public OSS code that is included there.
+This repository serves as a template for building your own recipe JARs and publishing them to a repository where they can be applied on [app.moderne.io](https://app.moderne.io) against all the public OSS code that is included there.
 
 We've provided a sample recipe (NoGuavaListsNewArray) and a sample test class. Both of these exist as placeholders, and they should be replaced by whatever recipe you are interested in writing.
 
@@ -12,7 +12,7 @@ To begin, fork this repository and customize it by:
 
 ## Detailed Guide
 
-There is a [comprehensive getting started guide](https://docs.openrewrite.org/getting-started/recipe-development-environment)
+There is a [comprehensive getting started guide](https://docs.openrewrite.org/authoring-recipes/recipe-development-environment)
 available in the OpenRewrite docs that provides more details than the below README.
 
 ## Local Publishing for Testing
@@ -50,8 +50,8 @@ In a Maven project's pom.xml, make your recipe module a plugin dependency:
 </project>
 ```
 
-Unlike Maven, Gradle must be explicitly configured to resolve dependencies from maven local.
-The root project of your gradle build, make your recipe module a dependency of the `rewrite` configuration:
+Unlike Maven, Gradle must be explicitly configured to resolve dependencies from Maven locally.
+The root project of your Gradle build, make your recipe module a dependency of the `rewrite` configuration:
 
 ```groovy
 plugins {
