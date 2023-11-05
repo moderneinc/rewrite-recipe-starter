@@ -18,7 +18,11 @@ available in the OpenRewrite docs that provides more details than the below READ
 ## Local Publishing for Testing
 
 Before you publish your recipe module to an artifact repository, you may want to try it out locally.
-To do this on the command line, run `./gradlew publishToMavenLocal` (or equivalently `./gradlew pTML`).
+To do this on the command line, run:
+```bash
+./gradlew publishToMavenLocal
+# or ./gradlew pTML
+```
 This will publish to your local maven repository, typically under `~/.m2/repository`.
 
 Replace the groupId, artifactId, recipe name, and version in the below snippets with the ones that correspond to your recipe.
