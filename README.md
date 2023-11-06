@@ -27,7 +27,7 @@ This will publish to your local maven repository, typically under `~/.m2/reposit
 
 Replace the groupId, artifactId, recipe name, and version in the below snippets with the ones that correspond to your recipe.
 
-In a Maven project's pom.xml, make your recipe module a plugin dependency:
+In the pom.xml of a different project you wish to test your recipe out in, make your recipe module a plugin dependency of rewrite-maven-plugin:
 ```xml
 <project>
     <build>
@@ -54,13 +54,13 @@ In a Maven project's pom.xml, make your recipe module a plugin dependency:
 </project>
 ```
 
-Unlike Maven, Gradle must be explicitly configured to resolve dependencies from Maven locally.
+Unlike Maven, Gradle must be explicitly configured to resolve dependencies from Maven local.
 The root project of your Gradle build, make your recipe module a dependency of the `rewrite` configuration:
 
 ```groovy
 plugins {
     id("java")
-    id("org.openrewrite.rewrite") version("6.1.8")
+    id("org.openrewrite.rewrite") version("latest.release")
 }
 
 repositories {
@@ -69,7 +69,7 @@ repositories {
 }
 
 dependencies {
-    rewrite("com.yourorg:rewrite-recipe-starter:0.1.0-SNAPSHOT")
+    rewrite("com.yourorg:rewrite-recipe-starter:latest.integration")
 }
 
 rewrite {
