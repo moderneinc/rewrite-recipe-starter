@@ -12,6 +12,8 @@ dependencies {
     implementation(platform("org.openrewrite:rewrite-bom:${latest}"))
 
     implementation("org.openrewrite:rewrite-java")
+    implementation("org.openrewrite:rewrite-yaml")
+    implementation("org.assertj:assertj-core:3.24.2")
     runtimeOnly("org.openrewrite:rewrite-java-17")
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")

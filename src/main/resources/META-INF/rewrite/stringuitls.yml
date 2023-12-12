@@ -1,0 +1,15 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.desjardins.UseApacheStringUtils
+displayName: Use apache string utils
+description: Replace Spring string utilities with apache string utilities
+recipeList:
+  - org.openrewrite.java.dependencies.AddDependency:
+      groupId: org.apache.commons
+      artifactId: commons-lang3
+      version: latest.release
+      onlyIfUsing: org.springframework.util.StringUtils
+      configuration: implementation
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.springframework.util.StringUtils
+      newFullyQualifiedTypeName: org.apache.commons.lang3.StringUtils

@@ -1,0 +1,13 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.desjardins.UseApacheStringUtils
+displayName: Use apache string utils
+description: Replace Spring string utilities with apache string utilities
+recipeList:
+  - org.openrewrite.java.dependencies.AddDependency:
+      groupId: org.assertj
+      artifactId: assertj-core
+      version: 3.x
+      onlyIfUsing: org.junit.jupiter.api.Assertions
+      configuration: implementation
+  - com.yourorg.AssertEqualsToAssertThat
