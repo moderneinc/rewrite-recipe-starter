@@ -1,6 +1,6 @@
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: com.desjardins.UseApacheStringUtils
+name: com.example.UseApacheStringUtils
 displayName: Use apache string utils
 description: Replace Spring string utilities with apache string utilities
 recipeList:
