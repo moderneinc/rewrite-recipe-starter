@@ -1,0 +1,19 @@
+---
+name: repository-backup
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: 0 17 * * *
+
+concurrency:
+  group: backup-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  repository-backup:
+    uses: moderneinc/gh-automation/.github/workflows/repository-backup.yml@main
+    secrets:
+      bucket_mirror_target: ${{ secrets.S3_GITHUB_REPOSITORY_BACKUPS_BUCKET_NAME }}
+      bucket_access_key_id: ${{ secrets.S3_GITHUB_REPOSITORY_BACKUPS_ACCESS_KEY_ID }}
+      bucket_secret_access_key: ${{ secrets.S3_GITHUB_REPOSITORY_BACKUPS_SECRET_ACCESS_KEY }}
+      slack_bot_token: ${{ secrets.SLACK_MEESEEKS_BOT_TOKEN }}

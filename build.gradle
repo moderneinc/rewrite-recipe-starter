@@ -1,0 +1,31 @@
+plugins {
+    id("io.moderne.gradle.library") version "latest.integration"
+}
+
+// Set as appropriate for your organization
+group = "io.moderne"
+description = "Rewrite recipes for the Moderne organization."
+
+repositories {
+    mavenLocal()
+    // Needed to pick up snapshot versions of rewrite
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.openrewrite:rewrite-java")
+    runtimeOnly("org.openrewrite:rewrite-java-17")
+    // Need to have a slf4j binding to see any output enabled from the parser.
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("com.google.guava:guava")
+
+    testImplementation("org.openrewrite:rewrite-test")
+    testImplementation("org.assertj:assertj-core")
+}

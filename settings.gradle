@@ -1,0 +1,16 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal() // required for public plugins
+        // required for loading the convention plugins through artifactory
+        maven {
+            name = "ModerneArtifactory"
+            url = uri("https://artifactory.moderne.ninja/artifactory/moderne-private")
+            credentials {
+                username = settings.ext.find("moderne.artifactory.username") ?: System.getenv("MODERNE_ARTIFACTORY_USERNAME")
+                password = settings.ext.find("moderne.artifactory.password") ?: System.getenv("MODERNE_ARTIFACTORY_PASSWORD")
+            }
+        }
+    }
+}
+
+rootProject.name = "moderne-recipes"

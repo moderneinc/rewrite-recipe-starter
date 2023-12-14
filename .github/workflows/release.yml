@@ -1,44 +1,30 @@
 ---
-name: publish
+name: Release
 
 on:
-  push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
-      - v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Release scope
+        required: true
+        default: minor
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
 
-env:
-  GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m -XX:+HeapDumpOnOutOfMemoryError"'
-  GRADLE_SWITCHES: "-s --console=plain --info --stacktrace"
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: set-up-jdk
-        uses: actions/setup-java@v3.11.0
-        with:
-          distribution: zulu
-          java-version: 17
-      - name: setup-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: publish-candidate
-        if: contains(github.ref, '-rc.')
-        timeout-minutes: 30
-        run: ./gradlew ${GRADLE_SWITCHES} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true candidate publish
-
-      - name: publish-release
-        if: (!contains(github.ref, '-rc.'))
-        timeout-minutes: 30
-        run: ./gradlew ${GRADLE_SWITCHES} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true final publish
+    uses: moderneinc/gh-automation/.github/workflows/publish-maven-artifact.yml@main
+    with:
+      release_scope: ${{ github.event.inputs.scope }}
+    secrets:
+      google_cloud_service_account_key: ${{ secrets.ARTIFACT_REGISTRY_KEY }}
+      caller_github_token: ${{ secrets.GITHUB_TOKEN }}
+      moderne_artifactory_username: ${{ secrets.moderne_artifactory_username }}
+      moderne_artifactory_password: ${{ secrets.moderne_artifactory_password }}
