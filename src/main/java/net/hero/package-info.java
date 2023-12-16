@@ -15,7 +15,7 @@
  */
 @NonNullApi
 @NonNullFields
-package com.yourorg;
+package net.hero;
 
 import org.openrewrite.internal.lang.NonNullApi;
 import org.openrewrite.internal.lang.NonNullFields;

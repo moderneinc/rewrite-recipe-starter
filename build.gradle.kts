@@ -3,7 +3,7 @@ plugins {
 }
 
 // Set as appropriate for your organization
-group = "com.yourorg"
+group = "net.hero"
 description = "Rewrite recipes."
 
 // The bom version can also be set to a specific version or latest.release.
