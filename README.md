@@ -35,7 +35,7 @@ In the pom.xml of a different project you wish to test your recipe out in, make 
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.2.4</version>
+                <version>RELEASE</version>
                 <configuration>
                     <activeRecipes>
                         <recipe>com.yourorg.NoGuavaListsNewArrayList</recipe>
