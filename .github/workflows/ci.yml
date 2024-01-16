@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v4.0.0
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
           cache: gradle
       - name: build
         run: ./gradlew ${GRADLE_SWITCHES} build test
@@ -47,7 +47,7 @@ jobs:
         uses: actions/setup-java@v4.0.0
         with:
           distribution: zulu
-          java-version: 17
+          java-version: 21
           cache: gradle
       - name: publish-snapshots
         if: github.event_name == 'push'
