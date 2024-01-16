@@ -9,7 +9,7 @@ description = "Rewrite recipes."
 // The bom version can also be set to a specific version or latest.release.
 val latest = "latest.integration"
 dependencies {
-    implementation(platform("org.openrewrite:rewrite-bom:${latest}"))
+    implementation(platform("org.openrewrite:rewrite-recipe-bom:${latest}"))
 
     implementation("org.openrewrite:rewrite-java")
     runtimeOnly("org.openrewrite:rewrite-java-17")
