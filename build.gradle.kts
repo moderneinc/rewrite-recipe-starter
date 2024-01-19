@@ -6,17 +6,19 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
-// The bom version can also be set to a specific version or latest.release.
-val rewriteVersion = "latest.integration"
 dependencies {
-    implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:${rewriteVersion}"))
+    // The bom version can also be set to a specific version
+    // https://github.com/openrewrite/rewrite-recipe-bom/releases
+    implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
 
     implementation("org.openrewrite:rewrite-java")
     runtimeOnly("org.openrewrite:rewrite-java-17")
 
-    // Refaster style recipes need the annotation processor and dependencies
-    annotationProcessor("org.openrewrite:rewrite-templating:${rewriteVersion}")
+    // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
+    // https://github.com/openrewrite/rewrite-templating/releases
+    annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
     implementation("org.openrewrite:rewrite-templating")
+    // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
     compileOnly("com.google.errorprone:error_prone_core:2.19.1:with-dependencies") {
         exclude("com.google.auto.service", "auto-service-annotations")
     }
@@ -24,6 +26,7 @@ dependencies {
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
 
+    // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
 }
 
