@@ -7,12 +7,20 @@ group = "com.yourorg"
 description = "Rewrite recipes."
 
 // The bom version can also be set to a specific version or latest.release.
-val latest = "latest.integration"
+val rewriteVersion = "latest.integration"
 dependencies {
-    implementation(platform("org.openrewrite:rewrite-recipe-bom:${latest}"))
+    implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:${rewriteVersion}"))
 
     implementation("org.openrewrite:rewrite-java")
     runtimeOnly("org.openrewrite:rewrite-java-17")
+
+    // Refaster style recipes need the annotation processor and dependencies
+    annotationProcessor("org.openrewrite:rewrite-templating:${rewriteVersion}")
+    implementation("org.openrewrite:rewrite-templating")
+    compileOnly("com.google.errorprone:error_prone_core:2.19.1:with-dependencies") {
+        exclude("com.google.auto.service", "auto-service-annotations")
+    }
+
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
 
