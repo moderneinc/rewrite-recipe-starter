@@ -26,3 +26,12 @@ tags:
   - tag2
 recipeList:
   - com.yourorg.NoGuavaListsNewArrayList
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.yourorg.UseOpenRewriteNullable
+displayName: Prefer OpenRewrite Nullable
+description: Replaces JetBrains Nullable with OpenRewrite Nullable.
+recipeList:
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.jetbrains.annotations.Nullable
+      newFullyQualifiedTypeName: org.openrewrite.internal.lang.Nullable
