@@ -68,7 +68,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .build();
 
                 @Override
-                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
+                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                     if (NEW_ARRAY_LIST.matches(method)) {
                         maybeRemoveImport("com.google.common.collect.Lists");
                         maybeAddImport("java.util.ArrayList");
@@ -84,7 +84,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                         return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
                             method.getArguments().get(0));
                     }
-                    return super.visitMethodInvocation(method, executionContext);
+                    return super.visitMethodInvocation(method, ctx);
                 }
             }
         );

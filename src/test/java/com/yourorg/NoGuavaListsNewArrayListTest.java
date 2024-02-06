@@ -16,6 +16,7 @@
 package com.yourorg;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -35,6 +36,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
                 .classpath("guava"));
     }
 
+    @DocumentExample
     @Test
     void replaceWithNewArrayList() {
         rewriteRun(
@@ -45,7 +47,8 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
                     .logCompilationWarningsAndErrors(false)
                     .classpath("guava")),
             // language=java
-            java("""
+            java(
+            """
                     import com.google.common.collect.*;
                     
                     import java.util.List;
@@ -70,7 +73,8 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     void replaceWithNewArrayListIterable() {
         rewriteRun(
             // language=java
-            java("""
+            java(
+            """
                     import com.google.common.collect.*;
                     
                     import java.util.Collections;
@@ -99,7 +103,8 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     void replaceWithNewArrayListWithCapacity() {
         rewriteRun(
             // language=java
-            java("""
+            java(
+            """
                 import com.google.common.collect.*;
                 
                 import java.util.ArrayList;
