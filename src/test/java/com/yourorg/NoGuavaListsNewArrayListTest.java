@@ -23,6 +23,9 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
+/**
+ * This is a test for the NoGuavaListsNewArrayList recipe, as an example of how to write a test for an imperative recipe.
+ */
 class NoGuavaListsNewArrayListTest implements RewriteTest {
 
     // Note, you can define defaults for the RecipeSpec and these defaults will be used for all tests.
@@ -30,6 +33,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     // per test.
     @Override
     public void defaults(RecipeSpec spec) {
+        // Note how we directly instantiate the recipe class here
         spec.recipe(new NoGuavaListsNewArrayList())
             .parser(JavaParser.fromJavaVersion()
                 .logCompilationWarningsAndErrors(true)

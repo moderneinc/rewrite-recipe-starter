@@ -42,6 +42,7 @@ class UseOpenRewriteNullableTest implements RewriteTest {
           java(
             """
               import org.jetbrains.annotations.Nullable;
+              
               class A {
                   @Nullable
                   String s;
@@ -49,6 +50,7 @@ class UseOpenRewriteNullableTest implements RewriteTest {
               """,
             """
                 import org.openrewrite.internal.lang.Nullable;
+                
                 class A {
                     @Nullable
                     String s;

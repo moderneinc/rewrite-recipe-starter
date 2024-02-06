@@ -17,16 +17,26 @@ package com.yourorg;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
+import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
+/**
+ * This is a test for the SimplifyTernary recipe, as an example of how to write a test for a Refaster style recipe.
+ */
 class SimplifyTernaryTest implements RewriteTest {
+
+    @Override
+    public void defaults(RecipeSpec spec) {
+        // Note that we instantiate a generated class here, with `Recipes` appended to the Refaster class name
+        spec.recipe(new SimplifyTernaryRecipes());
+    }
+
     @DocumentExample
     @Test
     void simplified() {
         rewriteRun(
-          spec -> spec.recipe(new SimplifyTernaryRecipes()),
           //language=java
           java(
             """
