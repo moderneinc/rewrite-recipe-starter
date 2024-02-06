@@ -49,13 +49,13 @@ class UseOpenRewriteNullableTest implements RewriteTest {
               }
               """,
             """
-                import org.openrewrite.internal.lang.Nullable;
-                
-                class A {
-                    @Nullable
-                    String s;
-                }
-                """
+              import org.openrewrite.internal.lang.Nullable;
+              
+              class A {
+                  @Nullable
+                  String s;
+              }
+              """
           )
         );
     }

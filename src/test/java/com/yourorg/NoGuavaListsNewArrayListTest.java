@@ -35,97 +35,128 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     public void defaults(RecipeSpec spec) {
         // Note how we directly instantiate the recipe class here
         spec.recipe(new NoGuavaListsNewArrayList())
-            .parser(JavaParser.fromJavaVersion()
-                .logCompilationWarningsAndErrors(true)
-                .classpath("guava"));
+          .parser(JavaParser.fromJavaVersion()
+            .logCompilationWarningsAndErrors(true)
+            .classpath("guava"));
     }
 
     @DocumentExample
     @Test
     void replaceWithNewArrayList() {
         rewriteRun(
-            // There is an overloaded version or rewriteRun that allows the RecipeSpec to be customized specifically
-            // for a given test. In this case, the parser for this test is configured to not log compilation warnings.
-            spec -> spec
-                .parser(JavaParser.fromJavaVersion()
-                    .logCompilationWarningsAndErrors(false)
-                    .classpath("guava")),
-            // language=java
-            java(
+          // There is an overloaded version or rewriteRun that allows the RecipeSpec to be customized specifically
+          // for a given test. In this case, the parser for this test is configured to not log compilation warnings.
+          spec -> spec
+            .parser(JavaParser.fromJavaVersion()
+              .logCompilationWarningsAndErrors(false)
+              .classpath("guava")),
+          // language=java
+          java(
             """
-                    import com.google.common.collect.*;
-                    
-                    import java.util.List;
-                    
-                    class Test {
-                        List<Integer> cardinalsWorldSeries = Lists.newArrayList();
-                    }
-                    """,
-                """
-                    import java.util.ArrayList;
-                    import java.util.List;
-                    
-                    class Test {
-                        List<Integer> cardinalsWorldSeries = new ArrayList<>();
-                    }
-                    """
-            )
+              import com.google.common.collect.*;
+              
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = Lists.newArrayList();
+              }
+              """,
+            """
+              import java.util.ArrayList;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = new ArrayList<>();
+              }
+              """
+          )
         );
     }
 
     @Test
     void replaceWithNewArrayListIterable() {
         rewriteRun(
-            // language=java
-            java(
+          // language=java
+          java(
             """
-                    import com.google.common.collect.*;
-                    
-                    import java.util.Collections;
-                    import java.util.List;
-                    
-                    class Test {
-                        List<Integer> l = Collections.emptyList();
-                        List<Integer> cardinalsWorldSeries = Lists.newArrayList(l);
-                    }
-                    """,
-                """
-                    import java.util.ArrayList;
-                    import java.util.Collections;
-                    import java.util.List;
-                    
-                    class Test {
-                        List<Integer> l = Collections.emptyList();
-                        List<Integer> cardinalsWorldSeries = new ArrayList<>(l);
-                    }
-                    """
-            )
+              import com.google.common.collect.*;
+              
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> l = Collections.emptyList();
+                  List<Integer> cardinalsWorldSeries = Lists.newArrayList(l);
+              }
+              """,
+            """
+              import java.util.ArrayList;
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> l = Collections.emptyList();
+                  List<Integer> cardinalsWorldSeries = new ArrayList<>(l);
+              }
+              """
+          )
         );
     }
 
     @Test
     void replaceWithNewArrayListWithCapacity() {
         rewriteRun(
-            // language=java
-            java(
+          // language=java
+          java(
             """
-                import com.google.common.collect.*;
-                
-                import java.util.ArrayList;
-                import java.util.List;
-                
-                class Test {
-                    List<Integer> cardinalsWorldSeries = Lists.newArrayListWithCapacity(2);
-                }
-                """,
+              import com.google.common.collect.*;
+              
+              import java.util.ArrayList;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = Lists.newArrayListWithCapacity(2);
+              }
+              """,
             """
-                import java.util.ArrayList;
-                import java.util.List;
-                
-                class Test {
-                    List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
-                }
-                """)
+              import java.util.ArrayList;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
+              }
+              """)
+        );
+    }
+
+    /**
+     * This test is to show that the `super.visitMethodInvocation` is needed to ensure that nested method invocations are visited.
+     */
+    @Test
+    void showNeedForSuperVisitMethodInvocation() {
+        rewriteRun(
+          //language=java
+          java(
+            """
+              import com.google.common.collect.*;
+              
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = Collections.unmodifiableList(Lists.newArrayList());
+              }
+              """,
+            """
+              import java.util.ArrayList;
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  List<Integer> cardinalsWorldSeries = Collections.unmodifiableList(new ArrayList<>());
+              }
+              """
+          )
         );
     }
 }
