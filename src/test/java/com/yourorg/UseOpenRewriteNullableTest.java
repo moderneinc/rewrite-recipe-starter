@@ -38,6 +38,9 @@ class UseOpenRewriteNullableTest implements RewriteTest {
     @Test
     void replacesNullableAnnotation() {
         rewriteRun(
+          // Composite recipes are a hierarchy of recipes that can be applied in a single pass.
+          // To view what the composite recipe does, you can use the RecipePrinter to print the recipe to the console.
+          spec -> spec.printRecipe(() -> System.out::println),
           //language=java
           java(
             """

@@ -95,6 +95,9 @@ class SimplifyTernaryTest implements RewriteTest {
         );
     }
 
+    /**
+     * It's good practice to also include a test that verifies that the recipe doesn't change anything when it shouldn't.
+     */
     @Test
     void unchanged() {
         rewriteRun(
