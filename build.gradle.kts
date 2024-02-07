@@ -1,10 +1,15 @@
 plugins {
     id("org.openrewrite.build.recipe-library") version "latest.release"
+    id("org.openrewrite.rewrite") version "latest.release"
 }
 
 // Set as appropriate for your organization
 group = "com.yourorg"
 description = "Rewrite recipes."
+
+rewrite {
+    activeRecipe("org.openrewrite.recipes.OpenRewriteBestPractices")
+}
 
 dependencies {
     // The bom version can also be set to a specific version
@@ -28,6 +33,8 @@ dependencies {
 
     // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
+
+    rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
 }
 
 configure<PublishingExtension> {

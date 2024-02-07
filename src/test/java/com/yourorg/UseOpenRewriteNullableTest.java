@@ -16,6 +16,7 @@
 package com.yourorg;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -35,6 +36,7 @@ class UseOpenRewriteNullableTest implements RewriteTest {
           .parser(JavaParser.fromJavaVersion().classpath("annotations", "rewrite-core"));
     }
 
+    @DocumentExample
     @Test
     void replacesNullableAnnotation() {
         rewriteRun(

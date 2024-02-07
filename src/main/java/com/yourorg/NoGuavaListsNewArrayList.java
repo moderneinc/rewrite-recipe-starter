@@ -25,6 +25,7 @@ import org.openrewrite.java.tree.J;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class NoGuavaListsNewArrayList extends Recipe {
+    // These matchers use a syntax described on https://docs.openrewrite.org/reference/method-patterns
     private static final MethodMatcher NEW_ARRAY_LIST = new MethodMatcher("com.google.common.collect.Lists newArrayList()");
     private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
     private static final MethodMatcher NEW_ARRAY_LIST_CAPACITY = new MethodMatcher("com.google.common.collect.Lists newArrayListWithCapacity(int)");
@@ -71,7 +72,6 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
                     // This is a useful debugging tool if you're ever unsure what the visitor is visiting
                     String printed = TreeVisitingPrinter.printTree(cu);
-                    System.out.println(printed);
                     // You must always delegate to the super method to ensure the visitor continues to visit deeper
                     return super.visitCompilationUnit(cu, ctx);
                 }

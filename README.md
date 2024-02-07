@@ -106,3 +106,12 @@ Run the release action to publish a release version of a recipe.
 To build a snapshot, run `./gradlew snapshot publish` to build a snapshot and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
 
 To build a release, run `./gradlew final publish` to tag a release and publish it to Moderne's open artifact repository for inclusion at [app.moderne.io](https://app.moderne.io).
+
+
+## Applyng OpenRewrite recipe development best practices
+
+We maintain a collection of recipes that together form a comprehensive set of [best practices for writing OpenRewrite recipes](https://github.com/openrewrite/rewrite-recommendations/).
+You can apply these recommendations to your recipe by running the following command:
+```bash
+./gradlew rewriteRun
+```

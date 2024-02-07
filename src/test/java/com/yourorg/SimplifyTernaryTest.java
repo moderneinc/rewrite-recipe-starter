@@ -33,7 +33,6 @@ class SimplifyTernaryTest implements RewriteTest {
         spec.recipe(new SimplifyTernaryRecipes());
     }
 
-    @DocumentExample
     @Test
     void simplified() {
         rewriteRun(
