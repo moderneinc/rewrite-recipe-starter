@@ -9,11 +9,6 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
-// Configures the OpenRewriteBestPractices recipe to run by default with `./gradlew rewriteRun`
-rewrite {
-    activeRecipe("org.openrewrite.recipes.OpenRewriteBestPractices")
-}
-
 dependencies {
     // The bom version can also be set to a specific version
     // https://github.com/openrewrite/rewrite-recipe-bom/releases
