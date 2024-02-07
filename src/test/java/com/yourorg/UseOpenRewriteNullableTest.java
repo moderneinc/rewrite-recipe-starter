@@ -23,9 +23,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-/**
- * This is a test for the UseOpenRewriteNullable recipe, as an example of how to write a test for a declarative recipe.
- */
+// This is a test for the UseOpenRewriteNullable recipe, as an example of how to write a test for a declarative recipe.
 class UseOpenRewriteNullableTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {

@@ -68,14 +68,18 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .imports("java.util.ArrayList")
                     .build();
 
+                // This method override is only here to show how to print the AST for debugging purposes.
+                // You can remove this method if you don't need it.
                 @Override
                 public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
                     // This is a useful debugging tool if you're ever unsure what the visitor is visiting
                     String printed = TreeVisitingPrinter.printTree(cu);
+                    System.out.println(printed);
                     // You must always delegate to the super method to ensure the visitor continues to visit deeper
                     return super.visitCompilationUnit(cu, ctx);
                 }
 
+                // Visit any method invocation, and replace matches with the new ArrayList instantiation.
                 @Override
                 public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                     if (NEW_ARRAY_LIST.matches(method)) {

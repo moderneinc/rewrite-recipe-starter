@@ -22,9 +22,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-/**
- * This is a test for the SimplifyTernary recipe, as an example of how to write a test for a Refaster style recipe.
- */
+// This is a test for the SimplifyTernary recipe, as an example of how to write a test for a Refaster style recipe.
 class SimplifyTernaryTest implements RewriteTest {
 
     @Override
@@ -95,9 +93,7 @@ class SimplifyTernaryTest implements RewriteTest {
         );
     }
 
-    /**
-     * It's good practice to also include a test that verifies that the recipe doesn't change anything when it shouldn't.
-     */
+    // It's good practice to also include a test that verifies that the recipe doesn't change anything when it shouldn't.
     @Test
     void unchanged() {
         rewriteRun(

@@ -23,9 +23,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-/**
- * This is a test for the NoGuavaListsNewArrayList recipe, as an example of how to write a test for an imperative recipe.
- */
+// This is a test for the NoGuavaListsNewArrayList recipe, as an example of how to write a test for an imperative recipe.
 class NoGuavaListsNewArrayListTest implements RewriteTest {
 
     // Note, you can define defaults for the RecipeSpec and these defaults will be used for all tests.
@@ -129,9 +127,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
         );
     }
 
-    /**
-     * This test is to show that the `super.visitMethodInvocation` is needed to ensure that nested method invocations are visited.
-     */
+    // This test is to show that the `super.visitMethodInvocation` is needed to ensure that nested method invocations are visited.
     @Test
     void showNeedForSuperVisitMethodInvocation() {
         rewriteRun(
