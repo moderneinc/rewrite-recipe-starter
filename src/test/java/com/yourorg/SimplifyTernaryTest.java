@@ -34,6 +34,7 @@ class SimplifyTernaryTest implements RewriteTest {
     }
 
     @Test
+    @DocumentExample
     void simplified() {
         rewriteRun(
           //language=java

@@ -1,5 +1,7 @@
 plugins {
     id("org.openrewrite.build.recipe-library") version "latest.release"
+
+    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes
     id("org.openrewrite.rewrite") version "latest.release"
 }
 
@@ -7,6 +9,7 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
+// Configures the OpenRewriteBestPractices recipe to run by default with `./gradlew rewriteRun`
 rewrite {
     activeRecipe("org.openrewrite.recipes.OpenRewriteBestPractices")
 }
@@ -34,6 +37,7 @@ dependencies {
     // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
 
+    // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
     rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
 }
 
