@@ -68,6 +68,15 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .build();
 
                 @Override
+                public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
+                    // This is a useful debugging tool if you're ever unsure what the visitor is visiting
+                    String printed = TreeVisitingPrinter.printTree(cu);
+                    System.out.println(printed);
+                    // You must always delegate to the super method to ensure the visitor continues to visit deeper
+                    return super.visitCompilationUnit(cu, ctx);
+                }
+
+                @Override
                 public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                     if (NEW_ARRAY_LIST.matches(method)) {
                         maybeRemoveImport("com.google.common.collect.Lists");
