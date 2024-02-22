@@ -31,6 +31,8 @@ dependencies {
     implementation("org.assertj:assertj-core:3.24.2")
     runtimeOnly("org.openrewrite:rewrite-java-17")
 
+    implementation("org.projectlombok:lombok:1.18.32")
+
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
     annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
@@ -47,6 +49,7 @@ dependencies {
     testRuntimeOnly("com.google.guava:guava:latest.release")
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
+    testImplementation("org.projectlombok:lombok:1.18.32")
 
     // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
     rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")

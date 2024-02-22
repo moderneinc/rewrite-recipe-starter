@@ -60,7 +60,7 @@ In the pom.xml of a different project you wish to test your recipe out in, make 
                 <version>RELEASE</version>
                 <configuration>
                     <activeRecipes>
-                        <recipe>io.github.timoa.NoGuavaListsNewArrayList</recipe>
+                        <recipe>io.github.timoa.ConvertToNoArgsConstructor</recipe>
                     </activeRecipes>
                 </configuration>
                 <dependencies>
@@ -95,7 +95,7 @@ dependencies {
 }
 
 rewrite {
-    activeRecipe("io.github.timoa.NoGuavaListsNewArrayList")
+    activeRecipe("io.github.timoa.ConvertToNoArgsConstructor")
 }
 ```
 
