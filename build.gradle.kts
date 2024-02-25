@@ -1,7 +1,8 @@
 plugins {
     id("org.openrewrite.build.recipe-library") version "latest.release"
 
-    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes
+    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
+    // ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
     id("org.openrewrite.rewrite") version "latest.release"
 }
 

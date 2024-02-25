@@ -17,8 +17,14 @@ package com.yourorg;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import org.openrewrite.*;
-import org.openrewrite.java.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Preconditions;
+import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.JavaTemplate;
+import org.openrewrite.java.JavaVisitor;
+import org.openrewrite.java.MethodMatcher;
+import org.openrewrite.java.TreeVisitingPrinter;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 
@@ -45,61 +51,61 @@ public class NoGuavaListsNewArrayList extends Recipe {
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return Preconditions.check(
-            // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe
-            // .getVisitor() being applied
-            // No changes made by the preconditions check will be kept
-            Preconditions.or(new UsesMethod<>(NEW_ARRAY_LIST),
-                new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
-                new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)),
-            // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
-            // its visitor
-            new JavaVisitor<ExecutionContext>() {
-                private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
-                    .imports("java.util.ArrayList")
-                    .build();
+                // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe
+                // .getVisitor() being applied
+                // No changes made by the preconditions check will be kept
+                Preconditions.or(new UsesMethod<>(NEW_ARRAY_LIST),
+                        new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
+                        new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)),
+                // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
+                // its visitor
+                new JavaVisitor<ExecutionContext>() {
+                    private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
+                            .imports("java.util.ArrayList")
+                            .build();
 
-                private final JavaTemplate newArrayListIterable =
-                    JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
-                    .imports("java.util.ArrayList")
-                    .build();
+                    private final JavaTemplate newArrayListIterable =
+                            JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
+                                    .imports("java.util.ArrayList")
+                                    .build();
 
-                private final JavaTemplate newArrayListCapacity =
-                    JavaTemplate.builder("new ArrayList<>(#{any(int)})")
-                    .imports("java.util.ArrayList")
-                    .build();
+                    private final JavaTemplate newArrayListCapacity =
+                            JavaTemplate.builder("new ArrayList<>(#{any(int)})")
+                                    .imports("java.util.ArrayList")
+                                    .build();
 
-                // This method override is only here to show how to print the AST for debugging purposes.
-                // You can remove this method if you don't need it.
-                @Override
-                public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
-                    // This is a useful debugging tool if you're ever unsure what the visitor is visiting
-                    String printed = TreeVisitingPrinter.printTree(cu);
-                    System.out.println(printed);
-                    // You must always delegate to the super method to ensure the visitor continues to visit deeper
-                    return super.visitCompilationUnit(cu, ctx);
-                }
-
-                // Visit any method invocation, and replace matches with the new ArrayList instantiation.
-                @Override
-                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
-                    if (NEW_ARRAY_LIST.matches(method)) {
-                        maybeRemoveImport("com.google.common.collect.Lists");
-                        maybeAddImport("java.util.ArrayList");
-                        return newArrayList.apply(getCursor(), method.getCoordinates().replace());
-                    } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
-                        maybeRemoveImport("com.google.common.collect.Lists");
-                        maybeAddImport("java.util.ArrayList");
-                        return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
-                            method.getArguments().get(0));
-                    } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
-                        maybeRemoveImport("com.google.common.collect.Lists");
-                        maybeAddImport("java.util.ArrayList");
-                        return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
-                            method.getArguments().get(0));
+                    // This method override is only here to show how to print the AST for debugging purposes.
+                    // You can remove this method if you don't need it.
+                    @Override
+                    public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
+                        // This is a useful debugging tool if you're ever unsure what the visitor is visiting
+                        String printed = TreeVisitingPrinter.printTree(cu);
+                        System.out.printf(printed);
+                        // You must always delegate to the super method to ensure the visitor continues to visit deeper
+                        return super.visitCompilationUnit(cu, ctx);
                     }
-                    return super.visitMethodInvocation(method, ctx);
+
+                    // Visit any method invocation, and replace matches with the new ArrayList instantiation.
+                    @Override
+                    public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
+                        if (NEW_ARRAY_LIST.matches(method)) {
+                            maybeRemoveImport("com.google.common.collect.Lists");
+                            maybeAddImport("java.util.ArrayList");
+                            return newArrayList.apply(getCursor(), method.getCoordinates().replace());
+                        } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
+                            maybeRemoveImport("com.google.common.collect.Lists");
+                            maybeAddImport("java.util.ArrayList");
+                            return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
+                                    method.getArguments().get(0));
+                        } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
+                            maybeRemoveImport("com.google.common.collect.Lists");
+                            maybeAddImport("java.util.ArrayList");
+                            return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
+                                    method.getArguments().get(0));
+                        }
+                        return super.visitMethodInvocation(method, ctx);
+                    }
                 }
-            }
         );
     }
 }
