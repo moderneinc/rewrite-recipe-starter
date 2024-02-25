@@ -16,6 +16,7 @@ dependencies {
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
 
     implementation("org.openrewrite:rewrite-java")
+    implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite:rewrite-yaml")
     implementation("org.assertj:assertj-core:3.24.2")
     runtimeOnly("org.openrewrite:rewrite-java-17")
@@ -34,6 +35,8 @@ dependencies {
 
     // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
+    testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
+    testRuntimeOnly("org.springframework:spring-core:latest.release")
 
     // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
     rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
