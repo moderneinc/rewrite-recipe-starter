@@ -23,8 +23,9 @@ import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 
 @Value
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 public class NoGuavaListsNewArrayList extends Recipe {
+    // These matchers use a syntax described on https://docs.openrewrite.org/reference/method-patterns
     private static final MethodMatcher NEW_ARRAY_LIST = new MethodMatcher("com.google.common.collect.Lists newArrayList()");
     private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
     private static final MethodMatcher NEW_ARRAY_LIST_CAPACITY = new MethodMatcher("com.google.common.collect.Lists newArrayListWithCapacity(int)");
@@ -67,8 +68,20 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .imports("java.util.ArrayList")
                     .build();
 
+                // This method override is only here to show how to print the AST for debugging purposes.
+                // You can remove this method if you don't need it.
                 @Override
-                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
+                public J visitCompilationUnit(J.CompilationUnit cu, ExecutionContext ctx) {
+                    // This is a useful debugging tool if you're ever unsure what the visitor is visiting
+                    String printed = TreeVisitingPrinter.printTree(cu);
+                    System.out.println(printed);
+                    // You must always delegate to the super method to ensure the visitor continues to visit deeper
+                    return super.visitCompilationUnit(cu, ctx);
+                }
+
+                // Visit any method invocation, and replace matches with the new ArrayList instantiation.
+                @Override
+                public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                     if (NEW_ARRAY_LIST.matches(method)) {
                         maybeRemoveImport("com.google.common.collect.Lists");
                         maybeAddImport("java.util.ArrayList");
@@ -84,7 +97,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                         return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
                             method.getArguments().get(0));
                     }
-                    return super.visitMethodInvocation(method, executionContext);
+                    return super.visitMethodInvocation(method, ctx);
                 }
             }
         );
