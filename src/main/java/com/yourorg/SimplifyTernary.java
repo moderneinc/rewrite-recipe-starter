@@ -55,6 +55,7 @@ public class SimplifyTernary {
 
         @AfterTemplate
         boolean after(boolean expr) {
+            // We wrap the expression in parentheses as the input expression might be a complex expression
             return !(expr);
         }
     }

@@ -1,7 +1,8 @@
 plugins {
     id("org.openrewrite.build.recipe-library") version "latest.release"
 
-    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes
+    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
+    // ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
     id("org.openrewrite.rewrite") version "latest.release"
 }
 
@@ -15,6 +16,8 @@ dependencies {
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
 
     implementation("org.openrewrite:rewrite-java")
+    implementation("org.openrewrite:rewrite-yaml")
+    implementation("org.assertj:assertj-core:3.24.2")
     runtimeOnly("org.openrewrite:rewrite-java-17")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes

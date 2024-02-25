@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// We annotate the package to indicate that fields and methods in this package are non-null by default.
 @NonNullApi
 @NonNullFields
 package com.yourorg;
