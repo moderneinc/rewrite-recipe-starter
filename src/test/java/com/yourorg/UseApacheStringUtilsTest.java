@@ -16,19 +16,21 @@
 package com.yourorg;
 
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-public class UseApacheStringUtilsTest implements RewriteTest {
+class UseApacheStringUtilsTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipeFromResources("com.yourorg.UseApacheStringUtils")
           .parser(JavaParser.fromJavaVersion().classpath("commons-lang3", "spring-core"));
     }
 
+    @DocumentExample
     @Test
     void replacesStringEquals() {
         rewriteRun(
