@@ -25,11 +25,15 @@ jobs:
           java-version: 17
 
       - name: publish-candidate
+        uses: gradle/actions/setup-gradle@v3
         if: contains(github.ref, '-rc.')
         timeout-minutes: 30
-        run: ./gradlew ${GRADLE_SWITCHES} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true candidate publish
+        with:
+          arguments: ${{ env.GRADLE_SWITCHES }} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true candidate publish
 
       - name: publish-release
+        uses: gradle/actions/setup-gradle@v3
         if: (!contains(github.ref, '-rc.'))
         timeout-minutes: 30
-        run: ./gradlew ${GRADLE_SWITCHES} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true final publish
+        with:
+          arguments: ${{ env.GRADLE_SWITCHES }} -Preleasing -Prelease.disableGitChecks=true -Prelease.useLastTag=true final publish

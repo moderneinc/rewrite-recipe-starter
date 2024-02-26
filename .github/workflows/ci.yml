@@ -35,7 +35,7 @@ jobs:
       - name: build
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: ${GRADLE_SWITCHES} build test
+          arguments: ${{ env.GRADLE_SWITCHES }} build test
 
   publish-snapshots:
     needs: [build]
@@ -55,4 +55,4 @@ jobs:
         if: github.event_name == 'push'
         timeout-minutes: 30
         with:
-          arguments: ${GRADLE_SWITCHES} snapshot
+          arguments: ${{ env.GRADLE_SWITCHES }} snapshot
