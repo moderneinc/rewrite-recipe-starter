@@ -37,7 +37,7 @@ jobs:
         with:
           arguments: ${{ env.GRADLE_SWITCHES }} build test
       - name: verify
-        run: mvn verify
+        run: mvn verify --batch-mode
 
   publish-snapshots:
     needs: [build]
