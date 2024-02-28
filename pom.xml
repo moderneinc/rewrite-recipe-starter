@@ -85,7 +85,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>LATEST</version>
+            <version>5.2.24.RELEASE</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
