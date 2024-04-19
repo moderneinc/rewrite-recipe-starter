@@ -51,7 +51,7 @@ public class UpdateConcoursePipeline extends Recipe {
                     @Override
                     public Yaml.Mapping.Entry visitMappingEntry(Yaml.Mapping.Entry entry, ExecutionContext ctx) {
                         Yaml.Mapping.Entry e = super.visitMappingEntry(entry, ctx);
-                        if (e.getKey().getValue().equals("source")) {
+                        if ("source".equals(e.getKey().getValue())) {
                             Yaml.Block value = e.getValue();
                             if (!(value instanceof Yaml.Mapping)) {
                                 return e;
