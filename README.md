@@ -131,8 +131,12 @@ To build a release, run `./gradlew final publish` to tag a release and publish i
 
 ## Applying OpenRewrite recipe development best practices
 
-We maintain a collection of [best practices for writing OpenRewrite recipes](https://github.com/openrewrite/rewrite-recommendations/).
+We maintain a collection of [best practices for writing OpenRewrite recipes](https://docs.openrewrite.org/recipes/recipes/openrewritebestpractices).
 You can apply these recommendations to your recipes by running the following command:
 ```bash
 ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
+```
+or
+```bash
+mvn -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-recommendations:RELEASE -Drewrite.activeRecipes=org.openrewrite.recipes.OpenRewriteBestPractices
 ```
