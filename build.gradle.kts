@@ -1,5 +1,14 @@
 plugins {
-    id("org.openrewrite.build.recipe-library") version "latest.release"
+    id("org.openrewrite.build.recipe-library-base") version "latest.release"
+
+    // This uses the nexus publishing plugin to publish to the moderne-dev repository
+    // Remove it if you prefer to publish by other means
+    id("org.openrewrite.build.publish") version "latest.release"
+
+    // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
+    // If you are operating in an environment where public repositories are not accessible, we recommend using a
+    // virtual repository which mirrors both maven central and nexus snapshots.
+    id("org.openrewrite.build.recipe-repositories") version "latest.release"
 
     // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
     // ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
