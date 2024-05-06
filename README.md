@@ -43,6 +43,7 @@ To do this on the command line, run:
 ```bash
 ./gradlew publishToMavenLocal
 # or ./gradlew pTML
+# or mvn install
 ```
 This will publish to your local maven repository, typically under `~/.m2/repository`.
 
