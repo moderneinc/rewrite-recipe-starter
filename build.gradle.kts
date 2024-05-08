@@ -17,7 +17,7 @@ plugins {
 }
 
 // Set as appropriate for your organization
-group = "com.yourorg"
+group = "io.github.timo-a"
 description = "Rewrite recipes."
 
 dependencies {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yourorg;
+package io.github.timoa;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;

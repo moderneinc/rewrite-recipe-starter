@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yourorg;
+package io.github.timoa;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
@@ -29,7 +29,7 @@ class UseOpenRewriteNullableTest implements RewriteTest {
     public void defaults(RecipeSpec spec) {
         spec
           // Use the fully qualified class name of the recipe defined in src/main/resources/META-INF/rewrite/rewrite.yml
-          .recipeFromResources("com.yourorg.UseOpenRewriteNullable")
+          .recipeFromResources("io.github.timoa.UseOpenRewriteNullable")
           // The before and after text blocks contain references to annotations from these two classpath entries
           .parser(JavaParser.fromJavaVersion().classpath("annotations", "rewrite-core"));
     }

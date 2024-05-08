@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@NonNullApi
-@NonNullFields
-package com.yourorg;
 
 // We annotate the package to indicate that fields and methods in this package are non-null by default.
 import org.openrewrite.internal.lang.NonNullApi;

@@ -13,44 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yourorg;
+package io.github.timoa;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
+import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 import java.nio.file.Paths;
 
-import static org.openrewrite.yaml.Assertions.yaml;
+import static org.openrewrite.test.SourceSpecs.text;
 
-class UpdateConcoursePipelineTest implements RewriteTest {
+class AppendToReleaseNotesTest implements RewriteTest {
+    @Override
+    public void defaults(RecipeSpec spec) {
+        spec.recipe(new AppendToReleaseNotes("Hello world"));
+    }
+
+    @Test
+    void createNewReleaseNotes() {
+        rewriteRun(
+          text(null,
+            """
+              Hello world
+              """
+          )
+        );
+    }
 
     @DocumentExample
     @Test
-    void updateTagFilter() {
+    void editExistingReleaseNotes() {
         rewriteRun(
-          spec -> spec.recipe(new UpdateConcoursePipeline("8.2.0")),
-          //language=yaml
-          yaml(
+          text(
             """
-              ---
-              resources:
-                - name: tasks
-                  type: git
-                  source:
-                    uri: git@github.com:Example/concourse-tasks.git
-                    tag_filter: 8.1.0
+              You say goodbye, I say
               """,
             """
-              ---
-              resources:
-                - name: tasks
-                  type: git
-                  source:
-                    uri: git@github.com:Example/concourse-tasks.git
-                    tag_filter: 8.2.0
-                """,
-            spec -> spec.path(Paths.get("ci/pipeline.yml"))
+              You say goodbye, I say
+              Hello world
+              """,
+            spec -> spec.path(Paths.get("RELEASE.md")
+            )
           )
         );
     }

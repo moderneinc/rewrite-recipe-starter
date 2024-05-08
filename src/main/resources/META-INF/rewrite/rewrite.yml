@@ -23,7 +23,7 @@
 # You can also have multiple files in `src/main/resources/META-INF/rewrite`, each containing one or more recipes.
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: com.yourorg.UseOpenRewriteNullable
+name: io.github.timoa.UseOpenRewriteNullable
 displayName: Prefer OpenRewrite Nullable
 description: Replaces JetBrains Nullable with OpenRewrite Nullable.
 recipeList:

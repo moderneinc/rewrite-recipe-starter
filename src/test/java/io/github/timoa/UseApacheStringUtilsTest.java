@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.yourorg;
+package io.github.timoa;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
@@ -26,7 +26,7 @@ import static org.openrewrite.java.Assertions.java;
 class UseApacheStringUtilsTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipeFromResources("com.yourorg.UseApacheStringUtils")
+        spec.recipeFromResources("io.github.timoa.UseApacheStringUtils")
           .parser(JavaParser.fromJavaVersion().classpath("commons-lang3", "spring-core"));
     }
 
