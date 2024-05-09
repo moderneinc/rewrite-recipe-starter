@@ -19,8 +19,14 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-private-key: ${{ secrets.GPG_SIGNING_KEY }}
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
+      - name: Compute version
+        #removes leading v from tag https://stackoverflow.com/a/73467112
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        id: split
+        run: echo "::set-output name=version::${TAG##v}"
       - name: Set version
-        run: mvn versions:set -DnewVersion=${{ github.event.release.tag_name }}
+        run: mvn versions:set -DnewVersion=${{ steps.split.outputs.version }}
       - name: Publish package
         run: mvn -P release --batch-mode deploy -DskipTests
         env:
