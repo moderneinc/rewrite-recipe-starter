@@ -220,4 +220,29 @@
         </profile>
     </profiles>
 
+    <description>A collection of my own open rewrite recipes</description>
+    <url>https://github.com/timo-a/rewrite-recipe-starter</url>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Timo Abele</name>
+            <email>timo.abele@gmx.net</email>
+            <organization>None</organization>
+            <organizationUrl>https://github.com/timo-a</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/timo-a/rewrite-recipe-starter.git</connection>
+        <developerConnection>scm:git:ssh://github.com:timo-a/rewrite-recipe-starter.git</developerConnection>
+        <url>https://github.com/timo-a/rewrite-recipe-starter/tree/main</url>
+    </scm>
+
 </project>
