@@ -24,9 +24,9 @@ jobs:
         env:
           TAG: ${{ github.event.release.tag_name }}
         id: split
-        run: echo "::set-output name=version::${TAG##v}"
+        run: echo "VERSION=${TAG##v}" >> $GITHUB_OUTPUT
       - name: Set version
-        run: mvn versions:set -DnewVersion=${{ steps.split.outputs.version }}
+        run: mvn versions:set -DnewVersion=${{ steps.split.outputs.VERSION }}
       - name: Publish package
         run: mvn -P release --batch-mode deploy -DskipTests
         env:
