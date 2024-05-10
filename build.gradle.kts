@@ -2,8 +2,9 @@ plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
 
     // This uses the nexus publishing plugin to publish to the moderne-dev repository
-    // Remove it if you prefer to publish by other means
+    // Remove it if you prefer to publish by other means, such as the maven-publish plugin
     id("org.openrewrite.build.publish") version "latest.release"
+    id("nebula.release") version "latest.release"
 
     // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
@@ -49,6 +50,16 @@ dependencies {
 
     // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
     rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
+}
+
+signing {
+    // To enable signing have your CI workflow set the "signingKey" and "signingPassword" Gradle project properties
+    isRequired = false
+}
+
+// Use maven-style "SNAPSHOT" versioning for non-release builds
+configure<nebula.plugin.release.git.base.ReleasePluginExtension> {
+    defaultVersionStrategy = nebula.plugin.release.NetflixOssStrategies.SNAPSHOT(project)
 }
 
 configure<PublishingExtension> {
