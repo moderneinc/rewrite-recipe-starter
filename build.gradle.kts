@@ -2,8 +2,9 @@ plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
 
     // This uses the nexus publishing plugin to publish to the moderne-dev repository
-    // Remove it if you prefer to publish by other means
-    id("org.openrewrite.build.publish") version "latest.release"
+    // Use it instead of maven-publish if you want to use the same publishing conventions as OpenRewrite
+    // id("org.openrewrite.build.publish") version "latest.release"
+    id("maven-publish")
 
     // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
@@ -27,7 +28,7 @@ dependencies {
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite:rewrite-yaml")
-    implementation("org.assertj:assertj-core:3.24.2")
+    implementation("org.assertj:assertj-core:3.25.3")
     runtimeOnly("org.openrewrite:rewrite-java-17")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
@@ -49,21 +50,4 @@ dependencies {
 
     // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
     rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
-}
-
-configure<PublishingExtension> {
-    publications {
-        named("nebula", MavenPublication::class.java) {
-            suppressPomMetadataWarningsFor("runtimeElements")
-        }
-    }
-}
-
-publishing {
-  repositories {
-      maven {
-          name = "moderne"
-          url = uri("https://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
-      }
-  }
 }
