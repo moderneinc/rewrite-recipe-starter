@@ -39,3 +39,22 @@ jobs:
       - name: verify
         run: mvn --show-version --no-transfer-progress --update-snapshots --fail-at-end --batch-mode -Dstyle.color=always verify
 
+  publish-snapshots:
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: set-up-jdk
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: 17
+      - name: publish-snapshots
+        uses: gradle/actions/setup-gradle@v3
+        if: github.event_name == 'push'
+        timeout-minutes: 30
+        with:
+          arguments: ${{ env.GRADLE_SWITCHES }} snapshot
