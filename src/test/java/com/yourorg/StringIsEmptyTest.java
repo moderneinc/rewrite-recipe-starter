@@ -17,6 +17,7 @@ package com.yourorg;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.Recipe;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -35,6 +36,7 @@ class StringIsEmptyTest implements RewriteTest {
         //spec.recipe(new StringIsEmptyRecipe());
     }
 
+    @DocumentExample
     @Test
     void standardizeStringIsEmpty() {
         // Notice how we pass in both the "before" and "after" code snippets
