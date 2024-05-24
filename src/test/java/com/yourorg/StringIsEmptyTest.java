@@ -76,6 +76,52 @@ class StringIsEmptyTest implements RewriteTest {
     }
 
     @Test
+    void showStringTypeMatchAndSimplification() {
+        // Notice how the recipe will match anything that is of type String, not just local variables
+        // Take a closer look at the last two replacements to `true` and `false`.
+        // Open up the generated recipe and see if you can work out why those are replaced with booleans!
+        rewriteRun(
+          //language=java
+          java(
+            """
+              class A {
+                  String field;
+              
+                  String methodCall() {
+                      return "Hello World";
+                  }
+              
+                  void test(String argument) {
+                      boolean bool1 = field.length() == 0;
+                      boolean bool2 = methodCall().length() == 0;
+                      boolean bool3 = argument.length() == 0;
+                      boolean bool4 = "".length() == 0;
+                      boolean bool5 = "literal".length() == 0;
+                  }
+              }
+              """,
+            """
+              class A {
+                  String field;
+              
+                  String methodCall() {
+                      return "Hello World";
+                  }
+              
+                  void test(String argument) {
+                      boolean bool1 = field.isEmpty();
+                      boolean bool2 = methodCall().isEmpty();
+                      boolean bool3 = argument.isEmpty();
+                      boolean bool4 = true;
+                      boolean bool5 = false;
+                  }
+              }
+              """
+          )
+        );
+    }
+
+    @Test
     void doNothingForStringIsEmpty() {
         // Notice how we only pass in the "before" code snippet, and not the "after" code snippet
         // That indicates that we expect the recipe to do nothing in this case, and will fail if it does anything
@@ -112,13 +158,13 @@ class StringIsEmptyTest implements RewriteTest {
     }
 
     @Test
-    void recipeDocumentation(){
+    void recipeDocumentation() {
         // This is a test to validate the correctness of the documentation in the recipe
         // By default you get generated documentation, but you can customize it through the RecipeDescriptor annotation
         Recipe recipe = null; // TODO: = new StringIsEmptyRecipe();
         String displayName = recipe.getDisplayName();
         String description = recipe.getDescription();
-        assert "Standardize empty String checks".equals(displayName): displayName;
-        assert "Replace calls to `String.length() == 0` with `String.isEmpty()`.".equals(description): description;
+        assert "Standardize empty String checks".equals(displayName) : displayName;
+        assert "Replace calls to `String.length() == 0` with `String.isEmpty()`.".equals(description) : description;
     }
 }
