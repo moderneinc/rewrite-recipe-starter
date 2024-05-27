@@ -32,11 +32,16 @@ class AppendToReleaseNotesTest implements RewriteTest {
 
     @Test
     void createNewReleaseNotes() {
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
-          text(null,
+          text(
+            null,
             """
               Hello world
-              """
+              """,
+            spec -> spec.path(Paths.get("RELEASE.md")
+            )
           )
         );
     }
@@ -44,6 +49,7 @@ class AppendToReleaseNotesTest implements RewriteTest {
     @DocumentExample
     @Test
     void editExistingReleaseNotes() {
+        // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
           text(
             """
