@@ -19,6 +19,7 @@ import com.google.errorprone.refaster.annotation.AfterTemplate;
 import com.google.errorprone.refaster.annotation.BeforeTemplate;
 import org.openrewrite.java.template.RecipeDescriptor;
 
+@SuppressWarnings({"SimplifiableConditionalExpression", "unused"})
 @RecipeDescriptor(
         name = "Simplify ternary expressions",
         description = "Simplifies various types of ternary expressions to improve code readability."
