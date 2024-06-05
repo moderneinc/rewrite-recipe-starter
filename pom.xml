@@ -24,7 +24,7 @@
         <dependency>
             <groupId>com.google.errorprone</groupId>
             <artifactId>error_prone_core</artifactId>
-            <version>2.27.1</version>
+            <version>2.28.0</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.2.0-jre</version>
+            <version>33.2.1-jre</version>
             <scope>test</scope>
         </dependency>
 
