@@ -24,7 +24,7 @@ import org.openrewrite.java.template.RecipeDescriptor;
         name = "Simplify ternary expressions",
         description = "Simplifies various types of ternary expressions to improve code readability."
 )
-public class SimplifyTernary {
+public class SimplifyTernary { // This class should not extend Recipe; a generated class will extend Recipe instead
 
     @RecipeDescriptor(
             name = "Replace `booleanExpression ? true : false` with `booleanExpression`",
