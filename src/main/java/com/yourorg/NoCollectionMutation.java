@@ -100,8 +100,8 @@ public class NoCollectionMutation extends Recipe {
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         JavaVisitor<ExecutionContext> addDefensiveCopy = new JavaVisitor<ExecutionContext>() {
             @Override
-            public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext executionContext) {
-                J j = super.visitMethodInvocation(method, executionContext);
+            public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
+                J j = super.visitMethodInvocation(method, ctx);
                 if (!(j instanceof J.MethodInvocation)) {
                     return j;
                 }
