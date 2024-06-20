@@ -4,3 +4,5 @@ target/
 .idea/
 out/
 src/main/generated/
+.vscode/
+*.iml
