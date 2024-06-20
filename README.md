@@ -50,7 +50,7 @@ To do this on the command line, using `gradle`, run:
 To publish using maven, run:
 
 ```bash
-./mvn install
+./mvnw install
 ```
 
 This will publish to your local maven repository, typically under `~/.m2/repository`.
@@ -148,5 +148,5 @@ You can apply these recommendations to your recipes by running the following com
 ```
 or
 ```bash
-mvn -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-recommendations:RELEASE -Drewrite.activeRecipes=org.openrewrite.recipes.OpenRewriteBestPractices
+./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-recommendations:RELEASE -Drewrite.activeRecipes=org.openrewrite.recipes.OpenRewriteBestPractices
 ```
