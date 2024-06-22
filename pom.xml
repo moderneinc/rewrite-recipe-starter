@@ -192,6 +192,7 @@
                             </artifactItems>
                             <outputDirectory>${project.basedir}/src/main/resources/META-INF/rewrite/classpath</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
+                            <skip>true</skip>   <!-- ← Disabled for now, remove this line to activate it -->
                         </configuration>
                     </execution>
                 </executions>
