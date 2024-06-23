@@ -192,6 +192,8 @@
                             </artifactItems>
                             <outputDirectory>${project.basedir}/src/main/resources/META-INF/rewrite/classpath</outputDirectory>
                             <overWriteSnapshots>true</overWriteSnapshots>
+                            <!-- Configure and enable plugin when you use `classpathFromResources` in `JavaTemplate` -->
+                            <skip>true</skip>
                         </configuration>
                     </execution>
                 </executions>
