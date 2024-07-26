@@ -80,7 +80,7 @@ public class UpdateConcoursePipeline extends Recipe {
                             if (version.equals(tagFilterValue.getValue())) {
                                 return e;
                             }
-                            return (Yaml.Mapping.Entry) new ChangePropertyValue("source.tag_filter", version, null, null, null)
+                            return (Yaml.Mapping.Entry) new ChangePropertyValue("source.tag_filter", version, null, null, null, null)
                                     .getVisitor()
                                     .visitNonNull(e, ctx);
                         }
