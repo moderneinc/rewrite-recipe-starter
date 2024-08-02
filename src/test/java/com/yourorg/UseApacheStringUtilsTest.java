@@ -27,7 +27,9 @@ class UseApacheStringUtilsTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipeFromResources("com.yourorg.UseApacheStringUtils")
-          .parser(JavaParser.fromJavaVersion().classpath("commons-lang3", "spring-core"));
+          // Notice how we only pass in `spring-core` as the classpath, but not `commons-lang3`.
+          // That's because we only need dependencies to compile the before code blocks, not the after code blocks.
+          .parser(JavaParser.fromJavaVersion().classpath("spring-core"));
     }
 
     @DocumentExample
@@ -38,7 +40,7 @@ class UseApacheStringUtilsTest implements RewriteTest {
           java(
             """
               import org.springframework.util.StringUtils;
-              
+
               class A {
                   boolean test(String s) {
                       return StringUtils.containsWhitespace(s);
@@ -47,13 +49,34 @@ class UseApacheStringUtilsTest implements RewriteTest {
               """,
             """
               import org.apache.commons.lang3.StringUtils;
-              
+
               class A {
                   boolean test(String s) {
                       return StringUtils.containsWhitespace(s);
                   }
               }
               """
+          )
+        );
+    }
+
+    @Test
+    void noChangeWhenAlreadyUsingCommonsLang3() {
+        rewriteRun(
+          // By passing in `commons-lang3` as the classpath here, we ensure that the before code block compiles.
+          spec -> spec.parser(JavaParser.fromJavaVersion().classpath("commons-lang3")),
+          //language=java
+          java(
+            """
+              import org.apache.commons.lang3.StringUtils;
+
+              class A {
+                  boolean test(String s) {
+                      return StringUtils.containsWhitespace(s);
+                  }
+              }
+              """
+            // The absence of a second argument to `java` indicates that the after code block should be the same as the before code block.
           )
         );
     }
