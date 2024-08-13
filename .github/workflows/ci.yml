@@ -26,14 +26,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: gradle/actions/wrapper-validation@v3
+      - uses: gradle/actions/wrapper-validation@v4
       - name: set-up-jdk
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 17
       - name: build
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           arguments: ${{ env.GRADLE_SWITCHES }} build test
       - name: verify
@@ -53,7 +53,7 @@ jobs:
           distribution: zulu
           java-version: 17
       - name: publish-snapshots
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         if: github.event_name == 'push'
         timeout-minutes: 30
         with:
