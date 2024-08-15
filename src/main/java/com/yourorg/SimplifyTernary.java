@@ -57,7 +57,7 @@ public class SimplifyTernary { // This class should not extend Recipe; a generat
         @AfterTemplate
         boolean after(boolean expr) {
             // We wrap the expression in parentheses as the input expression might be a complex expression
-            return !(expr);
+            return !expr;
         }
     }
 }
