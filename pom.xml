@@ -205,7 +205,7 @@
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>5.34.1</version>
+                <version>5.39.1</version>
                 <configuration>
                     <failOnDryRunResults>true</failOnDryRunResults>
                 </configuration>
@@ -213,7 +213,7 @@
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
                         <artifactId>rewrite-recommendations</artifactId>
-                        <version>1.6.1</version>
+                        <version>1.8.4</version>
                     </dependency>
                 </dependencies>
             </plugin>
