@@ -54,7 +54,8 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 // Any change to the AST made by the preconditions check will lead to the visitor returned by Recipe
                 // .getVisitor() being applied
                 // No changes made by the preconditions check will be kept
-                Preconditions.or(new UsesMethod<>(NEW_ARRAY_LIST),
+                Preconditions.or(
+                        new UsesMethod<>(NEW_ARRAY_LIST),
                         new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
                         new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)),
                 // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
@@ -81,6 +82,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                         // This is a useful debugging tool if you're ever unsure what the visitor is visiting
                         String printed = TreeVisitingPrinter.printTree(cu);
                         System.out.printf(printed);
+
                         // You must always delegate to the super method to ensure the visitor continues to visit deeper
                         return super.visitCompilationUnit(cu, ctx);
                     }
