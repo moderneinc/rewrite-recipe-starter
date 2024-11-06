@@ -45,7 +45,7 @@ public class AssertEqualsToAssertThat extends Recipe {
         return "Use AssertJ assertThat instead of JUnit assertEquals().";
     }
 
-    private static MethodMatcher MATCHER = new MethodMatcher("org.junit.jupiter.api.Assertions assertEquals(..)");
+    private static final MethodMatcher MATCHER = new MethodMatcher("org.junit.jupiter.api.Assertions assertEquals(..)");
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

@@ -62,9 +62,9 @@ public class NoCollectionMutation extends Recipe {
      */
     private static boolean isListMutationSelect(Cursor cursor) {
         Object parentValue = cursor.getParentTreeCursor().getValue();
-        if (!(parentValue instanceof J.MethodInvocation)
-            || ((J.MethodInvocation) parentValue).getMethodType() == null
-            || ((J.MethodInvocation) parentValue).getSelect() != cursor.getValue()) {
+        if (!(parentValue instanceof J.MethodInvocation) ||
+            ((J.MethodInvocation) parentValue).getMethodType() == null ||
+            ((J.MethodInvocation) parentValue).getSelect() != cursor.getValue()) {
             return false;
         }
         JavaType.Method mt = ((J.MethodInvocation) parentValue).getMethodType();
