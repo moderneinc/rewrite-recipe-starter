@@ -29,7 +29,7 @@ dependencies {
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite:rewrite-yaml")
     implementation("org.openrewrite.meta:rewrite-analysis")
-    implementation("org.assertj:assertj-core:3.24.2")
+    implementation("org.assertj:assertj-core:latest.release")
     runtimeOnly("org.openrewrite:rewrite-java-17")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
@@ -37,7 +37,7 @@ dependencies {
     annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
     implementation("org.openrewrite:rewrite-templating")
     // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
-    compileOnly("com.google.errorprone:error_prone_core:2.19.1") {
+    compileOnly("com.google.errorprone:error_prone_core:latest.release") {
         exclude("com.google.auto.service", "auto-service-annotations")
     }
 
