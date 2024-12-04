@@ -78,7 +78,7 @@ public class NoCollectionMutation extends Recipe {
                SORT_MATCHER.matches(mt);
     }
 
-    private static final MethodMatcher NEW_ARRAY_LIST_MATCHER = new MethodMatcher("java.util.ArrayList <init>(java.util.Collection)");
+    private static final MethodMatcher NEW_ARRAY_LIST_MATCHER = new MethodMatcher("java.util.ArrayList <constructor>(java.util.Collection)");
 
     /**
      * @param cursor a stack of LST elements with parent/child relationships connecting an individual LST element to the root of the tree
