@@ -1,0 +1,23 @@
+= Declarative YAML Recipe
+
+Time 20 minutes
+
+== Takeaways
+
+* Write a declarative YAML recipe that ties together existing recipes.
+* Learn how to configure a recipe with options.
+* Gain an understanding of the order that recipes are executed and what that means for your recipe options.
+
+== ToDo
+
+1. Open the newly created Recipe Repository with IntelliJ
+2. Open the Test xref:../src/test/java/com/yourorg/UseApacheStringUtilsTest.java[UseApacheStringUtilsTest] and add a test that expects ´org.springframework.util.StringUtils#trimWhitespace´ to be replaced with `org.apache.commons.lang3.StringUtils#strip`
+3. Open [Moderne SaaS Marketplace] or the https://docs.openrewrite.org/recipes[Recipe Catalog] to identify recipe that helps to change the name of a method called
+4. Open xref:../src/main/resources/META-INF/rewrite/stringutils.yml[stringutils.yml] and configure the recipe accordingly
+5. Check the test to verify
+
+== Links
+
+* https://github.com/moderneinc/rewrite-recipe-starter[Moderneinc/rewrite-recipe-starter]
+* https://docs.openrewrite.org/authoring-recipes/types-of-recipes#declarative-recipes[Declarative Recipe Docu]
+* https://docs.openrewrite.org/running-recipes/popular-recipe-guides/authoring-declarative-yaml-recipes[Declarative Recipe full Example]
