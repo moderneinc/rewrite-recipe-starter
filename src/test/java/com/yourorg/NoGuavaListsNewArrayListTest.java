@@ -157,6 +157,36 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
         );
     }
 
+    @Test
+    void newArrayListWithData() {
+        rewriteRun(
+          //language=java
+          java(
+            """
+              import com.google.common.collect.*;
+              
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  String[] data = new String[]{"a", "b", "c"};
+                  List<String> cardinalsWorldSeries = Lists.newArrayList(data);
+              }
+              """,
+            """
+              import java.util.ArrayList;
+              import java.util.Collections;
+              import java.util.List;
+              
+              class Test {
+                  String[] data = new String[]{"a", "b", "c"};
+                  List<String> cardinalsWorldSeries = new ArrayList<>(List.of(data));
+              }
+              """
+          )
+        );
+    }
+
     // Often you want to make sure no changes are made when the target state is already achieved.
     // To do so only passs in a before state and no after state to the rewriteRun method SourceSpecs.
     @Test
