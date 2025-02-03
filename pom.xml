@@ -222,8 +222,8 @@
                     </dependency>
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
-                        <artifactId>rewrite-recommendations</artifactId>
-                        <version>1.14.1</version>
+                        <artifactId>rewrite-rewrite</artifactId>
+                        <version>0.1.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
