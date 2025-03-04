@@ -158,7 +158,7 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
     }
 
     // Often you want to make sure no changes are made when the target state is already achieved.
-    // To do so only passs in a before state and no after state to the rewriteRun method SourceSpecs.
+    // To do so only pass in a before state and no after state to the rewriteRun method SourceSpecs.
     @Test
     void noChangeNecessary() {
         rewriteRun(
