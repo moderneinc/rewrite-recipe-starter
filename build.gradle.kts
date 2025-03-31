@@ -10,10 +10,6 @@ plugins {
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
     // virtual repository which mirrors both maven central and nexus snapshots.
     id("org.openrewrite.build.recipe-repositories") version "latest.release"
-
-    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
-    // ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
-    id("org.openrewrite.rewrite") version "latest.release"
 }
 
 // Set as appropriate for your organization
@@ -51,9 +47,6 @@ dependencies {
     testRuntimeOnly("com.google.guava:guava:latest.release")
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
-
-    // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
-    rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
 }
 
 signing {
