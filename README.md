@@ -12,7 +12,7 @@ To begin, fork this repository and customize it by:
 
 ## Getting started
 
-Familiarize yourself with the [OpenRewrite documentation](https://docs.openrewrite.org/), in particular the [concepts & explanations](https://docs.openrewrite.org/concepts-explanations) op topics like the [lossless semantic trees](https://docs.openrewrite.org/concepts-explanations/lossless-semantic-trees), [recipes](https://docs.openrewrite.org/concepts-explanations/recipes) and [visitors](https://docs.openrewrite.org/concepts-explanations/visitors).
+Familiarize yourself with the [OpenRewrite documentation](https://docs.openrewrite.org/), in particular the [concepts & explanations](https://docs.openrewrite.org/concepts-explanations) op topics like the [lossless semantic trees](https://docs.openrewrite.org/concepts-and-explanations/lossless-semantic-trees), [recipes](https://docs.openrewrite.org/concepts-and-explanations/recipes) and [visitors](https://docs.openrewrite.org/concepts-and-explanations/visitors).
 
 You might be interested to watch some of the [videos available on OpenRewrite and Moderne](https://www.youtube.com/@moderne-and-openrewrite).
 
@@ -140,7 +140,7 @@ To build a release, run `./gradlew final publish` to tag a release and publish i
 
 ## Applying OpenRewrite recipe development best practices
 
-We maintain a collection of [best practices for writing OpenRewrite recipes](https://docs.openrewrite.org/recipes/recipes/openrewritebestpractices).
+We maintain a collection of [best practices for writing OpenRewrite recipes](https://docs.openrewrite.org/recipes/java/recipes).
 You can apply these recommendations to your recipes by running the following command:
 
 ```bash
