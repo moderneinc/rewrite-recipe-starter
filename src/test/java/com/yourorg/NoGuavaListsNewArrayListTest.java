@@ -124,7 +124,8 @@ class NoGuavaListsNewArrayListTest implements RewriteTest {
               class Test {
                   List<Integer> cardinalsWorldSeries = new ArrayList<>(2);
               }
-              """)
+              """
+          )
         );
     }
 
