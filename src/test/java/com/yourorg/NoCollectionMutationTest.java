@@ -53,7 +53,8 @@ class NoCollectionMutationTest implements RewriteTest {
                       return method;
                   }
               }
-              """)
+              """
+          )
         );
     }
 
@@ -90,7 +91,8 @@ class NoCollectionMutationTest implements RewriteTest {
                       return method;
                   }
               }
-              """)
+              """
+          )
         );
     }
 
@@ -137,7 +139,8 @@ class NoCollectionMutationTest implements RewriteTest {
                       return method;
                   }
               }
-              """)
+              """
+          )
         );
     }
 
@@ -193,7 +196,8 @@ class NoCollectionMutationTest implements RewriteTest {
                       }
                   }
               }
-              """)
+              """
+          )
         );
     }
 
@@ -215,7 +219,8 @@ class NoCollectionMutationTest implements RewriteTest {
                       return method;
                   }
               }
-              """)
+              """
+          )
         );
     }
 }
