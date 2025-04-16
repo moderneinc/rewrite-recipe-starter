@@ -77,3 +77,7 @@ publishing {
       }
   }
 }
+
+tasks.register("licenseFormat") {
+    println("License format task not implemented for rewrite-recipe-starter")
+}
