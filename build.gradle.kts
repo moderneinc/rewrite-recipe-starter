@@ -1,5 +1,6 @@
 plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
+    id("org.openrewrite.build.moderne-proprietary-license") version "latest.release"
 
     // This uses the nexus publishing plugin to publish to the moderne-dev repository
     // Remove it if you prefer to publish by other means, such as the maven-publish plugin
