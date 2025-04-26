@@ -33,31 +33,6 @@ class NoCollectionMutationTest implements RewriteTest {
         spec.recipe(new NoCollectionMutation()).parser(JavaParser.fromJavaVersion().classpath("rewrite-core", "rewrite-java"));
     }
 
-    @Test
-    void nonMutationIsOkay() {
-        rewriteRun(
-          //language=java
-          java(
-            """
-              import org.openrewrite.ExecutionContext;
-              import org.openrewrite.java.JavaIsoVisitor;
-              import org.openrewrite.java.tree.J;
-              import org.openrewrite.internal.ListUtils;
-              
-              public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
-                  @Override
-                  public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
-                      method.getArguments().isEmpty();
-                      method.getSideEffects().indexOf(null);
-                      method.getTypeParameters().toArray();
-                      return method;
-                  }
-              }
-              """
-          )
-        );
-    }
-
     @DocumentExample
     @Test
     void inlineMutation() {
@@ -88,6 +63,31 @@ class NoCollectionMutationTest implements RewriteTest {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                       new ArrayList<>(method.getArguments()).clear();
+                      return method;
+                  }
+              }
+              """
+          )
+        );
+    }
+
+    @Test
+    void nonMutationIsOkay() {
+        rewriteRun(
+          //language=java
+          java(
+            """
+              import org.openrewrite.ExecutionContext;
+              import org.openrewrite.java.JavaIsoVisitor;
+              import org.openrewrite.java.tree.J;
+              import org.openrewrite.internal.ListUtils;
+              
+              public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
+                  @Override
+                  public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
+                      method.getArguments().isEmpty();
+                      method.getSideEffects().indexOf(null);
+                      method.getTypeParameters().toArray();
                       return method;
                   }
               }
