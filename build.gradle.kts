@@ -48,6 +48,7 @@ dependencies {
     testRuntimeOnly("com.google.guava:guava:latest.release")
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
+    testRuntimeOnly("org.springframework:spring-context:latest.release")
 }
 
 signing {
