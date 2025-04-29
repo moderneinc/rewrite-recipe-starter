@@ -15,7 +15,7 @@
  */
 package com.yourorg;
 
-import com.yourorg.table.SpringBeans;
+import com.yourorg.table.SpringBeansReport;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
@@ -31,7 +31,7 @@ import org.openrewrite.marker.SearchResult;
 @EqualsAndHashCode(callSuper = false)
 public class FindSpringBeans extends Recipe {
 
-    transient SpringBeans beansTable = new SpringBeans(this);
+    transient SpringBeansReport beansTable = new SpringBeansReport(this);
 
     @Override
     public String getDisplayName() {
@@ -46,18 +46,21 @@ public class FindSpringBeans extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        // Use the `org.openrewrite.java.trait.Annotated` trait to easily match annotations, and annotated elements
+        // We'll use a trait here. A trait is an arbitrary concept in your code that has a name, like "a global variable" or "a spring bean".
+        // Use the existing `org.openrewrite.java.trait.Annotated` trait to easily match annotations, and annotated elements
+        // In this case we need the values of the `@Bean` annotations
         return Traits.annotated("@org.springframework.context.annotation.Bean")
                 // Convert the trait into a visitor to get access to the annotations, and use their attributes
                 .asVisitor((annotated, ctx) -> {
+                    // Get name value from the annotation or the default string value if no named annotation arguments are mentioned
                     String beanName = annotated.getDefaultAttribute("name")
                             .map(Literal::getString)
-                            // If no name is present in the annotation, we fall back to the method name
+                            // If no value is present in the annotation, we fall back to the method name
                             .orElseGet(() -> annotated.getCursor().getParentTreeCursor().<J.MethodDeclaration>getValue().getSimpleName());
 
                     // Insert the bean name into the SpringBeans report
                     String sourcePath = annotated.getCursor().firstEnclosingOrThrow(JavaSourceFile.class).getSourcePath().toString();
-                    beansTable.insertRow(ctx, new SpringBeans.Row(sourcePath, beanName));
+                    beansTable.insertRow(ctx, new SpringBeansReport.Row(sourcePath, beanName));
 
                     // Return a modified LST element with an added search result marker calling out the bean name
                     return SearchResult.found(annotated.getTree(), beanName);

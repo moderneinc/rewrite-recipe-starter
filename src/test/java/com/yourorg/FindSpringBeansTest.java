@@ -1,6 +1,6 @@
 package com.yourorg;
 
-import com.yourorg.table.SpringBeans;
+import com.yourorg.table.SpringBeansReport;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.java.JavaParser;
@@ -27,12 +27,12 @@ class FindSpringBeansTest implements RewriteTest {
     void findSpringBeans() {
         String filePath = "src/main/java/com/yourorg/MyConfig.java";
         rewriteRun(
-          spec -> spec.dataTable(SpringBeans.Row.class, rows ->
+          spec -> spec.dataTable(SpringBeansReport.Row.class, rows ->
             assertThat(rows)
               .containsExactly(
-                new SpringBeans.Row(filePath, "bean"),
-                new SpringBeans.Row(filePath, "namedBean"),
-                new SpringBeans.Row(filePath, "useMethodNameWhenNoValuePresent")
+                new SpringBeansReport.Row(filePath, "bean"),
+                new SpringBeansReport.Row(filePath, "namedBean"),
+                new SpringBeansReport.Row(filePath, "useMethodNameWhenNoValuePresent")
               )),
           java(
             """

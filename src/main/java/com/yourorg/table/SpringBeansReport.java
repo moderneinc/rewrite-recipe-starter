@@ -22,9 +22,9 @@ import org.openrewrite.DataTable;
 import org.openrewrite.Recipe;
 
 @JsonIgnoreType
-public class SpringBeans extends DataTable<SpringBeans.Row> {
+public class SpringBeansReport extends DataTable<SpringBeansReport.Row> {
 
-    public SpringBeans(Recipe recipe) {
+    public SpringBeansReport(Recipe recipe) {
         super(recipe, "Spring bean definitions",
                 "Classes defined with a form of a Spring `@Bean` stereotype");
     }
