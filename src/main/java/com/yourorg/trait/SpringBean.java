@@ -32,7 +32,17 @@ import static org.openrewrite.java.trait.Traits.annotated;
 
 @Value
 public class SpringBean implements Trait<Tree> {
+
+    private static final String BEAN_ANNOTATION = "org.springframework.context.annotation.Bean";
+    private static final AnnotationMatcher BEAN_ANNOTATED = new AnnotationMatcher("@" + BEAN_ANNOTATION);
+    // The @Bean annotation must be present on the method declaration in order to be a Spring bean
+    private static final Annotated.Matcher beanAnnotationMatcher = annotated(BEAN_ANNOTATED);
+
     Cursor cursor;
+
+    // We're passing the annotation value reading to ANOTHER TRAIT (=Annotated) which is present in framework by default already
+    // During creation of the SpringBean Trait, we already have the Annotated detected, so we can reuse that one.
+    Annotated beanAnnotation;
 
     // As the Matcher's test method always creates this Trait with MethodDeclaration as the tree type,
     // we can try to get the name of the bean from the annotation.
@@ -40,17 +50,11 @@ public class SpringBean implements Trait<Tree> {
     // If no annotation is present, this Trait will have never been created as the test method returned null
     public @Nullable String getName() {
         if (getTree() instanceof J.MethodDeclaration) {
-            J.MethodDeclaration methodDeclaration = (J.MethodDeclaration) getTree();
-            // We're passing the annotation value reading to another Trait which is present in framework by default already
-            // This other Trait will act on the annotation LST elements below the current cursor (= lower) to do the actual reading of the property
-            Optional<Annotated> annotated = annotated("org.springframework.context.annotation.Bean").lower(getCursor()).findFirst();
-            if (annotated.isPresent()) {
-                return annotated.get()
-                        .getDefaultAttribute("name")
-                        .map(Literal::getString)
-                        // If no name is present in the annotation, we fall back to the method name
-                        .orElseGet(methodDeclaration::getSimpleName);
-            }
+            return beanAnnotation
+                    .getDefaultAttribute("name")
+                    .map(Literal::getString)
+                    // If no name is present in the annotation, we fall back to the method name
+                    .orElseGet(((J.MethodDeclaration) getTree())::getSimpleName);
         }
         return null;
     }
@@ -59,31 +63,24 @@ public class SpringBean implements Trait<Tree> {
         @Override
         protected @Nullable SpringBean test(Cursor cursor) {
             Object value = cursor.getValue();
-            // The @Bean annotation must be present on the method declaration in order to be a Spring bean
-            AnnotationMatcher beanAnnotation = new AnnotationMatcher("@org.springframework.context.annotation.Bean");
-            // We match on either the annotation
+
             if (value instanceof J.Annotation) {
-                if (beanAnnotation.matches((J.Annotation) value)) {
-                    return getSpringBean(cursor.getParentTreeCursor());
+                Optional<Annotated> annotated = beanAnnotationMatcher.get(cursor);
+                if (annotated.isPresent()) {
+                    // We create the SpringBean trait from the MethodDeclaration itself (hence calling getParentTreeCursor)
+                    // so we can fall back to the method name if no annotation value is present
+                    return new SpringBean(cursor.getParentTreeCursor(), annotated.get());
                 }
-                // or the method declaration itself
             } else if (value instanceof J.MethodDeclaration) {
-                J.MethodDeclaration method = (J.MethodDeclaration) value;
-                for (J.Annotation annotation : method.getLeadingAnnotations()) {
-                    if (beanAnnotation.matches(annotation)) {
-                        return getSpringBean(cursor);
-                    }
+                // This Annotated Trait will search for matching elements below the current cursor (= lower) to do the actual reading of the property
+                // There can only be one @Bean annotation per method declaration so doing a findFirst is ok
+                Optional<Annotated> annotated = beanAnnotationMatcher.lower(cursor).findFirst();
+                if (annotated.isPresent()) {
+                    return new SpringBean(cursor, annotated.get());
                 }
             }
-            return null;
-        }
 
-        // We create the SpringBean trait from the MethodDeclaration itself (hence calling getParentTreeCursor for the annotation use case)
-        // so we can fall back to the method name if no annotation value is present
-        // If our Trait would only need access to the annotation, we could use the annotation cursor
-        // making the Trait above easier to implement
-        private SpringBean getSpringBean(Cursor cursor) {
-            return new SpringBean(cursor);
+            return null;
         }
     }
 }
