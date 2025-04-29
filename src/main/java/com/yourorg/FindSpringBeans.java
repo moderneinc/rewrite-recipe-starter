@@ -16,14 +16,13 @@
 package com.yourorg;
 
 import com.yourorg.table.SpringBeans;
-import com.yourorg.trait.SpringBean;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
-import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.service.AnnotationService;
+import org.openrewrite.java.trait.Literal;
+import org.openrewrite.java.trait.Traits;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.java.tree.JavaSourceFile;
 import org.openrewrite.marker.SearchResult;
@@ -32,7 +31,7 @@ import org.openrewrite.marker.SearchResult;
 @EqualsAndHashCode(callSuper = false)
 public class FindSpringBeans extends Recipe {
 
-    transient SpringBeans beans = new SpringBeans(this);
+    transient SpringBeans beansTable = new SpringBeans(this);
 
     @Override
     public String getDisplayName() {
@@ -47,37 +46,18 @@ public class FindSpringBeans extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
+        return Traits.annotated("@org.springframework.context.annotation.Bean")
+                .asVisitor((annotated, ctx) -> {
+                    String beanName = annotated.getDefaultAttribute("name")
+                            .map(Literal::getString)
+                            // If no name is present in the annotation, we fall back to the method name
+                            .orElseGet(() -> annotated.getCursor().getParentTreeCursor().<J.MethodDeclaration>getValue().getSimpleName());
 
-        return new JavaIsoVisitor<ExecutionContext>() {
-            @Override
-            public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
-                J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
+                    // Insert the bean name into the SpringBeans report
+                    String sourcePath = annotated.getCursor().firstEnclosingOrThrow(JavaSourceFile.class).getSourcePath().toString();
+                    beansTable.insertRow(ctx, new SpringBeans.Row(sourcePath, beanName));
 
-                SpringBean.Matcher matcher = new SpringBean.Matcher();
-                for (J.Annotation annotation : service(AnnotationService.class).getAllAnnotations(getCursor())) {
-                    // Create an Optional<SpringBean> custom Trait from the annotation passing in the method declaration
-                    //     as the bean name can come from the method name if no value is present in the annotation
-                    //          \
-                    //           \                   If the matcher is found, we will map it to a SearchResult marked one
-                    //            \                            /
-                    m = matcher.get(annotation, getCursor()).map(springBean -> {
-                        // Calculate the name of the bean in the `springBean` Trait, hiding the complexity of the LST elements
-                        String name = springBean.getName();
-
-                        // Insert the bean name into the SpringBeans report
-                        beans.insertRow(ctx, new SpringBeans.Row(
-                                getCursor().firstEnclosingOrThrow(JavaSourceFile.class).getSourcePath().toString(),
-                                name
-                        ));
-
-                        // Mark the method declaration with the bean name found marker
-                        return SearchResult.found(method, name);
-                    }).orElse(m);
-                    //         \
-                    // If the matcher is not found, we will return the method declaration as is.
-                }
-                return m;
-            }
-        };
+                    return SearchResult.found(annotated.getTree(), beanName);
+                });
     }
 }
