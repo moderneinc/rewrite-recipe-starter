@@ -18,10 +18,8 @@ class FindSpringBeansTest implements RewriteTest {
     public void defaults(RecipeSpec spec) {
         // Note how we directly instantiate the recipe class here
         spec.recipe(new FindSpringBeans())
-          .parser(JavaParser.fromJavaVersion()
-            .logCompilationWarningsAndErrors(true)
-            // The before/after examples are using Spring classes/annotations, so we need to add the spring-context library to the classpath
-            .classpath("spring-context"));
+          // The before examples are using Spring classes/annotations, so we need to add spring-context to the classpath
+          .parser(JavaParser.fromJavaVersion().classpath("spring-context"));
     }
 
     @DocumentExample
