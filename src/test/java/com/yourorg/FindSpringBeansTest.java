@@ -29,70 +29,70 @@ class FindSpringBeansTest implements RewriteTest {
     void findSpringBeans() {
         String filePath = "src/main/java/com/yourorg/MyConfig.java";
         rewriteRun(
-          spec -> spec.dataTable(SpringBeans.Row.class, rows -> {
-                assertThat(rows).containsExactly(
-                  new SpringBeans.Row(filePath, "bean"),
-                  new SpringBeans.Row(filePath, "namedBean"),
-                  new SpringBeans.Row(filePath, "useMethodNameWhenNoValuePresent")
-                );
-            }),
-            java(
-                """
-                import org.springframework.context.annotation.Bean;
-                import org.springframework.context.annotation.Configuration;
-                
-                @Configuration
-                public class MyConfig {
-                    @Bean("bean")
-                    public String doNotUseMethodNameWhenDefaultIsPresent() {
-                        return "Named Bean";
-                    }
-                
-                    @Bean(name = "namedBean")
-                    public String doNotUseMethodNameWhenNameIsPresent() {
-                        return "Named Bean";
-                    }
-                
-                    @Bean
-                    public String useMethodNameWhenNoValuePresent() {
-                        return "Named Bean";
-                    }
-               
-                    @Override
-                    public String doNotListOtherMethods() {
-                        return "Private method";
-                    }
-                }
-                """,
-                """
-                import org.springframework.context.annotation.Bean;
-                import org.springframework.context.annotation.Configuration;
-                
-                @Configuration
-                public class MyConfig {
-                    /*~~(bean)~~>*/@Bean("bean")
-                    public String doNotUseMethodNameWhenDefaultIsPresent() {
-                        return "Named Bean";
-                    }
-                
-                    /*~~(namedBean)~~>*/@Bean(name = "namedBean")
-                    public String doNotUseMethodNameWhenNameIsPresent() {
-                        return "Named Bean";
-                    }
-                
-                    /*~~(useMethodNameWhenNoValuePresent)~~>*/@Bean
-                    public String useMethodNameWhenNoValuePresent() {
-                        return "Named Bean";
-                    }
-                
-                    @Override
-                    public String doNotListOtherMethods() {
-                        return "Private method";
-                    }
-                }
-                """,
-              spec -> spec.path(filePath)
-            )
+          spec -> spec.dataTable(SpringBeans.Row.class, rows ->
+            assertThat(rows)
+              .containsExactly(
+                new SpringBeans.Row(filePath, "bean"),
+                new SpringBeans.Row(filePath, "namedBean"),
+                new SpringBeans.Row(filePath, "useMethodNameWhenNoValuePresent")
+              )),
+          java(
+            """
+              import org.springframework.context.annotation.Bean;
+              import org.springframework.context.annotation.Configuration;
+              
+              @Configuration
+              public class MyConfig {
+                  @Bean("bean")
+                  public String doNotUseMethodNameWhenDefaultIsPresent() {
+                      return "Named Bean";
+                  }
+              
+                  @Bean(name = "namedBean")
+                  public String doNotUseMethodNameWhenNameIsPresent() {
+                      return "Named Bean";
+                  }
+              
+                  @Bean
+                  public String useMethodNameWhenNoValuePresent() {
+                      return "Named Bean";
+                  }
+              
+                  @Override
+                  public String doNotListOtherMethods() {
+                      return "Private method";
+                  }
+              }
+              """,
+            """
+              import org.springframework.context.annotation.Bean;
+              import org.springframework.context.annotation.Configuration;
+              
+              @Configuration
+              public class MyConfig {
+                  /*~~(bean)~~>*/@Bean("bean")
+                  public String doNotUseMethodNameWhenDefaultIsPresent() {
+                      return "Named Bean";
+                  }
+              
+                  /*~~(namedBean)~~>*/@Bean(name = "namedBean")
+                  public String doNotUseMethodNameWhenNameIsPresent() {
+                      return "Named Bean";
+                  }
+              
+                  /*~~(useMethodNameWhenNoValuePresent)~~>*/@Bean
+                  public String useMethodNameWhenNoValuePresent() {
+                      return "Named Bean";
+                  }
+              
+                  @Override
+                  public String doNotListOtherMethods() {
+                      return "Private method";
+                  }
+              }
+              """,
+            spec -> spec.path(filePath)
+          )
         );
     }
 }
