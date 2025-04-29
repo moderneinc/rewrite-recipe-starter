@@ -20,6 +20,8 @@ import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.Tree;
 import org.openrewrite.java.AnnotationMatcher;
+import org.openrewrite.java.trait.Annotated;
+import org.openrewrite.java.trait.Literal;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
@@ -39,28 +41,16 @@ public class SpringBean implements Trait<Tree> {
     public @Nullable String getName() {
         if (getTree() instanceof J.MethodDeclaration) {
             J.MethodDeclaration methodDeclaration = (J.MethodDeclaration) getTree();
-            return methodDeclaration.getLeadingAnnotations().stream()
-                    .map(this::getNameFromAnnotation)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .findFirst()
-                    .orElseGet(this::getNameFromMethodName);
-        }
-        return null;
-    }
-
-    private Optional<String> getNameFromAnnotation(J.Annotation annotation) {
-        // We're passing the annotation value reading to another Trait which is present in framework by default already
-        // This other Trait will act on the annotation LST element to do the actual reading of the property
-        return annotated("org.springframework.context.annotation.Bean")
-                .get(annotation, cursor)
-                .flatMap(a -> a.getDefaultAttribute("name"))
-                .map(name -> name.getValue(String.class));
-    }
-
-    private String getNameFromMethodName() {
-        if (getTree() instanceof J.MethodDeclaration) {
-            return ((J.MethodDeclaration) getTree()).getSimpleName();
+            // We're passing the annotation value reading to another Trait which is present in framework by default already
+            // This other Trait will act on the annotation LST elements below the current cursor (= lower) to do the actual reading of the property
+            Optional<Annotated> annotated = annotated("org.springframework.context.annotation.Bean").lower(getCursor()).findFirst();
+            if (annotated.isPresent()) {
+                return annotated.get()
+                        .getDefaultAttribute("name")
+                        .map(Literal::getString)
+                        // If no name is present in the annotation, we fall back to the method name
+                        .orElseGet(methodDeclaration::getSimpleName);
+            }
         }
         return null;
     }
