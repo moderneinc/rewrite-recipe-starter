@@ -46,7 +46,9 @@ public class FindSpringBeans extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
+        // Use the `org.openrewrite.java.trait.Annotated` trait to easily match annotations, and annotated elements
         return Traits.annotated("@org.springframework.context.annotation.Bean")
+                // Convert the trait into a visitor to get access to the annotations, and use their attributes
                 .asVisitor((annotated, ctx) -> {
                     String beanName = annotated.getDefaultAttribute("name")
                             .map(Literal::getString)
@@ -57,6 +59,7 @@ public class FindSpringBeans extends Recipe {
                     String sourcePath = annotated.getCursor().firstEnclosingOrThrow(JavaSourceFile.class).getSourcePath().toString();
                     beansTable.insertRow(ctx, new SpringBeans.Row(sourcePath, beanName));
 
+                    // Return a modified LST element with an added search result marker calling out the bean name
                     return SearchResult.found(annotated.getTree(), beanName);
                 });
     }
