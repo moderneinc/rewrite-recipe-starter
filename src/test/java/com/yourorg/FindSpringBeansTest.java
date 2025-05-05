@@ -18,6 +18,7 @@ package com.yourorg;
 import com.yourorg.table.SpringBeansReport;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
+import org.openrewrite.PathUtils;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
@@ -40,7 +41,7 @@ class FindSpringBeansTest implements RewriteTest {
     @DocumentExample
     @Test
     void findSpringBeans() {
-        String filePath = "src/main/java/com/yourorg/MyConfig.java";
+        String filePath = PathUtils.separatorsToSystem("src/main/java/com/yourorg/MyConfig.java");
         rewriteRun(
           spec -> spec.dataTable(SpringBeansReport.Row.class, rows ->
             assertThat(rows)
