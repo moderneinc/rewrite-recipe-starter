@@ -182,34 +182,6 @@
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.7.0</version>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>process-sources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <!-- Add any additional dependencies required for the JavaParser's classpath -->
-                                <artifactItem>
-                                    <groupId>junit</groupId>
-                                    <artifactId>junit</artifactId>
-                                    <version>3.8.1</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.basedir}/src/main/resources/META-INF/rewrite/classpath</outputDirectory>
-                            <overWriteSnapshots>true</overWriteSnapshots>
-                            <!-- Configure and enable plugin when you use `classpathFromResources` in `JavaTemplate` -->
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!--
                 Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
                 ./mvnw rewrite:run -Drewrite.activeRecipes=com.yourorg.ApplyRecipeBestPractices
@@ -217,7 +189,7 @@
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.7.0</version>
+                <version>6.8.0</version>
                 <configuration>
                     <failOnDryRunResults>true</failOnDryRunResults>
                 </configuration>
@@ -236,4 +208,36 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            When you want to generate a TypeTable for use in JavaParser for JavaTemplate, run the following command:
+            ./mvnw generate-resources -Ptypetable
+        -->
+        <profile>
+            <id>typetable</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openrewrite.maven</groupId>
+                        <artifactId>rewrite-maven-plugin</artifactId>
+                        <version>6.9.0-SNAPSHOT</version>
+                        <configuration>
+                            <recipeArtifactCoordinates>
+                                junit:junit:3.8.1,
+                            </recipeArtifactCoordinates>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>typetable</goal>
+                                </goals>
+                                <phase>generate-resources</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
