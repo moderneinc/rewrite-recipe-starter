@@ -20,7 +20,7 @@ import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.openrewrite.test.SourceSpecs.text;
 
@@ -43,7 +43,7 @@ class AppendToReleaseNotesTest implements RewriteTest {
               You say goodbye, I say
               Hello world
               """,
-            spec -> spec.path(Paths.get("RELEASE.md")
+            spec -> spec.path(Path.of("RELEASE.md")
             )
           )
         );
@@ -59,7 +59,7 @@ class AppendToReleaseNotesTest implements RewriteTest {
             """
               Hello world
               """,
-            spec -> spec.path(Paths.get("RELEASE.md")
+            spec -> spec.path(Path.of("RELEASE.md")
             )
           )
         );
