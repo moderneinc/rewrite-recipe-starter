@@ -189,7 +189,7 @@
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.8.0</version>
+                <version>6.9.0</version>
                 <configuration>
                     <failOnDryRunResults>true</failOnDryRunResults>
                 </configuration>
@@ -221,7 +221,7 @@
                     <plugin>
                         <groupId>org.openrewrite.maven</groupId>
                         <artifactId>rewrite-maven-plugin</artifactId>
-                        <version>6.9.0-SNAPSHOT</version>
+                        <version>6.9.0</version>
                         <configuration>
                             <recipeArtifactCoordinates>
                                 junit:junit:3.8.1,
