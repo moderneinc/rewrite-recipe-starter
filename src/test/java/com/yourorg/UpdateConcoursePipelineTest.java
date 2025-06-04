@@ -49,7 +49,7 @@ class UpdateConcoursePipelineTest implements RewriteTest {
                   source:
                     uri: git@github.com:Example/concourse-tasks.git
                     tag_filter: 8.2.0
-                """,
+              """,
             spec -> spec.path(Path.of("ci/pipeline.yml"))
           )
         );
