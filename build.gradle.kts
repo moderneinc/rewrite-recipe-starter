@@ -69,15 +69,6 @@ configure<PublishingExtension> {
     }
 }
 
-publishing {
-  repositories {
-      maven {
-          name = "moderne"
-          url = uri("https://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
-      }
-  }
-}
-
 tasks.register("licenseFormat") {
     println("License format task not implemented for rewrite-recipe-starter")
 }
