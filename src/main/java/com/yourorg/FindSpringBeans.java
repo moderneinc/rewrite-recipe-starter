@@ -21,8 +21,8 @@ import lombok.Value;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.trait.Annotated;
 import org.openrewrite.java.trait.Literal;
-import org.openrewrite.java.trait.Traits;
 import org.openrewrite.java.tree.J;
 import org.openrewrite.java.tree.JavaSourceFile;
 import org.openrewrite.marker.SearchResult;
@@ -49,7 +49,7 @@ public class FindSpringBeans extends Recipe {
         // We'll use a trait here. A trait is an arbitrary concept in your code that has a name, like "a global variable" or "a spring bean".
         // Use the existing `org.openrewrite.java.trait.Annotated` trait to easily match annotations, and annotated elements
         // In this case we need the values of the `@Bean` annotations
-        return Traits.annotated("@org.springframework.context.annotation.Bean")
+        return new Annotated.Matcher("@org.springframework.context.annotation.Bean")
                 // Convert the trait into a visitor to get access to the annotations, and use their attributes
                 .asVisitor((annotated, ctx) -> {
                     // Get name value from the annotation or the default string value if no named annotation arguments are mentioned
