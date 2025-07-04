@@ -66,6 +66,9 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
                 // its visitor
                 new JavaVisitor<ExecutionContext>() {
+                    // Java Templates are used to generate Java code easily.
+                    // They use a syntax that expand Java with possible type-safe insertions points.
+                    // See https://docs.openrewrite.org/concepts-and-explanations/javatemplate for full documentation
                     private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
                             .imports("java.util.ArrayList")
                             .build();
@@ -94,6 +97,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                         System.out.printf(printed);
 
                         // You must always delegate to the super method to ensure the visitor continues to visit deeper
+                        // return cu; // this leads to a recipe that makes no changes at all
                         return super.visitCompilationUnit(cu, ctx);
                     }
 

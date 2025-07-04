@@ -1,0 +1,276 @@
+# Copyright 2025 the original author or authors.
+# <p>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# <p>
+# https://www.apache.org/licenses/LICENSE-2.0
+# <p>
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.AssertEqualsToAssertThat
+examples:
+- description: ''
+  sources:
+  - before: |
+      import org.junit.jupiter.api.Assertions;
+
+      class A {
+          void foo() {
+              Assertions.assertEquals(1, 2);
+          }
+      }
+    after: |
+      import org.assertj.core.api.Assertions;
+
+      class A {
+          void foo() {
+              Assertions.assertThat(2).isEqualTo(1);
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.FindSpringBeans
+examples:
+- description: ''
+  sources:
+  - before: |
+      import org.springframework.context.annotation.Bean;
+      import org.springframework.context.annotation.Configuration;
+
+      @Configuration
+      public class MyConfig {
+          @Bean("bean")
+          public String doNotUseMethodNameWhenDefaultIsPresent() {
+              return "Named Bean";
+          }
+
+          @Bean(name = "namedBean")
+          public String doNotUseMethodNameWhenNameIsPresent() {
+              return "Named Bean";
+          }
+
+          @Bean
+          public String useMethodNameWhenNoValuePresent() {
+              return "Named Bean";
+          }
+
+          @Override
+          public String doNotListOtherMethods() {
+              return "Private method";
+          }
+      }
+    after: |
+      import org.springframework.context.annotation.Bean;
+      import org.springframework.context.annotation.Configuration;
+
+      @Configuration
+      public class MyConfig {
+          /*~~(bean)~~>*/@Bean("bean")
+          public String doNotUseMethodNameWhenDefaultIsPresent() {
+              return "Named Bean";
+          }
+
+          /*~~(namedBean)~~>*/@Bean(name = "namedBean")
+          public String doNotUseMethodNameWhenNameIsPresent() {
+              return "Named Bean";
+          }
+
+          /*~~(useMethodNameWhenNoValuePresent)~~>*/@Bean
+          public String useMethodNameWhenNoValuePresent() {
+              return "Named Bean";
+          }
+
+          @Override
+          public String doNotListOtherMethods() {
+              return "Private method";
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.NoCollectionMutation
+examples:
+- description: ''
+  sources:
+  - before: |
+      import org.openrewrite.ExecutionContext;
+      import org.openrewrite.java.JavaIsoVisitor;
+      import org.openrewrite.java.tree.J;
+
+      public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
+          @Override
+          public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
+              method.getArguments().clear();
+              return method;
+          }
+      }
+    after: |
+      import org.openrewrite.ExecutionContext;
+      import org.openrewrite.java.JavaIsoVisitor;
+      import org.openrewrite.java.tree.J;
+
+      import java.util.ArrayList;
+
+      public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
+          @Override
+          public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
+              new ArrayList<>(method.getArguments()).clear();
+              return method;
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.NoGuavaListsNewArrayList
+examples:
+- description: ''
+  sources:
+  - before: |
+      import com.google.common.collect.*;
+
+      import java.util.List;
+
+      class Test {
+          List<Integer> cardinalsWorldSeries = Lists.newArrayList();
+      }
+    after: |
+      import java.util.ArrayList;
+      import java.util.List;
+
+      class Test {
+          List<Integer> cardinalsWorldSeries = new ArrayList<>();
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.SimplifyTernaryRecipes
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Test {
+          boolean trueCondition1 = true ? true : false;
+          boolean trueCondition2 = false ? false : true;
+          boolean trueCondition3 = booleanExpression() ? true : false;
+          boolean trueCondition4 = trueCondition1 && trueCondition2 ? true : false;
+          boolean trueCondition5 = !true ? false : true;
+          boolean trueCondition6 = !false ? true : false;
+
+          boolean falseCondition1 = true ? false : true;
+          boolean falseCondition2 = !false ? false : true;
+          boolean falseCondition3 = booleanExpression() ? false : true;
+          boolean falseCondition4 = trueCondition1 && trueCondition2 ? false : true;
+          boolean falseCondition5 = !false ? false : true;
+          boolean falseCondition6 = !true ? true : false;
+
+          boolean binary1 = booleanExpression() && booleanExpression() ? true : false;
+          boolean binary2 = booleanExpression() && booleanExpression() ? false : true;
+          boolean binary3 = booleanExpression() || booleanExpression() ? true : false;
+          boolean binary4 = booleanExpression() || booleanExpression() ? false : true;
+
+          boolean booleanExpression() {
+            return true;
+          }
+      }
+    after: |
+      class Test {
+          boolean trueCondition1 = true;
+          boolean trueCondition2 = true;
+          boolean trueCondition3 = booleanExpression();
+          boolean trueCondition4 = trueCondition1 && trueCondition2;
+          boolean trueCondition5 = true;
+          boolean trueCondition6 = true;
+
+          boolean falseCondition1 = false;
+          boolean falseCondition2 = false;
+          boolean falseCondition3 = !booleanExpression();
+          boolean falseCondition4 = !(trueCondition1 && trueCondition2);
+          boolean falseCondition5 = false;
+          boolean falseCondition6 = false;
+
+          boolean binary1 = booleanExpression() && booleanExpression();
+          boolean binary2 = !(booleanExpression() && booleanExpression());
+          boolean binary3 = booleanExpression() || booleanExpression();
+          boolean binary4 = !(booleanExpression() || booleanExpression());
+
+          boolean booleanExpression() {
+            return true;
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UpdateConcoursePipeline
+examples:
+- description: ''
+  parameters:
+  - 8.2.0
+  sources:
+  - before: |
+      ---
+      resources:
+        - name: tasks
+          type: git
+          source:
+            uri: git@github.com:Example/concourse-tasks.git
+            tag_filter: 8.1.0
+    after: |
+      ---
+      resources:
+        - name: tasks
+          type: git
+          source:
+            uri: git@github.com:Example/concourse-tasks.git
+            tag_filter: 8.2.0
+    language: yaml
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseApacheStringUtils
+examples:
+- description: ''
+  sources:
+  - before: |
+      import org.springframework.util.StringUtils;
+
+      class A {
+          boolean test(String s) {
+              return StringUtils.containsWhitespace(s);
+          }
+      }
+    after: |
+      import org.apache.commons.lang3.StringUtils;
+
+      class A {
+          boolean test(String s) {
+              return StringUtils.containsWhitespace(s);
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseOpenRewriteNullable
+examples:
+- description: ''
+  sources:
+  - before: |
+      import org.jetbrains.annotations.Nullable;
+
+      class A {
+          @Nullable
+          String s;
+      }
+    after: |
+      import org.openrewrite.internal.lang.Nullable;
+
+      class A {
+          @Nullable
+          String s;
+      }
+    language: java

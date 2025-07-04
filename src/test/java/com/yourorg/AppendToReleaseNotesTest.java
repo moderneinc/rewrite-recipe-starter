@@ -20,7 +20,7 @@ import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.openrewrite.test.SourceSpecs.text;
 
@@ -28,22 +28,6 @@ class AppendToReleaseNotesTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new AppendToReleaseNotes("Hello world"));
-    }
-
-    @Test
-    void createNewReleaseNotes() {
-        // Notice how the before text is null, indicating that the file does not exist yet.
-        // The after text is the content of the file after the recipe is applied.
-        rewriteRun(
-          text(
-            null,
-            """
-              Hello world
-              """,
-            spec -> spec.path(Paths.get("RELEASE.md")
-            )
-          )
-        );
     }
 
     @DocumentExample
@@ -59,7 +43,23 @@ class AppendToReleaseNotesTest implements RewriteTest {
               You say goodbye, I say
               Hello world
               """,
-            spec -> spec.path(Paths.get("RELEASE.md")
+            spec -> spec.path(Path.of("RELEASE.md")
+            )
+          )
+        );
+    }
+
+    @Test
+    void createNewReleaseNotes() {
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
+        rewriteRun(
+          text(
+            null,
+            """
+              Hello world
+              """,
+            spec -> spec.path(Path.of("RELEASE.md")
             )
           )
         );

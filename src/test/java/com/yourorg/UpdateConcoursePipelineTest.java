@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RewriteTest;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.openrewrite.yaml.Assertions.yaml;
 
@@ -49,8 +49,8 @@ class UpdateConcoursePipelineTest implements RewriteTest {
                   source:
                     uri: git@github.com:Example/concourse-tasks.git
                     tag_filter: 8.2.0
-                """,
-            spec -> spec.path(Paths.get("ci/pipeline.yml"))
+              """,
+            spec -> spec.path(Path.of("ci/pipeline.yml"))
           )
         );
     }

@@ -58,8 +58,8 @@ public class AssertEqualsToAssertThat extends Recipe {
                             return m;
                         }
                         List<Expression> arguments = m.getArguments();
-                        maybeAddImport("org.assertj.core.api.Assertions");
                         maybeRemoveImport("org.junit.jupiter.api.Assertions");
+                        maybeAddImport("org.assertj.core.api.Assertions");
                         if (arguments.size() == 2) {
                             Expression expected = arguments.get(0);
                             Expression actual = arguments.get(1);

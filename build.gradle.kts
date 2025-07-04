@@ -4,16 +4,12 @@ plugins {
     // This uses the nexus publishing plugin to publish to the moderne-dev repository
     // Remove it if you prefer to publish by other means, such as the maven-publish plugin
     id("org.openrewrite.build.publish") version "latest.release"
-    id("nebula.release") version "latest.release"
+    id("nebula.release") version "20.2.0" // Pinned as v21+ requires Gradle 9+
 
     // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
     // virtual repository which mirrors both maven central and nexus snapshots.
     id("org.openrewrite.build.recipe-repositories") version "latest.release"
-
-    // Only needed when you want to apply the OpenRewriteBestPractices recipe to your recipes through
-    // ./gradlew rewriteRun -Drewrite.activeRecipe=org.openrewrite.recipes.OpenRewriteBestPractices
-    id("org.openrewrite.rewrite") version "latest.release"
 }
 
 // Set as appropriate for your organization
@@ -39,6 +35,7 @@ dependencies {
     // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
     compileOnly("com.google.errorprone:error_prone_core:latest.release") {
         exclude("com.google.auto.service", "auto-service-annotations")
+        exclude("io.github.eisop","dataflow-errorprone")
     }
 
     // The RewriteTest class needed for testing recipes
@@ -51,9 +48,7 @@ dependencies {
     testRuntimeOnly("com.google.guava:guava:latest.release")
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
-
-    // Contains the OpenRewriteBestPractices recipe, which you can apply to your recipes
-    rewrite("org.openrewrite.recipe:rewrite-recommendations:latest.release")
+    testRuntimeOnly("org.springframework:spring-context:latest.release")
 }
 
 signing {
@@ -74,11 +69,6 @@ configure<PublishingExtension> {
     }
 }
 
-publishing {
-  repositories {
-      maven {
-          name = "moderne"
-          url = uri("https://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
-      }
-  }
+tasks.register("licenseFormat") {
+    println("License format task not implemented for rewrite-recipe-starter")
 }
