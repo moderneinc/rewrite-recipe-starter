@@ -39,7 +39,9 @@ dependencies {
     }
 
     // The RewriteTest class needed for testing recipes
-    testImplementation("org.openrewrite:rewrite-test")
+    testImplementation("org.openrewrite:rewrite-test") {
+        exclude(group = "org.slf4j", module = "slf4j-nop")
+    }
 
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
