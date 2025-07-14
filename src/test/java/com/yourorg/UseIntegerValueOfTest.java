@@ -27,8 +27,7 @@ class UseIntegerValueOfTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        // TODO: Uncomment the line below once you have implemented the recipe
-        //spec.recipe(new UseIntegerValueOf());
+        spec.recipe(new UseIntegerValueOf());
     }
 
     @Test
