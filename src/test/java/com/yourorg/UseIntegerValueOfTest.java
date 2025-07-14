@@ -22,7 +22,6 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-@Disabled("Remove this annotation to run the tests once you implement the recipe")
 class UseIntegerValueOfTest implements RewriteTest {
 
     @Override

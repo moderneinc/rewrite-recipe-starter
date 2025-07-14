@@ -1,26 +1,19 @@
-/*
- * Copyright 2024 the original author or authors.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p>
- * https://www.apache.org/licenses/LICENSE-2.0
- * <p>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.yourorg;
 
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Preconditions;
 import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
+import org.openrewrite.java.JavaTemplate;
+import org.openrewrite.java.JavaVisitor;
+import org.openrewrite.java.search.UsesType;
+import org.openrewrite.java.tree.Expression;
+import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.TypeUtils;
 
-// TODO - This is a placeholder for an imperative recipe. This class needs to extend `Recipe`.
-// Implement a recipe that replaces all `new Integer(x)` constructors with Integer.valueOf(x).
-// You're done when the test in `UseIntegerValueOfTest` passes.
 public class UseIntegerValueOf extends Recipe {
+
+    public static final String INTEGER = "java.lang.Integer";
 
     @Override
     public String getDisplayName() {
@@ -30,5 +23,30 @@ public class UseIntegerValueOf extends Recipe {
     @Override
     public String getDescription() {
         return "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x).";
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor() {
+        return Preconditions.check(
+                new UsesType<>(INTEGER, false),
+                new JavaVisitor<ExecutionContext>() {
+                    @Override
+                    public J visitNewClass(J.NewClass newClass, ExecutionContext ctx) {
+                        J update = super.visitNewClass(newClass, ctx);
+                        if (update instanceof J.NewClass) {
+                            J.NewClass nc = (J.NewClass) update;
+                            if (TypeUtils.isOfClassType(nc.getType(), INTEGER)) {
+                                Expression arg = nc.getArguments().get(0);
+                                return JavaTemplate.builder("Integer.valueOf(#{any()})")
+                                        .contextSensitive()
+                                        .build()
+                                        .apply(getCursor(), nc.getCoordinates().replace(), arg);
+                            }
+                            return nc;
+                        }
+                        return update;
+                    }
+                }
+        );
     }
 }
