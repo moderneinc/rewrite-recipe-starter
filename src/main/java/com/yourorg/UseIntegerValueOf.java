@@ -17,18 +17,18 @@ package com.yourorg;
 
 import org.openrewrite.Recipe;
 
-// TODO - This is a placeholder for an imperative recipe. This class needs to extend `Recipe`.
-// Implement a recipe that replaces all `new Integer(x)` constructors with Integer.valueOf(x).
-// You're done when the test in `UseIntegerValueOfTest` passes.
+// TODO - This is a placeholder for an imperative recipe.
+// Implement a recipe that replaces all `new Integer(x)` constructors with Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.
+// You're done when all of the tests in `UseIntegerValueOfTest` pass.
 public class UseIntegerValueOf extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Use Integer.valueOf(x) instead of new Integer(x)";
+        return "Use Integer.valueOf(x) or Integer.parseInt(x) instead of new Integer(x)";
     }
 
     @Override
     public String getDescription() {
-        return "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x).";
+        return "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.";
     }
 }
