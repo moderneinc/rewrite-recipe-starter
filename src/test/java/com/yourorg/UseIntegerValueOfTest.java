@@ -46,4 +46,22 @@ class UseIntegerValueOfTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void replacesNewIntegerWithParseInt() {
+        rewriteRun(
+          java(
+            """
+            class Test {
+                Integer i = new Integer("42");
+            }
+            """,
+            """
+            class Test {
+                Integer i = Integer.parseInt("42");
+            }
+            """
+          )
+        );
+    }
 }
