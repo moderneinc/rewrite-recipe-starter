@@ -33,12 +33,14 @@ public class UseIntegerValueOf extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Use Integer.valueOf(x) or Integer.parseInt(x) instead of new Integer(x)";
+        //language=markdown
+        return "Use `Integer.valueOf(x)` or `Integer.parseInt(x)` instead of `new Integer(x)`";
     }
 
     @Override
     public String getDescription() {
-        return "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.";
+        //language=markdown
+        return "Replaces unnecessary boxing constructor calls with the more efficient `Integer.valueOf(x)` for `int` values, or `Integer.parseInt(x)` for `String` values.";
     }
 
     @Override
