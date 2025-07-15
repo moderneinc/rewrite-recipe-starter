@@ -25,7 +25,7 @@ import org.openrewrite.java.MethodMatcher;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.Expression;
 import org.openrewrite.java.tree.J;
-import org.openrewrite.java.tree.JavaType;
+import org.openrewrite.java.tree.TypeUtils;
 
 public class UseIntegerValueOf extends Recipe {
 
@@ -58,18 +58,15 @@ public class UseIntegerValueOf extends Recipe {
                         }
 
                         Expression arg = nc.getArguments().get(0);
-                        if (arg.getType() instanceof JavaType.Class) {
-                            JavaType.Class clazz = (JavaType.Class) arg.getType();
-                            if ("java.lang.String".equals(clazz.getFullyQualifiedName())) {
-                                return JavaTemplate.builder("Integer.parseInt(#{any(java.lang.String)})")
-                                        .build()
-                                        .apply(getCursor(), nc.getCoordinates().replace(), arg);
-                            }
+                        if (TypeUtils.isString(arg.getType())) {
+                            return JavaTemplate.builder("Integer.parseInt(#{any(java.lang.String)})")
+                                    .build()
+                                    .apply(getCursor(), nc.getCoordinates().replace(), arg);
+                        } else {
+                            return JavaTemplate.builder("Integer.valueOf(#{any()})")
+                                    .build()
+                                    .apply(getCursor(), nc.getCoordinates().replace(), arg);
                         }
-
-                        return JavaTemplate.builder("Integer.valueOf(#{any()})")
-                                .build()
-                                .apply(getCursor(), nc.getCoordinates().replace(), arg);
                     }
                 }
         );
