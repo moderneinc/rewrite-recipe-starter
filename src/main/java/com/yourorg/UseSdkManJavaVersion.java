@@ -58,6 +58,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
     @Override
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
         if (!acc.sdkmanrcExists && 8 <= acc.javaVersion) {
+            // Create an empty .sdkmanrc file for now, and add content in getVisitor(Accumulator acc)
             return Collections.singletonList(
                     PlainText.builder()
                             .text("")
@@ -67,7 +68,6 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
         }
         // If a .sdkmanrc file already exists, we will not generate a new one
         return Collections.emptyList();
-        // we have to create a .sdkmanrc file to later add the java version configuration
     }
 
     @Override
