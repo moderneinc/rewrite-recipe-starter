@@ -31,8 +31,8 @@ class SimplifyTernaryTest implements RewriteTest {
         spec.recipe(new SimplifyTernaryRecipes());
     }
 
-    @Test
     @DocumentExample
+    @Test
     void simplified() {
         rewriteRun(
           //language=java
