@@ -129,7 +129,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
     }
 
     @Test
-    void fallbackToJava8WhenNoVersionsFound() {
+    void noJavaVersionMarkerMeansNoFileCreated() {
         rewriteRun(
           mavenProject(
             "test",
@@ -137,13 +137,6 @@ class UseSdkManJavaVersionTest implements RewriteTest {
             text("""
               non java version text
               """)
-          ),
-          text(
-            null,
-            """
-              java=8
-              """,
-            sourceSpecs -> sourceSpecs.path(Path.of(".sdkmanrc"))
           )
         );
     }

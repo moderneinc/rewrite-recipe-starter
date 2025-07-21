@@ -1,17 +1,16 @@
 package com.yourorg;
 
-import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
-import org.openrewrite.java.marker.JavaProject;
-import org.openrewrite.java.marker.JavaSourceSet;
 import org.openrewrite.java.marker.JavaVersion;
 import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.JavaSourceFile;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 
 public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Accumulator> {
 
@@ -33,75 +32,62 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
 
     public static class Accumulator {
         boolean sdkmanrcExists = false;
-        final Map<SourceSetCoordinate, Integer> javaVersions = new HashMap<>();
-
-        @Value
-        static class SourceSetCoordinate {
-            JavaProject javaProject;
-            String sourceSetName;
-        }
+        int javaVersion = -1;
     }
-
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(Accumulator acc) {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
-            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext context, Cursor parent) {
-                if (tree instanceof J.CompilationUnit) {
-                    J.CompilationUnit cu = (J.CompilationUnit) tree;
-                    // we have a java file which usually has the project, source set and java version markers
-                    // Visit the compilation unit to find Java version markers
-                    Optional<JavaVersion> javaVersion = cu.getMarkers().findFirst(JavaVersion.class);
-                    Optional<JavaProject> javaProject = cu.getMarkers().findFirst(JavaProject.class);
-
-                    if (javaVersion.isPresent() && javaProject.isPresent()) {
-                        // is we have all the information we can store it in the accumulator
-                        String sourceSetName = cu.getMarkers().findFirst(JavaSourceSet.class).map(JavaSourceSet::getName).orElse("main");
-                        acc.javaVersions.putIfAbsent(new Accumulator.SourceSetCoordinate(javaProject.get(), sourceSetName), javaVersion.get().getMajorVersion());
-                    }
-                } else if (tree instanceof PlainText) {
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
+                if (tree instanceof PlainText) {
                     // Check if the current tree is a PlainText file, which could be a .sdkmanrc file
                     acc.sdkmanrcExists |= ((PlainText) tree).getSourcePath().endsWith(".sdkmanrc");
+                } else if (tree instanceof JavaSourceFile) {
+                    // we have a java file which usually has the project, source set and java version markers
+                    // Visit the compilation unit to find Java version markers
+                    tree.getMarkers()
+                            .findFirst(JavaVersion.class)
+                            .ifPresent(version -> acc.javaVersion = Math.max(acc.javaVersion, version.getMajorVersion()));
                 }
-                return super.visit(tree, context, parent);
+                return super.visit(tree, ctx);
             }
         };
     }
 
     @Override
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
-        if (acc.sdkmanrcExists) {
-            // If a .sdkmanrc file already exists, we will not generate a new one
-            return Collections.emptyList();
+        if (!acc.sdkmanrcExists && 8 <= acc.javaVersion) {
+            return Collections.singletonList(
+                    PlainText.builder()
+                            .text("")
+                            .sourcePath(Paths.get(".sdkmanrc"))
+                            .build()
+            );
         }
-        // we nhave to create a .sdkmanrc file to later ad the java version configuration
-        return Collections.singletonList(
-                PlainText.builder()
-                        .text("")
-                        .sourcePath(Paths.get(".sdkmanrc"))
-                        .build()
-        );
+        // If a .sdkmanrc file already exists, we will not generate a new one
+        return Collections.emptyList();
+        // we have to create a .sdkmanrc file to later add the java version configuration
     }
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(Accumulator acc) {
-        return Preconditions.check(new FindSourceFiles(".sdkmanrc"),
+        return Preconditions.check(
+                new FindSourceFiles(".sdkmanrc"),
                 new PlainTextVisitor<ExecutionContext>() {
                     @Override
                     public PlainText visitText(PlainText text, ExecutionContext ctx) {
-                        int highestJavaVersion = acc.javaVersions.values().stream().max(Integer::compareTo).orElse(8);
-
-                        if (text.getText().contains("java=" + highestJavaVersion)) {
-                            // If the file already contains the highest java version, we do nothing
+                        // No change needed if no java version is set or already matches
+                        if (acc.javaVersion < 8 || text.getText().contains("java=" + acc.javaVersion)) {
                             return text;
-                        } else if (text.getText().contains("java=")) {
-                            // If the file contains a java version but not the highest one, we will update it
-                            return text.withText(text.getText().replaceAll("java=\\d+", "java=" + highestJavaVersion));
-                        } else {
-                            // If the file does not contain a java version, we will add it
-                            return text.withText(text.getText() + "\njava=" + highestJavaVersion);
                         }
+                        // If the file already contains the highest java version, we do nothing
+                        if (text.getText().contains("java=")) {
+                            // If the file contains a java version but not the highest one, we will update it
+                            return text.withText(text.getText().replaceAll("java=\\d+", "java=" + acc.javaVersion));
+                        }
+                        // If the file does not contain a java version, we will add it
+                        return text.withText(text.getText() + "\njava=" + acc.javaVersion);
                     }
                 }
         );
