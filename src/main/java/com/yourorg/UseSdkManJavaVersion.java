@@ -31,7 +31,6 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
         return new Accumulator();
     }
 
-
     public static class Accumulator {
         boolean sdkmanrcExists = false;
         final Map<SourceSetCoordinate, Integer> javaVersions = new HashMap<>();
@@ -46,10 +45,11 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(Accumulator acc) {
-        return new TreeVisitor<>() {
+        return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext context, Cursor parent) {
-                if (tree instanceof J.CompilationUnit cu) {
+                if (tree instanceof J.CompilationUnit) {
+                    J.CompilationUnit cu = (J.CompilationUnit) tree;
                     // we have a java file which usually has the project, source set and java version markers
                     // Visit the compilation unit to find Java version markers
                     Optional<JavaVersion> javaVersion = cu.getMarkers().findFirst(JavaVersion.class);
@@ -87,7 +87,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(Accumulator acc) {
         return Preconditions.check(new FindSourceFiles(".sdkmanrc"),
-                new PlainTextVisitor<>() {
+                new PlainTextVisitor<ExecutionContext>() {
                     @Override
                     public PlainText visitText(PlainText text, ExecutionContext ctx) {
                         int highestJavaVersion = acc.javaVersions.values().stream().max(Integer::compareTo).orElse(8);

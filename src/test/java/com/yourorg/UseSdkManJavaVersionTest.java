@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import static org.openrewrite.java.Assertions.*;
 import static org.openrewrite.test.SourceSpecs.text;
 
-public class UseSdkManJavaVersionTest implements RewriteTest {
+class UseSdkManJavaVersionTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
@@ -28,8 +28,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example.core;
                     
-                    public class CoreService {
-                        public void processData() {
+                    class CoreService {
+                        void processData() {
                             System.out.println("Processing data...");
                         }
                     }
@@ -42,8 +42,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example.web;
                     
-                    public class WebService {
-                        public void serveRequests() {
+                    class WebService {
+                        void serveRequests() {
                             System.out.println("Serving requests...");
                         }
                     }
@@ -73,8 +73,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example;
                     
-                    public class Service {
-                        public void doWork() {
+                    class Service {
+                        void doWork() {
                             System.out.println("Working...");
                         }
                     }
@@ -108,8 +108,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example;
                     
-                    public class Service {
-                        public void doWork() {
+                    class Service {
+                        void doWork() {
                             System.out.println("Working...");
                         }
                     }
@@ -159,8 +159,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example;
                     
-                    public class ModernService {
-                        public void useNewFeatures() {
+                    class ModernService {
+                        void useNewFeatures() {
                             System.out.println("Using Java 19 features...");
                         }
                     }
@@ -189,8 +189,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example.main;
                     
-                    public class MainService {
-                        public void mainWork() {
+                    class MainService {
+                        void mainWork() {
                             System.out.println("Main work...");
                         }
                     }
@@ -203,8 +203,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example.test;
                     
-                    public class TestHelper {
-                        public void testWork() {
+                    class TestHelper {
+                        void testWork() {
                             System.out.println("Test work...");
                         }
                     }
@@ -233,8 +233,8 @@ public class UseSdkManJavaVersionTest implements RewriteTest {
                   """
                     package com.example;
                     
-                    public class Service {
-                        public void doWork() {
+                    class Service {
+                        void doWork() {
                             System.out.println("Working...");
                         }
                     }
