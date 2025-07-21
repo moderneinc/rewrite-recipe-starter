@@ -274,3 +274,29 @@ examples:
           String s;
       }
     language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseSdkManJavaVersion
+examples:
+- description: ''
+  sources:
+  - before: |
+      package com.example.core;
+
+      class CoreService {
+          void processData() {
+              System.out.println("Processing data...");
+          }
+      }
+    language: java
+  - before: |
+      package com.example.web;
+
+      class WebService {
+          void serveRequests() {
+              System.out.println("Serving requests...");
+          }
+      }
+    language: java
+  - before: test
+    language: mavenProject
