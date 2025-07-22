@@ -94,22 +94,24 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     // Visit any method invocation, and replace matches with the new ArrayList instantiation.
                     @Override
                     public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
-                        if (NEW_ARRAY_LIST.matches(method)) {
-                            maybeRemoveImport("com.google.common.collect.Lists");
-                            maybeAddImport("java.util.ArrayList");
-                            return newArrayList.apply(getCursor(), method.getCoordinates().replace());
-                        } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
-                            maybeRemoveImport("com.google.common.collect.Lists");
-                            maybeAddImport("java.util.ArrayList");
-                            return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
-                        } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
-                            maybeRemoveImport("com.google.common.collect.Lists");
-                            maybeAddImport("java.util.ArrayList");
-                            return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
+                        if (NEW_ARRAY_LIST.matches( method )) {
+                            maybeRemoveImport( "com.google.common.collect.Lists" );
+                            maybeAddImport( "java.util.ArrayList" );
+                            return newArrayList.apply( getCursor(), method.getCoordinates().replace() );
                         }
-                        return super.visitMethodInvocation(method, ctx);
+                        if (NEW_ARRAY_LIST_ITERABLE.matches( method )) {
+                            maybeRemoveImport( "com.google.common.collect.Lists" );
+                            maybeAddImport( "java.util.ArrayList" );
+                            return newArrayListIterable.apply( getCursor(), method.getCoordinates().replace(),
+                                    method.getArguments().get( 0 ) );
+                        }
+                        if (NEW_ARRAY_LIST_CAPACITY.matches( method )) {
+                            maybeRemoveImport( "com.google.common.collect.Lists" );
+                            maybeAddImport( "java.util.ArrayList" );
+                            return newArrayListCapacity.apply( getCursor(), method.getCoordinates().replace(),
+                                    method.getArguments().get( 0 ) );
+                        }
+                        return super.visitMethodInvocation( method, ctx );
                     }
                 }
         );
