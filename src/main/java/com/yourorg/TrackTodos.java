@@ -55,35 +55,6 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
-        JavaIsoVisitor<ExecutionContext> javaIsoVisitor = new JavaIsoVisitor<ExecutionContext>() {
-            @Override
-            public @Nullable J visit(@Nullable Tree tree, ExecutionContext ctx) {
-                new TodoComment.Matcher().get(getCursor())
-                        .ifPresent(todos -> {
-                            acc.todos.add(todos);
-                        });
-                return super.visit(tree, ctx);
-            }
-        };
-
-        YamlIsoVisitor<ExecutionContext> yamlIsoVisitor = new YamlIsoVisitor<ExecutionContext>() {
-            @Override
-            public @Nullable Yaml visit(@Nullable Tree tree, ExecutionContext ctx) {
-                new TodoComment.Matcher().get(getCursor())
-                        .ifPresent(todos -> acc.todos.add(todos));
-                return super.visit(tree, ctx);
-            }
-        };
-
-        XmlIsoVisitor<ExecutionContext> xmlIsoVisitor = new XmlIsoVisitor<ExecutionContext>() {
-            @Override
-            public @Nullable Xml visit(@Nullable Tree tree, ExecutionContext ctx) {
-                new TodoComment.Matcher().get(getCursor())
-                        .ifPresent(todos -> acc.todos.add(todos));
-                return super.visit(tree, ctx);
-            }
-        };
-
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
@@ -94,17 +65,12 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                 if ("TODO.md".equals(s.getSourcePath().toString())) {
                     acc.foundTodoFile = true;
                 }
-                if (javaIsoVisitor.isAcceptable(s, ctx)) {
-                    javaIsoVisitor.visit(tree, ctx);
-                }
-                if (yamlIsoVisitor.isAcceptable(s, ctx)) {
-                    yamlIsoVisitor.visit(tree, ctx);
-                }
-                if (xmlIsoVisitor.isAcceptable(s, ctx)) {
-                    xmlIsoVisitor.visit(tree, ctx);
-                }
-
-                return tree;
+                return new TodoComment.Matcher()
+                        .asVisitor((todo, context) -> {
+                            acc.todos.add(todo);
+                            return todo.getTree();
+                        })
+                        .visit(tree, ctx);
             }
         };
     }
