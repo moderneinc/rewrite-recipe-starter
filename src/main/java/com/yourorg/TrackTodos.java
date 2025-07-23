@@ -77,6 +77,17 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
+        // Insert data table rows first
+        for (TodoComment todo : acc.todos) {
+            for (String item : todo.getTodos()) {
+                String sourcePath = todo.getCursor().firstEnclosingOrThrow(SourceFile.class).getSourcePath().toString();
+                //System.out.println(sourcePath);
+                //System.out.println(item);
+                //System.out.println(todo.getTree().getClass().toString());
+                //System.out.println();
+                todoCommentsTable.insertRow(ctx, new TodoCommentsReport.Row(sourcePath, item, todo.getTree().getClass().toString()));
+            }
+        }
         if (acc.foundTodoFile) {
             return Collections.emptyList();
         }
@@ -99,23 +110,12 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                 if (!"TODO.md".equals(t.getSourcePath().toString())) {
                     return t;
                 }
-                StringBuilder sb = new StringBuilder();
-                for (TodoComment todo : acc.todos) {
-                    for (String item : todo.getTodos()) {
-                        sb.append(item).append("\n");
-                        String sourcePath = todo.getCursor().firstEnclosingOrThrow(SourceFile.class).getSourcePath().toString();
-                        System.out.println(sourcePath);
-                        System.out.println(item);
-                        System.out.println(todo.getTree().getClass().toString());
-                        System.out.println();
-                        todoCommentsTable.insertRow(ctx, new TodoCommentsReport.Row(sourcePath, item, todo.getTree().getClass().toString()));
-                    }
-                }
-
-                String allComments = sb.toString();
-                String headerText = header == null ? "## To Do List" : header;
-                // Append the comments to the end of the file
-                return t.withText((headerText + "\n" + allComments).trim());
+                return t.withText(
+                    acc.todos.stream()
+                        .flatMap(todo -> todo.getTodos().stream())
+                        .map(String::trim)
+                        .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                );
             }
         };
     }

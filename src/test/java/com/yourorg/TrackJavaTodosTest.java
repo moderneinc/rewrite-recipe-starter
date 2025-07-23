@@ -75,7 +75,7 @@ class TrackJavaTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """,
+              """ + "\n",
             spec -> spec.path(Path.of("TODO.md")
             )
           )

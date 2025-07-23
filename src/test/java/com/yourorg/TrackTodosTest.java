@@ -91,7 +91,7 @@ class TrackTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """,
+              """ + "\n",
             spec -> spec.path(Path.of("TODO.md")
             )
           )
@@ -165,7 +165,7 @@ class TrackTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """,
+              """ + "\n",
             spec -> spec.path(Path.of("TODO.md")
             )
           )
@@ -233,13 +233,13 @@ class TrackTodosTest implements RewriteTest {
               """),
           //language=markdown
           text(
-            null,
+            "",
             """
               ## Test Header
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """,
+              """ + "\n",
             spec -> spec.path(Path.of("TODO.md")
             )
           )

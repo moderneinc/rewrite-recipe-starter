@@ -105,14 +105,11 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
                 if (!"TODO.md".equals(t.getSourcePath().toString())) {
                     return t;
                 }
-                StringBuilder sb = new StringBuilder();
-                for (String todo : acc.todos) {
-                    sb.append(todo.trim()).append("\n");
-                }
-
-                String allComments = sb.toString();
-                String headerText = header == null ? "## To Do List" : header;
-                return t.withText((headerText + "\n" + allComments).trim());
+                return t.withText(
+                    acc.todos.stream()
+                        .map(String::trim)
+                        .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                );
             }
         };
     }
