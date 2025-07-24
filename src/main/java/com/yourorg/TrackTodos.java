@@ -6,18 +6,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
-import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.tree.*;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.text.PlainTextVisitor;
-import org.openrewrite.xml.XmlIsoVisitor;
-import org.openrewrite.xml.tree.Xml;
-import org.openrewrite.yaml.YamlIsoVisitor;
-import org.openrewrite.yaml.tree.Yaml;
 
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 @Value
@@ -111,10 +107,10 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                     return t;
                 }
                 return t.withText(
-                    acc.todos.stream()
-                        .flatMap(todo -> todo.getTodos().stream())
-                        .map(String::trim)
-                        .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                        acc.todos.stream()
+                                .flatMap(todo -> todo.getTodos().stream())
+                                .map(String::trim)
+                                .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
                 );
             }
         };
