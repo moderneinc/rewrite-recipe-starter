@@ -36,7 +36,7 @@ class TrackJavaTodosTest implements RewriteTest {
               """),
           //language=markdown
           text(
-            null,
+            doesNotExist(),
             """
               ## Test Header
               TODO: Have fun
