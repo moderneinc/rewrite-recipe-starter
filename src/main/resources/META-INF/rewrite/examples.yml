@@ -255,6 +255,21 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseIntegerValueOf
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Test {
+          Integer i = new Integer(42);
+      }
+    after: |
+      class Test {
+          Integer i = Integer.valueOf(42);
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseOpenRewriteNullable
 examples:
 - description: ''
