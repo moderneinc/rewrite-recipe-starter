@@ -86,6 +86,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-xml</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-java-dependencies</artifactId>
         </dependency>
