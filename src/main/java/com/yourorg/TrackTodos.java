@@ -33,7 +33,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
     }
 
     @Option(displayName = "Header",
-            description = "Header for TODO.md.",
+            description = "Header for TODO.md. Defaults to `## To Do List` if not provided.",
             example = "## To Do List",
             required = false)
     @Nullable
