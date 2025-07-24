@@ -55,7 +55,7 @@ class AppendToReleaseNotesTest implements RewriteTest {
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           text(
-            null,
+            doesNotExist(),
             """
               Hello world
               """,
