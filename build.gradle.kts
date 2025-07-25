@@ -24,6 +24,7 @@ dependencies {
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite:rewrite-yaml")
+    implementation("org.openrewrite:rewrite-xml")
     implementation("org.openrewrite.meta:rewrite-analysis")
     implementation("org.assertj:assertj-core:latest.release")
     runtimeOnly("org.openrewrite:rewrite-java-17")
