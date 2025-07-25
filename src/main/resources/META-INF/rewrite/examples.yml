@@ -207,6 +207,46 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackJavaTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UpdateConcoursePipeline
 examples:
 - description: ''
@@ -251,6 +291,21 @@ examples:
           boolean test(String s) {
               return StringUtils.containsWhitespace(s);
           }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseIntegerValueOf
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Test {
+          Integer i = new Integer(42);
+      }
+    after: |
+      class Test {
+          Integer i = Integer.valueOf(42);
       }
     language: java
 ---

@@ -7,7 +7,7 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 
-import java.util.*;
+import java.util.LinkedHashSet;
 
 // TODO - This is a placeholder for a scanning recipe that uses traits and data tables.
 // Implement a recipe that finds any comments in Java, XML, or YAML source files that contain `TODO`, and add them to a file called `TODO.md`.
