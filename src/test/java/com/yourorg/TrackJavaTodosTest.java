@@ -23,32 +23,31 @@ class TrackJavaTodosTest implements RewriteTest {
     void createNewTodoFile() {
         rewriteRun(
                 //language=java
-                java(
-                """
-              class A {
-                  // TODO: Have fun
-                  /* TODO: Test your code */
-                  // Just a regular comment
-                  public String foo() {
-                    // TODO: Learn
-                    return "bar";
-                  }
-                  // Another regular comment
+            java(
+            """
+          class A {
+              // TODO: Have fun
+              /* TODO: Test your code */
+              // Just a regular comment
+              public String foo() {
+                // TODO: Learn
+                return "bar";
               }
-              """
-                ),
-                //language=markdown
-                text(
-                        doesNotExist(),
-                        """
-                          ## Test Header
-                          TODO: Have fun
-                          TODO: Test your code
-                          TODO: Learn
-                          """,
-                        spec -> spec.path(Path.of("TODO.md")
-                        )
-                )
+              // Another regular comment
+          }
+          """
+            ),
+            //language=markdown
+            text(
+                    doesNotExist(),
+                    """
+                      ## Test Header
+                      TODO: Have fun
+                      TODO: Test your code
+                      TODO: Learn
+                      """,
+                    spec -> spec.path(Path.of("TODO.md")).noTrim()
+            )
         );
     }
 
@@ -56,33 +55,62 @@ class TrackJavaTodosTest implements RewriteTest {
     @Test
     void editExistingTodoFile() {
         rewriteRun(
-                //language=java
-                java(
-                """
-              class A {
-                  // TODO: Have fun
-                  /* TODO: Test your code */
-                  // Just a regular comment
-                  public String foo() {
-                    // TODO: Learn
-                    return "bar";
-                  }
-                  // Another regular comment
+            //language=java
+            java(
+            """
+          class A {
+              // TODO: Have fun
+              /* TODO: Test your code */
+              // Just a regular comment
+              public String foo() {
+                // TODO: Learn
+                return "bar";
               }
-              """
-                ),
-                //language=markdown
-                text(
-                        "",
-                        """
-                          ## Test Header
-                          TODO: Have fun
-                          TODO: Test your code
-                          TODO: Learn
-                          """ + "\n",
-                        spec -> spec.path(Path.of("TODO.md")
-                        )
-                )
+              // Another regular comment
+          }
+          """
+            ),
+            //language=markdown
+            text(
+                    "",
+                    """
+                      ## Test Header
+                      TODO: Have fun
+                      TODO: Test your code
+                      TODO: Learn
+                      """ + "\n",
+                    spec -> spec.path(Path.of("TODO.md")).noTrim()
+            )
+        );
+    }
+    @Test
+    void doNotTouchExistingCorrectFile() {
+        rewriteRun(
+            //language=java
+            java(
+                    """
+                  class A {
+                      // TODO: Have fun
+                      /* TODO: Test your code */
+                      // Just a regular comment
+                      public String foo() {
+                        // TODO: Learn
+                        return "bar";
+                      }
+                      // Another regular comment
+                  }
+                  """
+            ),
+            //language=markdown
+            text(
+                    """
+                    ## Test Header
+                    TODO: Have fun
+                    TODO: Test your code
+                    TODO: Learn
+                    """,
+                    spec -> spec.path(Path.of("TODO.md")).noTrim()
+            )
         );
     }
 }
