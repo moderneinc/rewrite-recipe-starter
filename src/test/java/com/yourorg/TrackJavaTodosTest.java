@@ -43,8 +43,7 @@ class TrackJavaTodosTest implements RewriteTest {
               TODO: Test your code
               TODO: Learn
               """,
-            spec -> spec.path(Path.of("TODO.md")
-            )
+            spec -> spec.path(Path.of("TODO.md")).noTrim()
           )
         );
     }
@@ -75,9 +74,41 @@ class TrackJavaTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """ + "\n",
-            spec -> spec.path(Path.of("TODO.md")
-            )
+              """,
+            spec -> spec.path(Path.of("TODO.md")).noTrim()
+          )
+        );
+    }
+
+    @Test
+    void doNotTouchExistingCorrectFile() {
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
+        rewriteRun(
+          //language=java
+          java(
+                """
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
+              }
+              """
+          ),
+          //language=markdown
+          text(
+            """
+            ## Test Header
+            TODO: Have fun
+            TODO: Test your code
+            TODO: Learn
+            """,
+            spec -> spec.path(Path.of("TODO.md")).noTrim()
           )
         );
     }

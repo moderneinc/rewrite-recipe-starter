@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
+import org.openrewrite.test.SourceSpec;
 
 import java.nio.file.Path;
 
@@ -17,7 +18,8 @@ import static org.openrewrite.yaml.Assertions.yaml;
 class TrackTodosTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new TrackTodos("## Test Header"));
+        spec.recipe(new TrackTodos("## Test Header"))
+                .allSources(SourceSpec::noTrim);
     }
 
     @DocumentExample
@@ -91,7 +93,7 @@ class TrackTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """ + "\n",
+              """,
             spec -> spec.path(Path.of("TODO.md")
             )
           )
@@ -165,7 +167,7 @@ class TrackTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """ + "\n",
+              """,
             spec -> spec.path(Path.of("TODO.md")
             )
           )
@@ -239,7 +241,7 @@ class TrackTodosTest implements RewriteTest {
               TODO: Have fun
               TODO: Test your code
               TODO: Learn
-              """ + "\n",
+              """,
             spec -> spec.path(Path.of("TODO.md")
             )
           )
