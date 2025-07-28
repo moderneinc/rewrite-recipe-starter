@@ -207,6 +207,46 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackJavaTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UpdateConcoursePipeline
 examples:
 - description: ''

@@ -51,11 +51,11 @@ class AppendToReleaseNotesTest implements RewriteTest {
 
     @Test
     void createNewReleaseNotes() {
-        // Notice how the before text is null, indicating that the file does not exist yet.
+        // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           text(
-            null,
+            doesNotExist(),
             """
               Hello world
               """,
