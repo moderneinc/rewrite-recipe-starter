@@ -25,7 +25,8 @@ class TrackTodosTest implements RewriteTest {
     @DocumentExample
     @Test
     void createNewTodoFileJava() {
-        // When the file does already exist, we assert the content is modified as expected.
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
               assertThat(rows).containsExactly(
@@ -63,8 +64,7 @@ class TrackTodosTest implements RewriteTest {
 
     @Test
     void editExistingTodoFileJava() {
-        // Notice how the before text is null, indicating that the file does not exist yet.
-        // The after text is the content of the file after the recipe is applied.
+        // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
           spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
               assertThat(rows).containsExactly(
@@ -100,10 +100,10 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @DocumentExample
     @Test
     void createNewTodoFileYAML() {
-        // When the file does already exist, we assert the content is modified as expected.
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
               assertThat(rows).containsExactly(
@@ -137,7 +137,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @DocumentExample
     @Test
     void editExistingTodoFileYAML() {
         // When the file does already exist, we assert the content is modified as expected.
@@ -174,10 +173,10 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @DocumentExample
     @Test
     void createNewTodoFileXML() {
-        // When the file does already exist, we assert the content is modified as expected.
+        // Notice how the before text is null, indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
               assertThat(rows).containsExactly(
@@ -211,7 +210,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @DocumentExample
     @Test
     void editExistingTodoFileXML() {
         // When the file does already exist, we assert the content is modified as expected.
