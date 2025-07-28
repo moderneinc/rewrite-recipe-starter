@@ -109,6 +109,9 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
                 if (!"TODO.md".equals(t.getSourcePath().toString())) {
                     return t;
                 }
+                // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
+                // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
+                // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
                 return t.withText(
                     acc.todos.stream()
                         .map(String::trim)
