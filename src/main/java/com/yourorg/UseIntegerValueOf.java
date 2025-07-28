@@ -64,11 +64,10 @@ public class UseIntegerValueOf extends Recipe {
                             return JavaTemplate.builder("Integer.parseInt(#{any(java.lang.String)})")
                                     .build()
                                     .apply(getCursor(), nc.getCoordinates().replace(), arg);
-                        } else {
-                            return JavaTemplate.builder("Integer.valueOf(#{any()})")
-                                    .build()
-                                    .apply(getCursor(), nc.getCoordinates().replace(), arg);
                         }
+                        return JavaTemplate.builder("Integer.valueOf(#{any()})")
+                                .build()
+                                .apply(getCursor(), nc.getCoordinates().replace(), arg);
                     }
                 }
         );

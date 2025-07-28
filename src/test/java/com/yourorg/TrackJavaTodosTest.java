@@ -7,8 +7,8 @@ import org.openrewrite.test.RewriteTest;
 
 import java.nio.file.Path;
 
-import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.java.Assertions.java;
+import static org.openrewrite.test.SourceSpecs.text;
 
 class TrackJavaTodosTest implements RewriteTest {
     @Override
@@ -23,7 +23,8 @@ class TrackJavaTodosTest implements RewriteTest {
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           //language=java
-          java("""
+          java(
+                """
               class A {
                   // TODO: Have fun
                   /* TODO: Test your code */
@@ -34,7 +35,8 @@ class TrackJavaTodosTest implements RewriteTest {
                   }
                   // Another regular comment
               }
-              """),
+              """
+          ),
           //language=markdown
           text(
             doesNotExist(),
@@ -54,7 +56,8 @@ class TrackJavaTodosTest implements RewriteTest {
         // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
           //language=java
-          java("""
+          java(
+                """
               class A {
                   // TODO: Have fun
                   /* TODO: Test your code */
@@ -65,7 +68,8 @@ class TrackJavaTodosTest implements RewriteTest {
                   }
                   // Another regular comment
               }
-              """),
+              """
+          ),
           //language=markdown
           text(
             "",

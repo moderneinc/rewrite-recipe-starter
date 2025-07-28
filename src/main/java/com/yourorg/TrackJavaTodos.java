@@ -5,13 +5,17 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.java.JavaIsoVisitor;
-import org.openrewrite.java.tree.*;
+import org.openrewrite.java.tree.Comment;
+import org.openrewrite.java.tree.Space;
+import org.openrewrite.java.tree.TextComment;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
 @Value

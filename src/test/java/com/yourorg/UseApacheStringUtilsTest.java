@@ -81,8 +81,8 @@ class UseApacheStringUtilsTest implements RewriteTest {
         );
     }
 
-    @Test
     @SuppressWarnings("deprecation")
+    @Test
     void useTrimWhitespace() {
         rewriteRun(
           //language=java

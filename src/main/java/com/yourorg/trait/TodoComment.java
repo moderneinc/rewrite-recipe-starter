@@ -5,13 +5,15 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.Tree;
-import org.openrewrite.java.tree.*;
+import org.openrewrite.java.tree.Comment;
+import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.Space;
+import org.openrewrite.java.tree.TextComment;
 import org.openrewrite.trait.SimpleTraitMatcher;
 import org.openrewrite.trait.Trait;
-
 import org.openrewrite.xml.tree.Misc;
-import org.openrewrite.yaml.tree.Yaml;
 import org.openrewrite.xml.tree.Xml;
+import org.openrewrite.yaml.tree.Yaml;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +76,6 @@ public class TodoComment implements Trait<Tree> {
             else if (v instanceof Xml) {
                 Xml x = (Xml) v;
                 if (x instanceof Xml.Prolog) {
-                    Xml.Prolog prolog = (Xml.Prolog) v;
                     for (Misc misc : ((Xml.Prolog) v).getMisc()) {
                         if (misc instanceof Xml.Comment) {
                             String textComment = ((Xml.Comment) misc).getText();

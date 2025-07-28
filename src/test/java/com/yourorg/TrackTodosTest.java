@@ -35,7 +35,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"));
           }),
           //language=java
-          java("""
+          java(
+                """
             class A {
                 // TODO: Have fun
                 /* TODO: Test your code */
@@ -46,7 +47,8 @@ class TrackTodosTest implements RewriteTest {
                 }
                 // Another regular comment
             }
-            """),
+            """
+          ),
           //language=markdown
           text(
             doesNotExist(),
@@ -73,7 +75,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"));
           }),
           //language=java
-          java("""
+          java(
+                """
             class A {
                 // TODO: Have fun
                 /* TODO: Test your code */
@@ -84,7 +87,8 @@ class TrackTodosTest implements RewriteTest {
                 }
                 // Another regular comment
             }
-            """),
+            """
+          ),
           //language=markdown
           text(
             "",
@@ -112,7 +116,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"));
           }),
           //language=yaml
-          yaml("""
+          yaml(
+                """
             # TODO: Have fun
             someyaml: "here"
             moreyaml: "there"
@@ -121,7 +126,8 @@ class TrackTodosTest implements RewriteTest {
             # Just a regular comment
             tabs:
               are: "fun"
-            """),
+            """
+          ),
           //language=markdown
           text(
             doesNotExist(),
@@ -148,7 +154,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"));
           }),
           //language=yaml
-          yaml("""
+          yaml(
+                """
             # TODO: Have fun
             someyaml: "here"
             moreyaml: "there"
@@ -157,7 +164,8 @@ class TrackTodosTest implements RewriteTest {
             # Just a regular comment
             tabs:
               are: "fun"
-            """),
+            """
+          ),
           //language=markdown
           text(
             "",
@@ -185,7 +193,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"));
           }),
           //language=xml
-          xml("""
+          xml(
+                """
             <!-- TODO: Have fun -->
             <!-- TODO: Test your code -->
             <xml>
@@ -194,7 +203,8 @@ class TrackTodosTest implements RewriteTest {
                 <verbose>for me</verbose>
             <!-- Just a regular comment -->
             </xml>
-            """),
+            """
+          ),
           //language=markdown
           text(
             doesNotExist(),
@@ -221,7 +231,8 @@ class TrackTodosTest implements RewriteTest {
                 new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"));
           }),
           //language=xml
-          xml("""
+          xml(
+                """
             <!-- TODO: Have fun -->
             <!-- TODO: Test your code -->
             <xml>
@@ -230,7 +241,8 @@ class TrackTodosTest implements RewriteTest {
                 <verbose>for me</verbose>
             <!-- Just a regular comment -->
             </xml>
-            """),
+            """
+          ),
           //language=markdown
           text(
             "",

@@ -14,8 +14,8 @@ public class UsingStrings {
     }
 
     private static boolean anyEmpty(String s1, String s2, String s3) {
-        return s1.equals("")
-                || "".equals(s2)
-                || Objects.equals("", s3);
+        return s1.equals("") ||
+                "".equals(s2) ||
+                Objects.equals("", s3);
     }
 }
