@@ -25,6 +25,8 @@ class TrackTodosTest implements RewriteTest {
     @DocumentExample
     @Test
     void createNewTodoFileJava() {
+        // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
                 // TODO: Uncomment the lines below once you have implemented the recipe
                 //spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
@@ -107,6 +109,8 @@ class TrackTodosTest implements RewriteTest {
     @Disabled
     @Test
     void createNewTodoFileYAML() {
+        // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
                 // TODO: Uncomment the lines below once you have implemented the recipe
                 //spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
@@ -185,6 +189,8 @@ class TrackTodosTest implements RewriteTest {
     @Disabled
     @Test
     void createNewTodoFileXML() {
+        // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
                 // TODO: Uncomment the lines below once you have implemented the recipe
                 //spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
