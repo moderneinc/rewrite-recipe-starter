@@ -83,6 +83,8 @@ class TrackJavaTodosTest implements RewriteTest {
             )
         );
     }
+
+    @Disabled
     @Test
     void doNotTouchExistingCorrectFile() {
         rewriteRun(

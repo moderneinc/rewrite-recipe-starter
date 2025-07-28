@@ -14,6 +14,8 @@ import org.openrewrite.yaml.tree.Yaml;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO - This is a placeholder for a trait.
+// Implement a trait that that defines how to match `TODO` comments across Java, YAML, and XML files.
 @Value
 public class TodoComment implements Trait<Tree> {
 
