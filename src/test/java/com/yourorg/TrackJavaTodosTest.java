@@ -19,7 +19,8 @@ class TrackJavaTodosTest implements RewriteTest {
     @DocumentExample
     @Test
     void createNewTodoFile() {
-        // When the file does already exist, we assert the content is modified as expected.
+        // Notice how the before text is null (=> doesNotExist()), indicating that the file does not exist yet.
+        // The after text is the content of the file after the recipe is applied.
         rewriteRun(
           //language=java
           java("""
@@ -50,8 +51,7 @@ class TrackJavaTodosTest implements RewriteTest {
 
     @Test
     void editExistingTodoFile() {
-        // Notice how the before text is null, indicating that the file does not exist yet.
-        // The after text is the content of the file after the recipe is applied.
+        // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
           //language=java
           java("""
@@ -82,8 +82,7 @@ class TrackJavaTodosTest implements RewriteTest {
 
     @Test
     void doNotTouchExistingCorrectFile() {
-        // Notice how the before text is null, indicating that the file does not exist yet.
-        // The after text is the content of the file after the recipe is applied.
+        // When the file does already exist and is equal, we assert no changes are made by not having an after String.
         rewriteRun(
           //language=java
           java(
