@@ -28,9 +28,6 @@ import org.openrewrite.java.TreeVisitingPrinter;
 import org.openrewrite.java.search.UsesMethod;
 import org.openrewrite.java.tree.J;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class NoGuavaListsNewArrayList extends Recipe {
@@ -108,17 +105,20 @@ public class NoGuavaListsNewArrayList extends Recipe {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             return newArrayList.apply(getCursor(), method.getCoordinates().replace());
-                        } else if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
+                        }
+                        if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
                                     method.getArguments().get(0));
-                        } else if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
+                        }
+                        if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
                                     method.getArguments().get(0));
-                        } else if (NEW_ARRAY_LIST_ARRAY.matches(method)) {
+                        }
+                        if (NEW_ARRAY_LIST_ARRAY.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             maybeAddImport("java.util.List");

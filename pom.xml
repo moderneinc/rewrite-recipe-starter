@@ -86,6 +86,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-xml</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-java-dependencies</artifactId>
         </dependency>
@@ -126,14 +131,14 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>7.0.0-M6</version>
+            <version>7.0.0-M7</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>7.0.0-M6</version>
+            <version>7.0.0-M7</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

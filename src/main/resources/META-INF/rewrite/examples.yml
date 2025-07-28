@@ -207,6 +207,77 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.StringIsEmptyRecipe
+examples:
+- description: ''
+  sources:
+  - before: |
+      class A {
+          void test(String s, boolean b) {
+              b = s.length() == 0;
+              b = 0 == s.length();
+              b = s.length() < 1;
+              b = 1 > s.length();
+              b = s.equals("");
+              b = "".equals(s);
+              b = s.isEmpty();
+          }
+      }
+    after: |
+      class A {
+          void test(String s, boolean b) {
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackJavaTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackTodos
+examples:
+- description: ''
+  parameters:
+  - '## Test Header'
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UpdateConcoursePipeline
 examples:
 - description: ''
@@ -255,6 +326,21 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseIntegerValueOf
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Test {
+          Integer i = new Integer(42);
+      }
+    after: |
+      class Test {
+          Integer i = Integer.valueOf(42);
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseOpenRewriteNullable
 examples:
 - description: ''
@@ -274,3 +360,29 @@ examples:
           String s;
       }
     language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseSdkManJavaVersion
+examples:
+- description: ''
+  sources:
+  - before: |
+      package com.example.core;
+
+      class CoreService {
+          void processData() {
+              System.out.println("Processing data...");
+          }
+      }
+    language: java
+  - before: |
+      package com.example.web;
+
+      class WebService {
+          void serveRequests() {
+              System.out.println("Serving requests...");
+          }
+      }
+    language: java
+  - before: test
+    language: mavenProject

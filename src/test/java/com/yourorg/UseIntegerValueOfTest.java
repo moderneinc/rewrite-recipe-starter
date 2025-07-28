@@ -15,8 +15,8 @@
  */
 package com.yourorg;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
@@ -29,6 +29,7 @@ class UseIntegerValueOfTest implements RewriteTest {
         spec.recipe(new UseIntegerValueOf());
     }
 
+    @DocumentExample
     @Test
     void replacesNewIntegerWithValueOf() {
         rewriteRun(
