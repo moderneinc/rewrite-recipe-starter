@@ -46,7 +46,7 @@ class TrackJavaTodosTest implements RewriteTest {
               TODO: Test your code
               TODO: Learn
               """,
-            spec -> spec.path(Path.of("TODO.md")).noTrim()
+            spec -> spec.path(Path.of("TODO.md"))
           )
         );
     }
@@ -79,7 +79,7 @@ class TrackJavaTodosTest implements RewriteTest {
               TODO: Test your code
               TODO: Learn
               """,
-            spec -> spec.path(Path.of("TODO.md")).noTrim()
+            spec -> spec.path(Path.of("TODO.md"))
           )
         );
     }
@@ -111,7 +111,7 @@ class TrackJavaTodosTest implements RewriteTest {
             TODO: Test your code
             TODO: Learn
             """,
-            spec -> spec.path(Path.of("TODO.md")).noTrim()
+            spec -> spec.path(Path.of("TODO.md"))
           )
         );
     }

@@ -14,9 +14,13 @@ import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.Set;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -41,7 +45,7 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
 
     public static class TodoComments {
         boolean foundTodoFile;
-        LinkedHashSet<String> todos = new LinkedHashSet<>();
+        Set<String> todos = new LinkedHashSet<>();
     }
 
     @Override
@@ -51,15 +55,15 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
-        JavaIsoVisitor<ExecutionContext> javaIsoVisitor = new JavaIsoVisitor<ExecutionContext>() {
+        JavaIsoVisitor<ExecutionContext> extractJavaTodosVisitor = new JavaIsoVisitor<ExecutionContext>() {
             @Override
             public Space visitSpace(Space space, Space.Location loc, ExecutionContext ctx) {
                 for (Comment comment : space.getComments()) {
                     // Let's just match TextComments and ignore Javadoc comments
                     if (comment instanceof TextComment) {
-                        String c = ((TextComment) comment).getText();
-                        if (c.contains("TODO")) {
-                            acc.todos.add(c);
+                        String text = ((TextComment) comment).getText();
+                        if (text.contains("TODO")) {
+                            acc.todos.add(text);
                         }
                     }
                 }
@@ -73,12 +77,11 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
                 if (!(tree instanceof SourceFile)) {
                     return tree;
                 }
-                SourceFile s = (SourceFile) tree;
-                if ("TODO.md".equals(s.getSourcePath().toString())) {
+                SourceFile sourceFile = (SourceFile) tree;
+                if (sourceFile.getSourcePath().endsWith("TODO.md")) {
                     acc.foundTodoFile = true;
-                }
-                if (javaIsoVisitor.isAcceptable(s, ctx)) {
-                    javaIsoVisitor.visit(tree, ctx);
+                } else if (extractJavaTodosVisitor.isAcceptable(sourceFile, ctx)) {
+                    extractJavaTodosVisitor.visit(tree, ctx);
                 }
                 return tree;
             }
@@ -88,7 +91,7 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
     @Override
     public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
         if (acc.foundTodoFile) {
-            return Collections.emptyList();
+            return emptyList();
         }
         // If the file was not found, create it
         return PlainTextParser.builder().build()
@@ -96,7 +99,7 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
                 .parse("")
                 // Be sure to set the source path for any generated file, so that the visitor can find it
                 .map(it -> (SourceFile) it.withSourcePath(Paths.get("TODO.md")))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -105,18 +108,18 @@ public class TrackJavaTodos extends ScanningRecipe<TrackJavaTodos.TodoComments> 
             @Override
             public PlainText visitText(PlainText text, ExecutionContext ctx) {
                 PlainText t = super.visitText(text, ctx);
-                // If the file is not TODO.md, don't modify it
-                if (!"TODO.md".equals(t.getSourcePath().toString())) {
+                // Only modify the text if it is the TODO.md file
+                if (!t.getSourcePath().endsWith("TODO.md")) {
                     return t;
                 }
-                // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
+                // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different from the one that was passed into the method.
                 // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
                 // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
-                return t.withText(
-                    acc.todos.stream()
+                String prefix = Optional.ofNullable(header).orElse("## To Do List");
+                String content = acc.todos.stream()
                         .map(String::trim)
-                        .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
-                );
+                        .collect(joining("\n", prefix + "\n", ""));
+                return t.withText(content);
             }
         };
     }
