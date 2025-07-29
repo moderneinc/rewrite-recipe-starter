@@ -81,7 +81,7 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
         return PlainTextParser.builder().build()
                 // We start with an empty string that we then append to in the visitor
                 .parse("")
-                // Be sure to set the source path for any generated file, so that the visitor can find it
+                // Be sure to set the source path for any generated file to specify where to put it when the recipe run is completed
                 .map(it -> (SourceFile) it.withSourcePath(Paths.get("RELEASE.md")))
                 .collect(Collectors.toList());
     }
