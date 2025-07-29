@@ -36,6 +36,33 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.EqualsAvoidsNullRecipe
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Foo {
+          boolean unsafe(String actual) {
+              return actual.equals("literal");
+          }
+
+          boolean nullsafe(String actual) {
+              return actual != null && actual.equals("literal");
+          }
+      }
+    after: |
+      class Foo {
+          boolean unsafe(String actual) {
+              return "literal".equals(actual);
+          }
+
+          boolean nullsafe(String actual) {
+              return "literal".equals(actual);
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.FindSpringBeans
 examples:
 - description: ''
