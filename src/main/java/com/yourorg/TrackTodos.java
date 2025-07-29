@@ -14,7 +14,10 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.stream.Collectors;
+import java.util.Set;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -41,7 +44,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     public static class TodoComments {
         boolean foundTodoFile;
-        LinkedHashSet<TodoComment> todos = new LinkedHashSet<>();
+        Set<TodoComment> todos = new LinkedHashSet<>();
     }
 
     @Override
@@ -58,11 +61,12 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                     return tree;
                 }
                 SourceFile s = (SourceFile) tree;
-                if ("TODO.md".equals(s.getSourcePath().toString())) {
+                if (s.getSourcePath().endsWith("TODO.md")) {
                     acc.foundTodoFile = true;
+                    return tree; // Don't scan the TODO.md file itself
                 }
                 return new TodoComment.Matcher()
-                        .asVisitor((todo, context) -> {
+                        .asVisitor(todo -> {
                             acc.todos.add(todo);
                             return todo.getTree();
                         })
@@ -77,10 +81,6 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
         for (TodoComment todo : acc.todos) {
             for (String item : todo.getTodos()) {
                 String sourcePath = todo.getCursor().firstEnclosingOrThrow(SourceFile.class).getSourcePath().toString();
-                //System.out.println(sourcePath);
-                //System.out.println(item);
-                //System.out.println(todo.getTree().getClass().toString());
-                //System.out.println();
                 todoCommentsTable.insertRow(ctx, new TodoCommentsReport.Row(sourcePath, item, todo.getTree().getClass().toString()));
             }
         }
@@ -93,7 +93,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                 .parse("")
                 // Be sure to set the source path for any generated file to specify where to put it when the recipe run is completed
                 .map(it -> (SourceFile) it.withSourcePath(Paths.get("TODO.md")))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
@@ -103,7 +103,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
             public PlainText visitText(PlainText text, ExecutionContext ctx) {
                 PlainText t = super.visitText(text, ctx);
                 // If the file is not TODO.md, don't modify it
-                if (!"TODO.md".equals(t.getSourcePath().toString())) {
+                if (!t.getSourcePath().endsWith("TODO.md")) {
                     return t;
                 }
                 // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
@@ -113,7 +113,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
                         acc.todos.stream()
                                 .flatMap(todo -> todo.getTodos().stream())
                                 .map(String::trim)
-                                .collect(Collectors.joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                                .collect(joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
                 );
             }
         };
