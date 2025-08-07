@@ -15,9 +15,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- By convention, we develop recipes with Java 8 to be applicable to legacy code -->
-        <recipe.java.version>8</recipe.java.version>
+        <maven.compiler.release>8</maven.compiler.release>
         <!-- For tests, we recommend a java version newer than 15 to have textblocks available -->
-        <tests.java.version>21</tests.java.version>
+        <maven.compiler.testRelease>21</maven.compiler.testRelease>
     </properties>
 
     <dependencyManagement>
@@ -154,8 +154,6 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
-                    <source>${recipe.java.version}</source>
-                    <target>${recipe.java.version}</target>
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
@@ -172,20 +170,6 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
-                <executions>
-                    <!-- allow different Java versions for tests than recipes. -->
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>process-test-sources</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <source>${tests.java.version}</source>
-                            <target>${tests.java.version}</target>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
