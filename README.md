@@ -27,6 +27,8 @@ available in the OpenRewrite docs that provides more details than the below READ
   * [NoGuavaListsNewArrayListTest.java](./src/test/java/com/yourorg/NoGuavaListsNewArrayListTest.java) - A test class for the `NoGuavaListsNewArrayList` recipe.
 * [SimplifyTernary](./src/main/java/com/yourorg/SimplifyTernary.java) - An Refaster style recipe that simplifies ternary expressions.
   * [SimplifyTernaryTest](./src/test/java/com/yourorg/SimplifyTernaryTest.java) - A test class for the `SimplifyTernary` recipe.
+* [EqualsAvoidsNull](./src/main/java/com/yourorg/EqualsAvoidsNull.java) - A Refaster recipe that ensures `equals()` method calls avoid null pointer exceptions by calling equals on literals, by using `@Matches` on parameters.
+  * [EqualsAvoidsNullTest](./src/test/java/com/yourorg/EqualsAvoidsNullTest.java) - A test class for the `EqualsAvoidsNull` recipe.
 * [AssertEqualsToAssertThat](./src/main/java/com/yourorg/AssertEqualsToAssertThat.java) - An imperative Java recipe that replaces JUnit's `assertEquals` with AssertJ's `assertThat`, to show how to handle classpath dependencies.
   * [AssertEqualsToAssertThatTest](./src/test/java/com/yourorg/AssertEqualsToAssertThatTest.java) - A test class for the `AssertEqualsToAssertThat` recipe.
 * [AppendToReleaseNotes](./src/main/java/com/yourorg/AppendToReleaseNotes.java) - A ScanningRecipe that appends a message to the release notes of a project.

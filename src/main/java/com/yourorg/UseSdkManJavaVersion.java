@@ -9,7 +9,9 @@ import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 
 public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Accumulator> {
 
@@ -58,7 +60,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
         if (!acc.sdkmanrcExists && 8 <= acc.javaVersion) {
             // Create an empty .sdkmanrc file for now, and add content in getVisitor(Accumulator acc)
-            return Collections.singletonList(
+            return singletonList(
                     PlainText.builder()
                             .text("")
                             .sourcePath(Paths.get(".sdkmanrc"))
@@ -66,7 +68,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
             );
         }
         // If a .sdkmanrc file already exists, we will not generate a new one
-        return Collections.emptyList();
+        return emptyList();
     }
 
     @Override

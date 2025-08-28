@@ -1,3 +1,13 @@
+# to use the IntelliJ OpenRewrite plugin run action need the
+# org.openrewrite.recipe:rewrite-rewrite dependency on the classpath.
+# For Maven projects
+#   <dependency>
+#     <groupId>org.openrewrite.recipe</groupId>
+#     <artifactId>rewrite-rewrite</artifactId>
+#   </dependency>
+# For Gradle projects
+#   runtimeOnly("org.openrewrite.recipe:rewrite-rewrite")
+
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: com.yourorg.ApplyRecipeBestPractices

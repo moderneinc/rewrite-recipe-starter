@@ -36,6 +36,33 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.EqualsAvoidsNullRecipe
+examples:
+- description: ''
+  sources:
+  - before: |
+      class Foo {
+          boolean unsafe(String actual) {
+              return actual.equals("literal");
+          }
+
+          boolean nullsafe(String actual) {
+              return actual != null && actual.equals("literal");
+          }
+      }
+    after: |
+      class Foo {
+          boolean unsafe(String actual) {
+              return "literal".equals(actual);
+          }
+
+          boolean nullsafe(String actual) {
+              return "literal".equals(actual);
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.FindSpringBeans
 examples:
 - description: ''
@@ -202,37 +229,6 @@ examples:
 
           boolean booleanExpression() {
             return true;
-          }
-      }
-    language: java
----
-type: specs.openrewrite.org/v1beta/example
-recipeName: com.yourorg.StringIsEmptyRecipe
-examples:
-- description: ''
-  sources:
-  - before: |
-      class A {
-          void test(String s, boolean b) {
-              b = s.length() == 0;
-              b = 0 == s.length();
-              b = s.length() < 1;
-              b = 1 > s.length();
-              b = s.equals("");
-              b = "".equals(s);
-              b = s.isEmpty();
-          }
-      }
-    after: |
-      class A {
-          void test(String s, boolean b) {
-              b = s.isEmpty();
-              b = s.isEmpty();
-              b = s.isEmpty();
-              b = s.isEmpty();
-              b = s.isEmpty();
-              b = s.isEmpty();
-              b = s.isEmpty();
           }
       }
     language: java
