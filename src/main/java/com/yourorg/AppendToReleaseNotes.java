@@ -26,8 +26,9 @@ import org.openrewrite.text.PlainTextVisitor;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -75,7 +76,7 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
     @Override
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
         if (acc.found) {
-            return Collections.emptyList();
+            return emptyList();
         }
         // If the file was not found, create it
         return PlainTextParser.builder().build()
@@ -83,7 +84,7 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
                 .parse("")
                 // Be sure to set the source path for any generated file to specify where to put it when the recipe run is completed
                 .map(it -> (SourceFile) it.withSourcePath(Paths.get("RELEASE.md")))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
