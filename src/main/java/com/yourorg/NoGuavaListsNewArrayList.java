@@ -118,13 +118,6 @@ public class NoGuavaListsNewArrayList extends Recipe {
                             return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
                                     method.getArguments().get(0));
                         }
-                        if (NEW_ARRAY_LIST_ARRAY.matches(method)) {
-                            maybeRemoveImport("com.google.common.collect.Lists");
-                            maybeAddImport("java.util.ArrayList");
-                            maybeAddImport("java.util.List");
-                            return newArrayListArray.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
-                        }
                         return super.visitMethodInvocation(method, ctx);
                     }
                 }
