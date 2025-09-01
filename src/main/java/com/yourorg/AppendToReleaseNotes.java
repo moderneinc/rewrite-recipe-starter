@@ -66,7 +66,7 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
                 if (tree instanceof SourceFile) {
                     Path sourcePath = ((SourceFile) tree).getSourcePath();
-                    acc.found |= "RELEASE.md".equals(sourcePath.toString());
+                    acc.found |= sourcePath.endsWith("RELEASE.md");
                 }
                 return tree;
             }
