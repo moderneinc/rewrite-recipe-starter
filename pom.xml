@@ -166,7 +166,7 @@
                         <path>
                             <groupId>org.openrewrite</groupId>
                             <artifactId>rewrite-templating</artifactId>
-                            <version>1.29.1</version>
+                            <version>1.34.1</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
@@ -198,7 +198,7 @@
             <plugin>
                 <groupId>org.openrewrite.maven</groupId>
                 <artifactId>rewrite-maven-plugin</artifactId>
-                <version>6.15.0</version>
+                <version>6.17.0</version>
                 <configuration>
                     <failOnDryRunResults>true</failOnDryRunResults>
                 </configuration>
@@ -206,12 +206,12 @@
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
                         <artifactId>rewrite-migrate-java</artifactId>
-                        <version>3.14.1</version>
+                        <version>3.16.0</version>
                     </dependency>
                     <dependency>
                         <groupId>org.openrewrite.recipe</groupId>
                         <artifactId>rewrite-rewrite</artifactId>
-                        <version>0.10.1</version>
+                        <version>0.12.1</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -230,7 +230,7 @@
                     <plugin>
                         <groupId>org.openrewrite.maven</groupId>
                         <artifactId>rewrite-maven-plugin</artifactId>
-                        <version>6.15.0</version>
+                        <version>6.17.0</version>
                         <configuration>
                             <recipeArtifactCoordinates>
                                 junit:junit:3.8.1,
