@@ -27,7 +27,6 @@ import org.openrewrite.Recipe;
 @EqualsAndHashCode(callSuper = false)
 public class TrackJavaTodos extends Recipe {
 
-    transient TodoCommentsReport todoCommentsTable = new TodoCommentsReport(this);
 
     @Override
     public String getDisplayName() {
