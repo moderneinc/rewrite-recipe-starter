@@ -15,7 +15,6 @@
  */
 package com.yourorg;
 
-import com.yourorg.table.TodoCommentsReport;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.openrewrite.Recipe;
