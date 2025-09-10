@@ -8,7 +8,7 @@ recipeList:
   - org.openrewrite.java.format.AutoFormat
 
 ---
-type: specs.openrewrite.org/v1beta/example
+type: specs.openrewrite.org/v1beta/recipe
 name: io.moderne.recipes.Child
 displayName: Broken child recipe
 description: Child recipe which refers back to the parent.
