@@ -3,3 +3,8 @@ type: specs.openrewrite.org/v1beta/example
 recipeName: io.moderne.recipes.Parent
 examples:
   - description: ''
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: io.moderne.recipes.Child
+examples:
+  - description: ''
