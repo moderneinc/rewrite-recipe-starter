@@ -5,6 +5,7 @@ displayName: Broken parent recipe
 description: Parent recipe which refers to a child.
 recipeList:
   - io.moderne.recipes.Child
+  - org.openrewrite.java.format.AutoFormat
 
 ---
 type: specs.openrewrite.org/v1beta/example
@@ -13,3 +14,4 @@ displayName: Broken child recipe
 description: Child recipe which refers back to the parent.
 recipeList:
   - io.moderne.recipes.Parent
+  - org.openrewrite.java.format.AutoFormat
