@@ -15,8 +15,15 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude group: "com.azure", module: "azure-sdk-bom"
+}
+
 dependencies {
+    implementation(platform("io.moderne.gradle.platform:application-platform:0.129.0"))
     implementation("org.openrewrite:rewrite-java")
+    implementation("org.openrewrite:rewrite-groovy")
+    implementation("org.openrewrite:rewrite-yaml")
     runtimeOnly("org.openrewrite:rewrite-java-17")
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")

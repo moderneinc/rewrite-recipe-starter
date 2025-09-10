@@ -1,0 +1,15 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.moderne.recipes.Parent
+displayName: Broken parent recipe
+description: Parent recipe which refers to a child.
+recipeList:
+  - io.moderne.recipes.Child
+
+---
+type: specs.openrewrite.org/v1beta/example
+name: io.moderne.recipes.Child
+displayName: Broken child recipe
+description: Child recipe which refers back to the parent.
+recipeList:
+  - io.moderne.recipes.Parent
