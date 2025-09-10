@@ -1,10 +1,24 @@
 plugins {
-    id("io.moderne.gradle.library") version "latest.integration"
+    id("org.openrewrite.build.recipe-library-base") version "latest.release"
+
+    // This uses the nexus publishing plugin to publish to the moderne-dev repository
+    // Remove it if you prefer to publish by other means, such as the maven-publish plugin
+    id("org.openrewrite.build.publish") version "latest.release"
+    id("nebula.release") version "20.2.0" // Pinned as v21+ requires Gradle 9+
+
+    // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
+    // If you are operating in an environment where public repositories are not accessible, we recommend using a
+    // virtual repository which mirrors both maven central and nexus snapshots.
+    id("org.openrewrite.build.recipe-repositories") version "latest.release"
 }
 
 // Set as appropriate for your organization
 group = "io.moderne"
 description = "Rewrite recipes for the Moderne organization."
+
+tasks.named("compileJava") {
+    options.release.set(17)
+}
 
 repositories {
     mavenLocal()
@@ -20,7 +34,8 @@ configurations.all {
 }
 
 dependencies {
-    implementation(platform("io.moderne.gradle.platform:application-platform:0.129.0"))
+//    implementation(platform("io.moderne.gradle.platform:application-platform:0.129.0"))
+    implementation(platform("io.moderne.recipe:moderne-recipe-bom:0.18.0"))
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite:rewrite-groovy")
     implementation("org.openrewrite:rewrite-yaml")
@@ -31,7 +46,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly("com.google.guava:guava")
+    testRuntimeOnly("com.google.guava:guava:latest.release")
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.assertj:assertj-core")
