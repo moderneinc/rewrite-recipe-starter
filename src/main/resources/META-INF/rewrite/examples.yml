@@ -237,6 +237,24 @@ type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.TrackJavaTodos
 examples:
 - description: ''
+  sources:
+  - before: |
+      class A {
+          // TODO: Have fun
+          /* TODO: Test your code */
+          // Just a regular comment
+          public String foo() {
+            // TODO: Learn
+            return "bar";
+          }
+          // Another regular comment
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.TrackJavaTodosFile
+examples:
+- description: ''
   parameters:
   - '## Test Header'
   sources:
