@@ -1,0 +1,19 @@
+type: specs.openrewrite.org/v1beta/recipe
+name: com.project44.java.spring.boot3.EnableKafkaMessageTracing
+displayName: Enable kafka message tracing
+description: >-
+  When migrating from Spring Boot 2.x to 3.x, the default behavior for Kafka message tracing has changed.
+  In Spring Boot 2.x, Kafka message tracing was enabled by default, but in Spring Boot 3.x, it is disabled by default.
+  This recipe enables Kafka message tracing by calling the `setObservationEnabled(true)` on Kafka template and listener container factories.
+tags:
+  - spring
+  - boot
+  - kafka
+preconditions:
+  - org.openrewrite.gradle.search.ModuleHasDependency:
+      groupIdPattern: org.springframework.kafka
+      artifactIdPattern: spring-kafka
+      version: 3.x
+recipeList:
+  - io.moderne.java.spring.boot3.EnableKafkaListenerContainerFactoryObservationRecipe
+  - io.moderne.java.spring.boot3.EnableKafkaTemplateObservationRecipe

@@ -2,6 +2,7 @@ build/
 target/
 .gradle/
 .idea/
+.moderne/
 out/
 src/main/generated/
 .vscode/

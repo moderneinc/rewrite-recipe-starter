@@ -13,8 +13,8 @@ plugins {
 }
 
 // Set as appropriate for your organization
-group = "com.yourorg"
-description = "Rewrite recipes."
+group = "com.project44"
+description = "Moderne recipes for P44."
 
 dependencies {
     // The bom version can also be set to a specific version
@@ -43,12 +43,6 @@ dependencies {
 
     // Need to have a slf4j binding to see any output enabled from the parser.
     runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
-
-    // Our recipe converts Guava's `Lists` type
-    testRuntimeOnly("com.google.guava:guava:latest.release")
-    testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
-    testRuntimeOnly("org.springframework:spring-core:latest.release")
-    testRuntimeOnly("org.springframework:spring-context:latest.release")
 }
 
 signing {
@@ -71,4 +65,10 @@ configure<PublishingExtension> {
 
 tasks.register("licenseFormat") {
     println("License format task not implemented for rewrite-recipe-starter")
+}
+
+recipeDependencies {
+    parserClasspath("org.springframework:spring-beans:5.+")
+    parserClasspath("org.springframework:spring-context:5.+")
+    parserClasspath("org.springframework.kafka:spring-kafka:3.+")
 }
