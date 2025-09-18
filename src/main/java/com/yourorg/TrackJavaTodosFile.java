@@ -78,7 +78,7 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
                     if (comment instanceof TextComment) {
                         String text = ((TextComment) comment).getText();
                         if (text.contains("TODO")) {
-                            acc.todos.add(text);
+                            acc.todos.add(text.trim());
                         }
                     }
                 }
@@ -119,23 +119,21 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
-        return new PlainTextVisitor<ExecutionContext>() {
-            @Override
-            public PlainText visitText(PlainText text, ExecutionContext ctx) {
-                PlainText t = super.visitText(text, ctx);
+        return Preconditions.check(
                 // Only modify the text if it is the TODO.md file
-                if (!t.getSourcePath().endsWith("TODO.md")) {
-                    return t;
+                new FindSourceFiles("TODO.md"),
+                new PlainTextVisitor<ExecutionContext>() {
+                    @Override
+                    public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                        PlainText t = super.visitText(text, ctx);
+                        // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different from the one that was passed into the method.
+                        // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
+                        // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
+                        String prefix = Optional.ofNullable(header).orElse("## To Do List");
+                        String content = String.join("\n", acc.todos);
+                        return t.withText(prefix + "\n" + content);
+                    }
                 }
-                // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different from the one that was passed into the method.
-                // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
-                // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
-                String prefix = Optional.ofNullable(header).orElse("## To Do List");
-                String content = acc.todos.stream()
-                        .map(String::trim)
-                        .collect(joining("\n", prefix + "\n", ""));
-                return t.withText(content);
-            }
-        };
+        );
     }
 }
