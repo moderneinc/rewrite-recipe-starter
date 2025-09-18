@@ -89,21 +89,21 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(Accumulator acc) {
-        return new PlainTextVisitor<ExecutionContext>() {
-            @Override
-            public PlainText visitText(PlainText text, ExecutionContext ctx) {
-                PlainText t = super.visitText(text, ctx);
+        return Preconditions.check(
                 // If the file is not RELEASE.md, don't modify it
-                if (!"RELEASE.md".equals(t.getSourcePath().toString())) {
-                    return t;
-                }
-                // If the file already contains the message, don't append it again
-                if (t.getText().contains(message)) {
-                    return t;
-                }
-                // Append the message to the end of the file
-                return t.withText(t.getText() + "\n" + message);
-            }
-        };
+                new FindSourceFiles("RELEASE.md"),
+                new PlainTextVisitor<ExecutionContext>() {
+                    @Override
+                    public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                        PlainText t = super.visitText(text, ctx);
+                        // If the file does not already contain the message, append it
+                        if (!t.getText().contains(message)) {
+                            // Append the message to the end of the file
+                            return t.withText(t.getText() + "\n" + message);
+                        }
+                        // If the file already contains the message, don't append it again
+                        return t;
+                    }
+                });
     }
 }
