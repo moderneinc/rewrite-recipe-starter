@@ -15,7 +15,7 @@
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.AssertEqualsToAssertThat
 examples:
-- description: ''
+- description: '`AssertEqualsToAssertThatTest#twoArgument`'
   sources:
   - before: |
       import org.junit.jupiter.api.Assertions;
@@ -38,7 +38,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.EqualsAvoidsNullRecipe
 examples:
-- description: ''
+- description: '`EqualsAvoidsNullTest#beforeEquals`'
   sources:
   - before: |
       class Foo {
@@ -65,7 +65,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.FindSpringBeans
 examples:
-- description: ''
+- description: '`FindSpringBeansTest#findSpringBeans`'
   sources:
   - before: |
       import org.springframework.context.annotation.Bean;
@@ -124,7 +124,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.NoCollectionMutation
 examples:
-- description: ''
+- description: '`NoCollectionMutationTest#inlineMutation`'
   sources:
   - before: |
       import org.openrewrite.ExecutionContext;
@@ -157,7 +157,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.NoGuavaListsNewArrayList
 examples:
-- description: ''
+- description: '`NoGuavaListsNewArrayListTest#replaceWithNewArrayList`'
   sources:
   - before: |
       import com.google.common.collect.*;
@@ -179,7 +179,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.SimplifyTernaryRecipes
 examples:
-- description: ''
+- description: '`SimplifyTernaryTest#simplified`'
   sources:
   - before: |
       class Test {
@@ -236,7 +236,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.TrackJavaTodos
 examples:
-- description: ''
+- description: '`TrackJavaTodosTest#findTodos`'
   sources:
   - before: |
       class A {
@@ -254,7 +254,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.TrackJavaTodosFile
 examples:
-- description: ''
+- description: '`TrackJavaTodosFileTest#createNewTodoFile`'
   parameters:
   - '## Test Header'
   sources:
@@ -274,7 +274,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.TrackTodos
 examples:
-- description: ''
+- description: '`TrackTodosTest#createNewTodoFileJava`'
   parameters:
   - '## Test Header'
   sources:
@@ -294,7 +294,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UpdateConcoursePipeline
 examples:
-- description: ''
+- description: '`UpdateConcoursePipelineTest#updateTagFilter`'
   parameters:
   - 8.2.0
   sources:
@@ -319,7 +319,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseApacheStringUtils
 examples:
-- description: ''
+- description: '`UseApacheStringUtilsTest#replaceContainsWhitespace`'
   sources:
   - before: |
       import org.springframework.util.StringUtils;
@@ -342,7 +342,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseIntegerValueOf
 examples:
-- description: ''
+- description: '`UseIntegerValueOfTest#replacesNewIntegerWithValueOf`'
   sources:
   - before: |
       class Test {
@@ -357,7 +357,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseOpenRewriteNullable
 examples:
-- description: ''
+- description: '`UseOpenRewriteNullableTest#replacesNullableAnnotation`'
   sources:
   - before: |
       import org.jetbrains.annotations.Nullable;
@@ -378,7 +378,7 @@ examples:
 type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.UseSdkManJavaVersion
 examples:
-- description: ''
+- description: '`UseSdkManJavaVersionTest#createSdkmanrcFromMultipleJavaVersions`'
   sources:
   - before: |
       package com.example.core;
