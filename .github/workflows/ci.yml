@@ -29,8 +29,8 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-java@v5
         with:
-          distribution: zulu
-          java-version: 21
+          distribution: temurin
+          java-version: 25
       - uses: gradle/actions/setup-gradle@v5
       - name: build
         run: ./gradlew ${{ env.GRADLE_SWITCHES }} build test

@@ -17,7 +17,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
 
     @Override
     public String getDisplayName() {
-        return "Use SDKMan java version";
+        return "Use SDKMan Java version";
     }
 
     @Override
