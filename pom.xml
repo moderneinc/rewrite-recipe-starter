@@ -25,7 +25,7 @@
             <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-recipe-bom</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -97,6 +97,22 @@
         <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-java-dependencies</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-java-17</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-java-21</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-java-25</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
