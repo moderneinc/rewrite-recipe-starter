@@ -251,6 +251,7 @@
                         <configuration>
                             <recipeArtifactCoordinates>
                                 junit:junit:3.8.1,
+                                org.jspecify:jspecify:1.0.0
                             </recipeArtifactCoordinates>
                         </configuration>
                         <executions>
