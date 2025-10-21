@@ -16,6 +16,10 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
+recipeDependencies {
+    parserClasspath("org.jspecify:jspecify:1.0.0")
+}
+
 dependencies {
     // The bom version can also be set to a specific version
     // https://github.com/openrewrite/rewrite-recipe-bom/releases
@@ -78,4 +82,8 @@ configure<PublishingExtension> {
 
 tasks.register("licenseFormat") {
     println("License format task not implemented for rewrite-recipe-starter")
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Arewrite.javaParserClasspathFrom=resources")
 }
