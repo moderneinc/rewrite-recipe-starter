@@ -53,7 +53,7 @@ dependencies {
     testRuntimeOnly("org.openrewrite:rewrite-java-25")
 
     // Need to have a slf4j binding to see any output enabled from the parser.
-    runtimeOnly("ch.qos.logback:logback-classic:1.5.20")
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.+")
 
     // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
