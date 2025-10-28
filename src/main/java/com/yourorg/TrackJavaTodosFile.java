@@ -4,6 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
+import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.text.PlainText;
+import org.openrewrite.text.PlainTextVisitor;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -45,7 +48,7 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
-        return new TreeVisitor<Tree, ExecutionContext>() {
+        return new JavaIsoVisitor<ExecutionContext>() {
             // TODO: implement a scanner that looks for TODO comments in Java source files
         };
     }
@@ -58,7 +61,12 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
-        // TODO: generate a method to insert all todos to the TODO.md file
-        return super.getVisitor(acc);
+        return new PlainTextVisitor<ExecutionContext>() {
+            @Override
+            public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                // TODO: implement a method to insert all todos to the TODO.md file
+                return text;
+            }
+        };
     }
 }
