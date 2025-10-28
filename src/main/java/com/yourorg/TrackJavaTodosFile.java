@@ -5,11 +5,13 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
 
 // TODO - This is a placeholder for a scanning recipe.
 // Implement a recipe that finds any comments in Java source files that contain `TODO`, and add them to a file called `TODO.md`.
 // You're done when all of the tests in `TrackJavaTodosFileTest` pass.
+// Implement a scanner that collects `TODO` comments, a generate that creates the `TODO.md` file if needed, and a visitor that inserts the collected TODOs into the file.
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoComments> {
@@ -44,7 +46,19 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
         return new TreeVisitor<Tree, ExecutionContext>() {
-
+            // TODO: implement a scanner that looks for TODO comments in Java source files
         };
+    }
+
+    @Override
+    public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
+        // TODO: implement a method that generates TODO.md if there are any todos found and the file hasn't been created yet
+        return super.generate(acc, ctx);
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
+        // TODO: generate a method to insert all todos to the TODO.md file
+        return super.getVisitor(acc);
     }
 }
