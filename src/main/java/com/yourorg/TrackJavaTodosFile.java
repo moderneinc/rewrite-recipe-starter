@@ -56,7 +56,7 @@ public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoCo
     @Override
     public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
         // TODO: implement a method that generates TODO.md if there are any todos found and the file hasn't been created yet
-        return super.generate(acc, ctx);
+        return emptyList();
     }
 
     @Override
