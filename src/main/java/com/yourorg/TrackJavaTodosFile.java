@@ -11,6 +11,8 @@ import org.openrewrite.text.PlainTextVisitor;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import static java.util.Collections.emptyList;
+
 // TODO - This is a placeholder for a scanning recipe.
 // Implement a recipe that finds any comments in Java source files that contain `TODO`, and add them to a file called `TODO.md`.
 // You're done when all of the tests in `TrackJavaTodosFileTest` pass.
