@@ -12,7 +12,9 @@ import org.openrewrite.yaml.tree.Yaml;
 
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This recipe is similar in structure to AppendToReleaseNotes, but uses more advanced techniques.
@@ -35,7 +37,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
     @Override
     public String getDescription() {
         return "Merge all contents of any bootstrap.yml file into its corresponding application.yml. " +
-               "Will create an application.yml if none already exists." +
+               "Will create an application.yml if none already exists. " +
                "If an applicaiton.yml already exists and its values conflict with those in bootstrap.yml the values in " +
                "bootstrap.yml are given priority.";
     }
@@ -74,11 +76,11 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
     public TreeVisitor<?, ExecutionContext> getScanner(Accumulator acc) {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
-            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext executionContext) {
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
                 // When there are multiple concerns to juggle it can often be easier to maintain several
                 // individual, specific visitors rather than one sprawling, general visitor
-                new BootstrapScanner(acc).visit(tree, executionContext);
-                new ApplicationScanner(acc).visit(tree, executionContext);
+                new BootstrapScanner(acc).visit(tree, ctx);
+                new ApplicationScanner(acc).visit(tree, ctx);
 
                 // Note the lack of calls to super.visit*() methods throughout this recipe
                 // It saves CPU+time to elide this traversal when it is not necessary
@@ -109,7 +111,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
         Accumulator acc;
 
         @Override
-        public Yaml.Documents visitDocuments(Yaml.Documents documents, ExecutionContext executionContext) {
+        public Yaml.Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
             if (!documents.getSourcePath().toString().endsWith("application.yml")) {
                 return documents;
             }
@@ -122,7 +124,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
     @Override
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
         if (acc.sourceSetToBootstrapYaml.isEmpty()) {
-            return Collections.emptyList();
+            return emptyList();
         }
         List<SourceFile> results = new ArrayList<>();
         YamlParser yp = YamlParser.builder().build();
@@ -133,7 +135,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
                 results.addAll(yp.parse("")
                         .map(it -> (SourceFile) it.withMarkers(it.getMarkers().add(jss)))
                         .map(it -> (SourceFile) it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
-                        .collect(Collectors.toList()));
+                        .collect(toList()));
             }
         }
 
@@ -144,11 +146,10 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
     public TreeVisitor<?, ExecutionContext> getVisitor(Accumulator acc) {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
-            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext executionContext) {
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
                 Tree t;
-                t = new BootstrapVisitor(deleteBootstrap, acc).visit(tree, executionContext);
-                t = new ApplicationVisitor(acc).visit(t, executionContext);
-                return t;
+                t = new BootstrapVisitor(deleteBootstrap, acc).visit(tree, ctx);
+                return new ApplicationVisitor(acc).visit(t, ctx);
             }
         };
     }
@@ -160,7 +161,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
         Accumulator acc;
 
         @Override
-        public Yaml.Documents visitDocuments(Yaml.Documents documents, ExecutionContext executionContext) {
+        public  Yaml.@Nullable Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
             if (documents.getSourcePath().toString().endsWith("bootstrap.yml") && deleteBootstrap) {
                 // Returning "null" is how you tell OpenRewrite to delete an individual LST element or an entire file.
                 //noinspection DataFlowIssue
