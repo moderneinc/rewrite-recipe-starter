@@ -32,7 +32,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
     }
 
     public static class Accumulator {
-        boolean sdkmanrcExists = false;
+        boolean sdkmanrcExists;
         int javaVersion = -1;
     }
 
