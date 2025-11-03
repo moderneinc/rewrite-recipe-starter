@@ -56,7 +56,7 @@ public class FindSpringBeans extends Recipe {
                     String beanName = annotated.getDefaultAttribute("name")
                             .map(Literal::getString)
                             // If no value is present in the annotation, we fall back to the method name
-                            .orElseGet(() -> annotated.getCursor().getParentTreeCursor().getValue().getSimpleName());
+                            .orElseGet(() -> annotated.getCursor().getParentTreeCursor().<J.MethodDeclaration>getValue().getSimpleName());
 
                     // Insert the bean name into the SpringBeans report
                     String sourcePath = annotated.getCursor().firstEnclosingOrThrow(JavaSourceFile.class).getSourcePath().toString();
