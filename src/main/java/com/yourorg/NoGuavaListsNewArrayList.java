@@ -33,8 +33,8 @@ import org.openrewrite.java.tree.J;
 public class NoGuavaListsNewArrayList extends Recipe {
     // These matchers use a syntax described on https://docs.openrewrite.org/reference/method-patterns
     private static final MethodMatcher NEW_ARRAY_LIST = new MethodMatcher("com.google.common.collect.Lists newArrayList()");
-    private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
     private static final MethodMatcher NEW_ARRAY_LIST_CAPACITY = new MethodMatcher("com.google.common.collect.Lists newArrayListWithCapacity(int)");
+    private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
 
     @Override
     public String getDisplayName() {
@@ -56,28 +56,12 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 // No changes made by the preconditions check will be kept
                 Preconditions.or(
                         new UsesMethod<>(NEW_ARRAY_LIST),
-                        new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE),
-                        new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY)),
+                        new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY),
+                        new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE)),
+
                 // To avoid stale state persisting between cycles, getVisitor() should always return a new instance of
                 // its visitor
                 new JavaVisitor<ExecutionContext>() {
-                    // Java Templates are used to generate Java code easily.
-                    // They use a syntax that expand Java with possible type-safe insertions points.
-                    // See https://docs.openrewrite.org/concepts-and-explanations/javatemplate for full documentation
-                    private final JavaTemplate newArrayList = JavaTemplate.builder("new ArrayList<>()")
-                            .imports("java.util.ArrayList")
-                            .build();
-
-                    private final JavaTemplate newArrayListIterable =
-                            JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
-                                    .imports("java.util.ArrayList")
-                                    .build();
-
-                    private final JavaTemplate newArrayListCapacity =
-                            JavaTemplate.builder("new ArrayList<>(#{any(int)})")
-                                    .imports("java.util.ArrayList")
-                                    .build();
-
                     // This method override is only here to show how to print the AST for debugging purposes.
                     // You can remove this method if you don't need it.
                     @Override
@@ -97,20 +81,46 @@ public class NoGuavaListsNewArrayList extends Recipe {
                         if (NEW_ARRAY_LIST.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
-                            return newArrayList.apply(getCursor(), method.getCoordinates().replace());
-                        }
-                        if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
-                            maybeRemoveImport("com.google.common.collect.Lists");
-                            maybeAddImport("java.util.ArrayList");
-                            return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
+
+                            // Java Templates are used to generate Java code easily.
+                            // They use a syntax that expand Java with possible type-safe insertions points.
+                            // See https://docs.openrewrite.org/concepts-and-explanations/javatemplate for full documentation
+                            return JavaTemplate.builder("new ArrayList<>()")
+                                    .imports("java.util.ArrayList")
+                                    .build()
+                                    .apply(
+                                            getCursor(),
+                                            method.getCoordinates().replace());
                         }
                         if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
-                            return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
+
+                            // The `#{any(int)}` syntax means "insert any expression here of that type"
+                            return JavaTemplate.builder("new ArrayList<>(#{any(int)})")
+                                    .imports("java.util.ArrayList")
+                                    .build()
+                                    .apply(
+                                            getCursor(),
+                                            method.getCoordinates().replace(),
+                                            // Reuse the `int` argument passed to the Guava method
+                                            method.getArguments().get(0));
                         }
+                        if (NEW_ARRAY_LIST_ITERABLE.matches(method)) {
+                            maybeRemoveImport("com.google.common.collect.Lists");
+                            maybeAddImport("java.util.ArrayList");
+
+                            // The `#{any(java.util.Collection)}` syntax means "insert any expression here of that type"
+                            return JavaTemplate.builder("new ArrayList<>(#{any(java.util.Collection)})")
+                                    .imports("java.util.ArrayList")
+                                    .build()
+                                    .apply(
+                                            getCursor(),
+                                            method.getCoordinates().replace(),
+                                            method.getArguments().get(0));
+                        }
+
+                        // For any method invocations that don't match, delegate to the super method to continue visiting
                         return super.visitMethodInvocation(method, ctx);
                     }
                 }
