@@ -91,7 +91,7 @@ public class NoCollectionMutation extends Recipe {
             return false;
         }
         Object value = cursor.getValue();
-        if (value instanceof J.NewClass && NEW_ARRAY_LIST_MATCHER.matches(((J.NewClass) value).getMethodType())) {
+        if (value instanceof J.NewClass class1 && NEW_ARRAY_LIST_MATCHER.matches(class1.getMethodType())) {
             return true;
         }
         return inDefensiveCopy(cursor.getParent());

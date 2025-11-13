@@ -61,7 +61,7 @@ public class AssertEqualsToAssertThat extends Recipe {
                         maybeRemoveImport("org.junit.jupiter.api.Assertions");
                         maybeAddImport("org.assertj.core.api.Assertions");
                         if (arguments.size() == 2) {
-                            Expression expected = arguments.get(0);
+                            Expression expected = arguments.getFirst();
                             Expression actual = arguments.get(1);
 
                             m = JavaTemplate.builder("Assertions.assertThat(#{any()}).isEqualTo(#{any()})")
@@ -71,7 +71,7 @@ public class AssertEqualsToAssertThat extends Recipe {
                                     .build()
                                     .apply(getCursor(), m.getCoordinates().replace(), actual, expected);
                         } else if (arguments.size() == 3) {
-                            Expression expected = arguments.get(0);
+                            Expression expected = arguments.getFirst();
                             Expression actual = arguments.get(1);
                             Expression description = arguments.get(2);
 

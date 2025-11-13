@@ -103,13 +103,13 @@ public class NoGuavaListsNewArrayList extends Recipe {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             return newArrayListIterable.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
+                                    method.getArguments().getFirst());
                         }
                         if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");
                             maybeAddImport("java.util.ArrayList");
                             return newArrayListCapacity.apply(getCursor(), method.getCoordinates().replace(),
-                                    method.getArguments().get(0));
+                                    method.getArguments().getFirst());
                         }
                         return super.visitMethodInvocation(method, ctx);
                     }

@@ -24,7 +24,6 @@ import org.openrewrite.text.PlainTextParser;
 import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;
@@ -64,8 +63,8 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    Path sourcePath = ((SourceFile) tree).getSourcePath();
+                if (tree instanceof SourceFile file) {
+                    Path sourcePath = file.getSourcePath();
                     acc.found |= sourcePath.endsWith("RELEASE.md");
                 }
                 return tree;
@@ -83,7 +82,7 @@ public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Ac
                 // We start with an empty string that we then append to in the visitor
                 .parse("")
                 // Be sure to set the source path for any generated file to specify where to put it when the recipe run is completed
-                .map(it -> (SourceFile) it.withSourcePath(Paths.get("RELEASE.md")))
+                .map(it -> (SourceFile) it.withSourcePath(Path.of("RELEASE.md")))
                 .collect(toList());
     }
 

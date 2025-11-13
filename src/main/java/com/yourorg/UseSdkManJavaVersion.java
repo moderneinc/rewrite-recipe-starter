@@ -7,7 +7,7 @@ import org.openrewrite.java.tree.JavaSourceFile;
 import org.openrewrite.text.PlainText;
 import org.openrewrite.text.PlainTextVisitor;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static java.util.Collections.emptyList;
@@ -41,9 +41,9 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof PlainText) {
+                if (tree instanceof PlainText text) {
                     // Check if the current tree is a PlainText file, which could be a .sdkmanrc file
-                    acc.sdkmanrcExists |= ((PlainText) tree).getSourcePath().endsWith(".sdkmanrc");
+                    acc.sdkmanrcExists |= text.getSourcePath().endsWith(".sdkmanrc");
                 } else if (tree instanceof JavaSourceFile) {
                     // we have a java file which usually has the project, source set and java version markers
                     // Visit the compilation unit to find Java version markers
@@ -63,7 +63,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
             return singletonList(
                     PlainText.builder()
                             .text("")
-                            .sourcePath(Paths.get(".sdkmanrc"))
+                            .sourcePath(Path.of(".sdkmanrc"))
                             .build()
             );
         }

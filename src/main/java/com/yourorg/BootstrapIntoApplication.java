@@ -10,7 +10,7 @@ import org.openrewrite.yaml.YamlIsoVisitor;
 import org.openrewrite.yaml.YamlParser;
 import org.openrewrite.yaml.tree.Yaml;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
@@ -134,7 +134,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!acc.sourceSetsWithExistingApplicationYaml.contains(jss)) {
                 results.addAll(yp.parse("")
                         .map(it -> (SourceFile) it.withMarkers(it.getMarkers().add(jss)))
-                        .map(it -> (SourceFile) it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
+                        .map(it -> (SourceFile) it.withSourcePath(Path.of(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
                         .collect(toList()));
             }
         }
@@ -182,7 +182,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
                 return documents;
             }
             Optional<JavaSourceSet> maybeJss = documents.getMarkers().findFirst(JavaSourceSet.class);
-            if (!maybeJss.isPresent()) {
+            if (maybeJss.isEmpty()) {
                 return documents;
             }
             JavaSourceSet jss = maybeJss.get();
