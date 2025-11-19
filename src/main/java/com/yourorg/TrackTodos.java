@@ -7,7 +7,11 @@ import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 
+import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static java.util.Collections.emptyList;
 
 // TODO - This is a placeholder for a scanning recipe that uses traits and data tables.
 // Implement a recipe that finds any comments in Java, XML, or YAML source files that contain `TODO`, and add them to a file called `TODO.md`.
@@ -38,7 +42,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     public static class TodoComments {
         boolean foundTodoFile;
-        LinkedHashSet<TodoComment> todos = new LinkedHashSet<>();
+        Set<TodoComment> todos = new LinkedHashSet<>();
     }
 
     @Override
@@ -48,8 +52,20 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
-        return new TreeVisitor<Tree, ExecutionContext>() {
+        // TODO Leverage TodoComment.Matcher to find TODO comments in Java, YAML, and XML files.
+        return TreeVisitor.noop();
+    }
 
-        };
+    @Override
+    public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
+        // TODO Insert a row for each todo comment into todoCommentsTable
+        // TODO Potentially create a new plain text source file named TODO.md
+        return emptyList();
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
+        // TODO Write all the todo comments to TODO.md
+        return TreeVisitor.noop();
     }
 }
