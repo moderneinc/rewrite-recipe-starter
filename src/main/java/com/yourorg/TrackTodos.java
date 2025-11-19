@@ -12,10 +12,10 @@ import org.openrewrite.text.PlainTextVisitor;
 
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -85,7 +85,7 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
             }
         }
         if (acc.foundTodoFile) {
-            return Collections.emptyList();
+            return emptyList();
         }
         // If the file was not found, create it
         return PlainTextParser.builder().build()

@@ -23,7 +23,6 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.openrewrite.java.Assertions.java;
-import static org.openrewrite.test.SourceSpecs.text;
 
 class TrackJavaTodosTest implements RewriteTest {
     @Override

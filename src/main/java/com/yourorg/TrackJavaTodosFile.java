@@ -34,7 +34,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 @Value
