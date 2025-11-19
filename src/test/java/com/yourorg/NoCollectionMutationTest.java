@@ -43,7 +43,7 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.ExecutionContext;
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.J;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -56,9 +56,9 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.ExecutionContext;
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.J;
-              
+
               import java.util.ArrayList;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -81,7 +81,7 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.J;
               import org.openrewrite.internal.ListUtils;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -106,9 +106,9 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.Expression;
               import org.openrewrite.java.tree.J;
-              
+
               import java.util.List;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -125,10 +125,10 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.Expression;
               import org.openrewrite.java.tree.J;
-              
+
               import java.util.ArrayList;
               import java.util.List;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -155,9 +155,9 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.Expression;
               import org.openrewrite.java.tree.J;
-              
+
               import java.util.List;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -165,7 +165,7 @@ class NoCollectionMutationTest implements RewriteTest {
                       removeFirst(a);
                       return method;
                   }
-              
+
                   private void removeFirst(List<Expression> args) {
                       if(!args.isEmpty()) {
                           args.remove(0);
@@ -178,10 +178,10 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.Expression;
               import org.openrewrite.java.tree.J;
-              
+
               import java.util.ArrayList;
               import java.util.List;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
@@ -189,7 +189,7 @@ class NoCollectionMutationTest implements RewriteTest {
                       removeFirst(a);
                       return method;
                   }
-              
+
                   private void removeFirst(List<Expression> args) {
                       if(!args.isEmpty()) {
                           args.remove(0);
@@ -211,7 +211,7 @@ class NoCollectionMutationTest implements RewriteTest {
               import org.openrewrite.java.JavaIsoVisitor;
               import org.openrewrite.java.tree.J;
               import org.openrewrite.internal.ListUtils;
-              
+
               public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
                   @Override
                   public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {

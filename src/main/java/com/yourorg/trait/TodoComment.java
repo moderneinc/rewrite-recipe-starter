@@ -35,11 +35,9 @@ public class TodoComment implements Trait<Tree> {
             List<String> todos = new ArrayList<>();
             if (v instanceof J) {
 
-            }
-            else if (v instanceof Yaml) {
+            } else if (v instanceof Yaml) {
 
-            }
-            else if (v instanceof Xml) {
+            } else if (v instanceof Xml) {
 
             }
             if (todos.isEmpty()) {

@@ -86,11 +86,11 @@ class StringIsEmptyTest implements RewriteTest {
             """
               class A {
                   String field;
-              
+
                   String methodCall() {
                       return "Hello World";
                   }
-              
+
                   void test(String argument) {
                       boolean bool1 = field.length() == 0;
                       boolean bool2 = methodCall().length() == 0;
@@ -103,11 +103,11 @@ class StringIsEmptyTest implements RewriteTest {
             """
               class A {
                   String field;
-              
+
                   String methodCall() {
                       return "Hello World";
                   }
-              
+
                   void test(String argument) {
                       boolean bool1 = field.isEmpty();
                       boolean bool2 = methodCall().isEmpty();

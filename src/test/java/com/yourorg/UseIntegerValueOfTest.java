@@ -37,15 +37,15 @@ class UseIntegerValueOfTest implements RewriteTest {
         rewriteRun(
           java(
             """
-            class Test {
-                Integer i = new Integer(42);
-            }
-            """,
+              class Test {
+                  Integer i = new Integer(42);
+              }
+              """,
             """
-            class Test {
-                Integer i = Integer.valueOf(42);
-            }
-            """
+              class Test {
+                  Integer i = Integer.valueOf(42);
+              }
+              """
           )
         );
     }
@@ -55,15 +55,15 @@ class UseIntegerValueOfTest implements RewriteTest {
         rewriteRun(
           java(
             """
-            class Test {
-                Integer i = new Integer("42");
-            }
-            """,
+              class Test {
+                  Integer i = new Integer("42");
+              }
+              """,
             """
-            class Test {
-                Integer i = Integer.parseInt("42");
-            }
-            """
+              class Test {
+                  Integer i = Integer.parseInt("42");
+              }
+              """
           )
         );
     }

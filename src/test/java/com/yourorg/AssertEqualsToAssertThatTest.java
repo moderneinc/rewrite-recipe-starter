@@ -40,7 +40,7 @@ class AssertEqualsToAssertThatTest implements RewriteTest {
           java(
             """
               import org.junit.jupiter.api.Assertions;
-              
+
               class A {
                   void foo() {
                       Assertions.assertEquals(1, 2);
@@ -49,7 +49,7 @@ class AssertEqualsToAssertThatTest implements RewriteTest {
               """,
             """
               import org.assertj.core.api.Assertions;
-              
+
               class A {
                   void foo() {
                       Assertions.assertThat(2).isEqualTo(1);
@@ -67,7 +67,7 @@ class AssertEqualsToAssertThatTest implements RewriteTest {
           java(
             """
               import org.junit.jupiter.api.Assertions;
-              
+
               class A {
                   void foo() {
                       Assertions.assertEquals(1, 2, "one equals two, everyone knows that");
@@ -76,7 +76,7 @@ class AssertEqualsToAssertThatTest implements RewriteTest {
               """,
             """
               import org.assertj.core.api.Assertions;
-              
+
               class A {
                   void foo() {
                       Assertions.assertThat(2).as("one equals two, everyone knows that").isEqualTo(1);

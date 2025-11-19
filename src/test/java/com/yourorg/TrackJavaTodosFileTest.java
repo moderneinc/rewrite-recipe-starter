@@ -42,17 +42,17 @@ class TrackJavaTodosFileTest implements RewriteTest {
           //language=java
           java(
             """
-          class A {
-              // TODO: Have fun
-              /* TODO: Test your code */
-              // Just a regular comment
-              public String foo() {
-                // TODO: Learn
-                return "bar";
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
               }
-              // Another regular comment
-          }
-          """
+              """
           ),
           //language=markdown
           text(
@@ -76,17 +76,17 @@ class TrackJavaTodosFileTest implements RewriteTest {
           //language=java
           java(
             """
-          class A {
-              // TODO: Have fun
-              /* TODO: Test your code */
-              // Just a regular comment
-              public String foo() {
-                // TODO: Learn
-                return "bar";
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
               }
-              // Another regular comment
-          }
-          """
+              """
           ),
           //language=markdown
           text(
@@ -110,26 +110,26 @@ class TrackJavaTodosFileTest implements RewriteTest {
           //language=java
           java(
             """
-          class A {
-              // TODO: Have fun
-              /* TODO: Test your code */
-              // Just a regular comment
-              public String foo() {
-                // TODO: Learn
-                return "bar";
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
               }
-              // Another regular comment
-          }
-          """
+              """
           ),
           //language=markdown
           text(
             """
-            ## Test Header
-            TODO: Have fun
-            TODO: Test your code
-            TODO: Learn
-            """,
+              ## Test Header
+              TODO: Have fun
+              TODO: Test your code
+              TODO: Learn
+              """,
             spec -> spec.path(Path.of("TODO.md"))
           )
         );
