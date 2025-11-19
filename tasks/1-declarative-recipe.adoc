@@ -11,8 +11,8 @@ Time 20 minutes
 == ToDo
 
 1. Open the newly created Recipe Repository with IntelliJ
-2. Open the Test xref:../src/test/java/com/yourorg/UseApacheStringUtilsTest.java[UseApacheStringUtilsTest] and add a test that expects ´org.springframework.util.StringUtils#trimWhitespace´ to be replaced with `org.apache.commons.lang3.StringUtils#strip`
-3. Open [Moderne SaaS Marketplace] or the https://docs.openrewrite.org/recipes[Recipe Catalog] to identify recipe that helps to change the name of a method called
+2. Open the Test xref:../src/test/java/com/yourorg/UseApacheStringUtilsTest.java[UseApacheStringUtilsTest] and add a test that expects `org.springframework.util.StringUtils#trimWhitespace` to be replaced with `org.apache.commons.lang3.StringUtils#strip`
+3. Open https://app.moderne.io[Moderne SaaS Marketplace] or the https://docs.openrewrite.org/recipes[Recipe Catalog] to identify recipe that helps to change the name of a method called
 4. Open xref:../src/main/resources/META-INF/rewrite/stringutils.yml[stringutils.yml] and configure the recipe accordingly
 5. Check the test to verify
 
