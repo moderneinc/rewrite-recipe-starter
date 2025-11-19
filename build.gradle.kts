@@ -4,7 +4,7 @@ plugins {
     // This uses the nexus publishing plugin to publish to the moderne-dev repository
     // Remove it if you prefer to publish by other means, such as the maven-publish plugin
     id("org.openrewrite.build.publish") version "latest.release"
-    id("nebula.release") version "20.2.0" // Pinned as v21+ requires Gradle 9+
+    id("nebula.release") version "latest.release"
 
     // Configures artifact repositories used for dependency resolution to include maven central and nexus snapshots.
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
@@ -15,6 +15,10 @@ plugins {
 // Set as appropriate for your organization
 group = "com.yourorg"
 description = "Rewrite recipes."
+
+recipeDependencies {
+    parserClasspath("org.jspecify:jspecify:1.0.0")
+}
 
 dependencies {
     // The bom version can also be set to a specific version
@@ -27,7 +31,6 @@ dependencies {
     implementation("org.openrewrite:rewrite-xml")
     implementation("org.openrewrite.meta:rewrite-analysis")
     implementation("org.assertj:assertj-core:latest.release")
-    runtimeOnly("org.openrewrite:rewrite-java-17")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
@@ -44,8 +47,13 @@ dependencies {
         exclude(group = "org.slf4j", module = "slf4j-nop")
     }
 
+    // Support for parsing different Java versions
+    testRuntimeOnly("org.openrewrite:rewrite-java-17")
+    testRuntimeOnly("org.openrewrite:rewrite-java-21")
+    testRuntimeOnly("org.openrewrite:rewrite-java-25")
+
     // Need to have a slf4j binding to see any output enabled from the parser.
-    runtimeOnly("ch.qos.logback:logback-classic:1.2.+")
+    runtimeOnly("ch.qos.logback:logback-classic:1.5.+")
 
     // Our recipe converts Guava's `Lists` type
     testRuntimeOnly("com.google.guava:guava:latest.release")
@@ -74,4 +82,8 @@ configure<PublishingExtension> {
 
 tasks.register("licenseFormat") {
     println("License format task not implemented for rewrite-recipe-starter")
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Arewrite.javaParserClasspathFrom=resources")
 }

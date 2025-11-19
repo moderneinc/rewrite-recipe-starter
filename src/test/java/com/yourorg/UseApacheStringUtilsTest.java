@@ -34,7 +34,7 @@ class UseApacheStringUtilsTest implements RewriteTest {
 
     @DocumentExample
     @Test
-    void replacesStringEquals() {
+    void replaceContainsWhitespace() {
         rewriteRun(
           //language=java
           java(

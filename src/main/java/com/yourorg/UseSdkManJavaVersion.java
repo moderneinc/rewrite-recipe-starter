@@ -17,7 +17,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
 
     @Override
     public String getDisplayName() {
-        return "Use SDKMan java version";
+        return "Use SDKMan Java version";
     }
 
     @Override
@@ -32,7 +32,7 @@ public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Ac
     }
 
     public static class Accumulator {
-        boolean sdkmanrcExists = false;
+        boolean sdkmanrcExists;
         int javaVersion = -1;
     }
 
