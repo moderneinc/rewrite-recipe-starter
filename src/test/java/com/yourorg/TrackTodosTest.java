@@ -19,7 +19,7 @@ class TrackTodosTest implements RewriteTest {
     @Override
     public void defaults(RecipeSpec spec) {
         spec.recipe(new TrackTodos("## Test Header"))
-                .allSources(SourceSpec::noTrim);
+          .allSources(SourceSpec::noTrim);
     }
 
     @DocumentExample
@@ -36,18 +36,18 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=java
           java(
-                """
-            class A {
-                // TODO: Have fun
-                /* TODO: Test your code */
-                // Just a regular comment
-                public String foo() {
-                  // TODO: Learn
-                  return "bar";
-                }
-                // Another regular comment
-            }
             """
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
+              }
+              """
           ),
           //language=markdown
           text(
@@ -76,18 +76,18 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=java
           java(
-                """
-            class A {
-                // TODO: Have fun
-                /* TODO: Test your code */
-                // Just a regular comment
-                public String foo() {
-                  // TODO: Learn
-                  return "bar";
-                }
-                // Another regular comment
-            }
             """
+              class A {
+                  // TODO: Have fun
+                  /* TODO: Test your code */
+                  // Just a regular comment
+                  public String foo() {
+                    // TODO: Learn
+                    return "bar";
+                  }
+                  // Another regular comment
+              }
+              """
           ),
           //language=markdown
           text(
@@ -117,16 +117,16 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=yaml
           yaml(
-                """
-            # TODO: Have fun
-            someyaml: "here"
-            moreyaml: "there"
-            # TODO: Test your code
-            # TODO: Learn
-            # Just a regular comment
-            tabs:
-              are: "fun"
             """
+              # TODO: Have fun
+              someyaml: "here"
+              moreyaml: "there"
+              # TODO: Test your code
+              # TODO: Learn
+              # Just a regular comment
+              tabs:
+                are: "fun"
+              """
           ),
           //language=markdown
           text(
@@ -155,16 +155,16 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=yaml
           yaml(
-                """
-            # TODO: Have fun
-            someyaml: "here"
-            moreyaml: "there"
-            # TODO: Test your code
-            # TODO: Learn
-            # Just a regular comment
-            tabs:
-              are: "fun"
             """
+              # TODO: Have fun
+              someyaml: "here"
+              moreyaml: "there"
+              # TODO: Test your code
+              # TODO: Learn
+              # Just a regular comment
+              tabs:
+                are: "fun"
+              """
           ),
           //language=markdown
           text(
@@ -194,16 +194,16 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=xml
           xml(
-                """
-            <!-- TODO: Have fun -->
-            <!-- TODO: Test your code -->
-            <xml>
-                <is>too</is>
-                <!-- TODO: Learn -->
-                <verbose>for me</verbose>
-            <!-- Just a regular comment -->
-            </xml>
             """
+              <!-- TODO: Have fun -->
+              <!-- TODO: Test your code -->
+              <xml>
+                  <is>too</is>
+                  <!-- TODO: Learn -->
+                  <verbose>for me</verbose>
+              <!-- Just a regular comment -->
+              </xml>
+              """
           ),
           //language=markdown
           text(
@@ -232,16 +232,16 @@ class TrackTodosTest implements RewriteTest {
           }),
           //language=xml
           xml(
-                """
-            <!-- TODO: Have fun -->
-            <!-- TODO: Test your code -->
-            <xml>
-                <is>too</is>
-                <!-- TODO: Learn -->
-                <verbose>for me</verbose>
-            <!-- Just a regular comment -->
-            </xml>
             """
+              <!-- TODO: Have fun -->
+              <!-- TODO: Test your code -->
+              <xml>
+                  <is>too</is>
+                  <!-- TODO: Learn -->
+                  <verbose>for me</verbose>
+              <!-- Just a regular comment -->
+              </xml>
+              """
           ),
           //language=markdown
           text(

@@ -39,7 +39,7 @@ class TrackJavaTodosFileTest implements RewriteTest {
         rewriteRun(
           //language=java
           java(
-                """
+            """
               class A {
                   // TODO: Have fun
                   /* TODO: Test your code */
@@ -72,7 +72,7 @@ class TrackJavaTodosFileTest implements RewriteTest {
         rewriteRun(
           //language=java
           java(
-                """
+            """
               class A {
                   // TODO: Have fun
                   /* TODO: Test your code */
@@ -105,7 +105,7 @@ class TrackJavaTodosFileTest implements RewriteTest {
         rewriteRun(
           //language=java
           java(
-                """
+            """
               class A {
                   // TODO: Have fun
                   /* TODO: Test your code */
@@ -121,11 +121,11 @@ class TrackJavaTodosFileTest implements RewriteTest {
           //language=markdown
           text(
             """
-            ## Test Header
-            TODO: Have fun
-            TODO: Test your code
-            TODO: Learn
-            """,
+              ## Test Header
+              TODO: Have fun
+              TODO: Test your code
+              TODO: Learn
+              """,
             spec -> spec.path(Path.of("TODO.md"))
           )
         );

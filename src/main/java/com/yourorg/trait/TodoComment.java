@@ -64,16 +64,14 @@ public class TodoComment implements Trait<Tree> {
                      */
                     }
                 }
-            }
-            else if (v instanceof Yaml) {
+            } else if (v instanceof Yaml) {
                 String s = ((Yaml) v).getPrefix();
                 for (String textLine : s.split("\n")) {
                     if (textLine.contains("#") && textLine.contains("TODO")) {
                         todos.add(textLine.substring(textLine.indexOf('#') + 1).trim());
                     }
                 }
-            }
-            else if (v instanceof Xml) {
+            } else if (v instanceof Xml) {
                 Xml x = (Xml) v;
                 if (x instanceof Xml.Prolog) {
                     for (Misc misc : ((Xml.Prolog) v).getMisc()) {
@@ -84,11 +82,10 @@ public class TodoComment implements Trait<Tree> {
                             }
                         }
                     }
-                }
-                else if (x instanceof Xml.Tag) {
+                } else if (x instanceof Xml.Tag) {
                     Xml.Tag tag = ((Xml.Tag) v);
                     assert tag.getContent() != null;
-                    for (Xml c : tag.getContent() ) {
+                    for (Xml c : tag.getContent()) {
                         if (c instanceof Xml.Comment) {
                             String textComment = ((Xml.Comment) c).getText();
                             if (textComment.contains("TODO")) {

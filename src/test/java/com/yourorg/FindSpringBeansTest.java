@@ -54,24 +54,24 @@ class FindSpringBeansTest implements RewriteTest {
             """
               import org.springframework.context.annotation.Bean;
               import org.springframework.context.annotation.Configuration;
-              
+
               @Configuration
               public class MyConfig {
                   @Bean("bean")
                   public String doNotUseMethodNameWhenDefaultIsPresent() {
                       return "Named Bean";
                   }
-              
+
                   @Bean(name = "namedBean")
                   public String doNotUseMethodNameWhenNameIsPresent() {
                       return "Named Bean";
                   }
-              
+
                   @Bean
                   public String useMethodNameWhenNoValuePresent() {
                       return "Named Bean";
                   }
-              
+
                   @Override
                   public String doNotListOtherMethods() {
                       return "Private method";
@@ -81,24 +81,24 @@ class FindSpringBeansTest implements RewriteTest {
             """
               import org.springframework.context.annotation.Bean;
               import org.springframework.context.annotation.Configuration;
-              
+
               @Configuration
               public class MyConfig {
                   /*~~(bean)~~>*/@Bean("bean")
                   public String doNotUseMethodNameWhenDefaultIsPresent() {
                       return "Named Bean";
                   }
-              
+
                   /*~~(namedBean)~~>*/@Bean(name = "namedBean")
                   public String doNotUseMethodNameWhenNameIsPresent() {
                       return "Named Bean";
                   }
-              
+
                   /*~~(useMethodNameWhenNoValuePresent)~~>*/@Bean
                   public String useMethodNameWhenNoValuePresent() {
                       return "Named Bean";
                   }
-              
+
                   @Override
                   public String doNotListOtherMethods() {
                       return "Private method";

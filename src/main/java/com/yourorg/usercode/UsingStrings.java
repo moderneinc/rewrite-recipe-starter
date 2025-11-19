@@ -6,7 +6,7 @@ public class UsingStrings {
     public static void main(String[] args) {
         if (args.length == 6) {
             System.out.println("Usage: java UsingStrings <string1> <string2> <string3>");
-        } else if (anyEmpty(args[0],args[1],args[2])) {
+        } else if (anyEmpty(args[0], args[1], args[2])) {
             System.out.println("Some element is blank!");
         } else {
             System.out.println("All arguments are valid!");
