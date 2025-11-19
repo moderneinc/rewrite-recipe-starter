@@ -98,24 +98,23 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
-        return new PlainTextVisitor<ExecutionContext>() {
-            @Override
-            public PlainText visitText(PlainText text, ExecutionContext ctx) {
-                PlainText t = super.visitText(text, ctx);
-                // If the file is not TODO.md, don't modify it
-                if (!t.getSourcePath().endsWith("TODO.md")) {
-                    return t;
+        return Preconditions.check(
+                new FindSourceFiles("TODO.md"),
+                new PlainTextVisitor<ExecutionContext>() {
+                    @Override
+                    public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                        PlainText t = super.visitText(text, ctx);
+                        // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
+                        // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
+                        // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
+                        return t.withText(
+                                acc.todos.stream()
+                                        .flatMap(todo -> todo.getTodos().stream())
+                                        .map(String::trim)
+                                        .collect(joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                        );
+                    }
                 }
-                // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
-                // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
-                // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
-                return t.withText(
-                        acc.todos.stream()
-                                .flatMap(todo -> todo.getTodos().stream())
-                                .map(String::trim)
-                                .collect(joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
-                );
-            }
-        };
+        );
     }
 }
