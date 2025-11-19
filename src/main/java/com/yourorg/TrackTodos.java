@@ -77,6 +77,19 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
+        // TODO Insert a row for each todo comment into todoCommentsTable
+        // TODO Potentially create a new plain text source file named TODO.md
+        return emptyList();
+    }
+
+    @Override
+    public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
+        // TODO Write all the todo comments to TODO.md
+        return TreeVisitor.noop();
+    }
+
+    @Override
+    public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
         // Insert data table rows first
         for (TodoComment todo : acc.todos) {
             for (String item : todo.getTodos()) {
