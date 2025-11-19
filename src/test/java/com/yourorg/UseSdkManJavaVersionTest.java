@@ -27,7 +27,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example.core;
-      
+
                     class CoreService {
                         void processData() {
                             System.out.println("Processing data...");
@@ -41,7 +41,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example.web;
-      
+
                     class WebService {
                         void serveRequests() {
                             System.out.println("Serving requests...");
@@ -72,7 +72,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example;
-      
+
                     class Service {
                         void doWork() {
                             System.out.println("Working...");
@@ -107,7 +107,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example;
-      
+
                     class Service {
                         void doWork() {
                             System.out.println("Working...");
@@ -151,7 +151,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example;
-      
+
                     class ModernService {
                         void useNewFeatures() {
                             System.out.println("Using Java 19 features...");
@@ -181,7 +181,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example.main;
-      
+
                     class MainService {
                         void mainWork() {
                             System.out.println("Main work...");
@@ -195,7 +195,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example.test;
-      
+
                     class TestHelper {
                         void testWork() {
                             System.out.println("Test work...");
@@ -225,7 +225,7 @@ class UseSdkManJavaVersionTest implements RewriteTest {
                 java(
                   """
                     package com.example;
-      
+
                     class Service {
                         void doWork() {
                             System.out.println("Working...");
