@@ -36,6 +36,28 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.BootstrapIntoApplication
+examples:
+- description: '`BootstrapIntoApplicationTest#mergeWithExistingApplication`'
+  parameters:
+  - 'false'
+  sources:
+  - before: |
+      spring:
+        application:
+          name: "foo"
+    language: yaml
+  - before: |
+      spring:
+        foo: bar
+    after: |
+      spring:
+        foo: bar
+        application:
+          name: "foo"
+    language: yaml
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.EqualsAvoidsNullRecipe
 examples:
 - description: '`EqualsAvoidsNullTest#beforeEquals`'
