@@ -19,15 +19,9 @@ import static java.util.Collections.emptyList;
 @EqualsAndHashCode(callSuper = false)
 public class TrackJavaTodosFile extends ScanningRecipe<TrackJavaTodosFile.TodoComments> {
 
-    @Override
-    public String getDisplayName() {
-        return "Track TODOs from Java comments";
-    }
+    String displayName = "Track TODOs from Java comments";
 
-    @Override
-    public String getDescription() {
-        return "Scans Java source comments for TODOs and collects them in a file.";
-    }
+    String description = "Scans Java source comments for TODOs and collects them in a file.";
 
     @Option(displayName = "Header",
             description = "Header for TODO.md. Defaults to `## To Do List` if not provided.",

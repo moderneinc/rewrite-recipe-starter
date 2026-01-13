@@ -34,15 +34,9 @@ import static java.util.stream.Collectors.toList;
 @EqualsAndHashCode(callSuper = false)
 public class AppendToReleaseNotes extends ScanningRecipe<AppendToReleaseNotes.Accumulator> {
 
-    @Override
-    public String getDisplayName() {
-        return "Append to release notes";
-    }
+    String displayName = "Append to release notes";
 
-    @Override
-    public String getDescription() {
-        return "Adds the specified line to RELEASE.md.";
-    }
+    String description = "Adds the specified line to RELEASE.md.";
 
     @Option(displayName = "Message",
             description = "Message to append to the bottom of RELEASE.md.",

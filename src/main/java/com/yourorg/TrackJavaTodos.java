@@ -33,15 +33,9 @@ import org.openrewrite.java.tree.Space;
 public class TrackJavaTodos extends Recipe {
 
 
-    @Override
-    public String getDisplayName() {
-        return "Export TODOs from Java comments";
-    }
+    String displayName = "Export TODOs from Java comments";
 
-    @Override
-    public String getDescription() {
-        return "Export TODOs from Java source comments into a data table.";
-    }
+    String description = "Export TODOs from Java source comments into a data table.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
