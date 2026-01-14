@@ -15,6 +15,7 @@
  */
 package com.yourorg;
 
+import lombok.Getter;
 import org.openrewrite.Recipe;
 
 // TODO - This is a placeholder for an imperative recipe.
@@ -22,13 +23,9 @@ import org.openrewrite.Recipe;
 // You're done when all of the tests in `UseIntegerValueOfTest` pass.
 public class UseIntegerValueOf extends Recipe {
 
-    @Override
-    public String getDisplayName() {
-        return "Use Integer.valueOf(x) or Integer.parseInt(x) instead of new Integer(x)";
-    }
+    @Getter
+    final String displayName = "Use Integer.valueOf(x) or Integer.parseInt(x) instead of new Integer(x)";
 
-    @Override
-    public String getDescription() {
-        return "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.";
-    }
+    @Getter
+    final String description = "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.";
 }

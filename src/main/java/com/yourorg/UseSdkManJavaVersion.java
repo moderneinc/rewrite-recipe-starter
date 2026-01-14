@@ -1,5 +1,6 @@
 package com.yourorg;
 
+import lombok.Getter;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
 import org.openrewrite.java.marker.JavaVersion;
@@ -15,16 +16,11 @@ import static java.util.Collections.singletonList;
 
 public class UseSdkManJavaVersion extends ScanningRecipe<UseSdkManJavaVersion.Accumulator> {
 
-    @Override
-    public String getDisplayName() {
-        return "Use SDKMan Java version";
-    }
+    @Getter
+    final String displayName = "Use SDKMan Java version";
 
-    @Override
-    public String getDescription() {
-        //language=Markdown
-        return "Examines a multi-project build, determines the Java version in use via available markers, and sets up or updates a .sdkmanrc file in the project root.";
-    }
+    @Getter
+    final String description = "Examines a multi-project build, determines the Java version in use via available markers, and sets up or updates a .sdkmanrc file in the project root.";
 
     @Override
     public Accumulator getInitialValue(ExecutionContext ctx) {
