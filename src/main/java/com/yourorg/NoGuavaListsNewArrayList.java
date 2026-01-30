@@ -37,17 +37,9 @@ public class NoGuavaListsNewArrayList extends Recipe {
     private static final MethodMatcher NEW_ARRAY_LIST_CAPACITY = new MethodMatcher("com.google.common.collect.Lists newArrayListWithCapacity(int)");
     private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
 
-    @Override
-    public String getDisplayName() {
-        //language=markdown
-        return "Use `new ArrayList<>()` instead of Guava";
-    }
+    String displayName = "Use `new ArrayList<>()` instead of Guava";
 
-    @Override
-    public String getDescription() {
-        //language=markdown
-        return "Prefer the Java standard library over third-party usage of Guava in simple cases like this.";
-    }
+    String description = "Prefer the Java standard library over third-party usage of Guava in simple cases like this.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

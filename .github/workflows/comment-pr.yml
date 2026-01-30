@@ -23,13 +23,13 @@ jobs:
       ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           ref: ${{github.event.workflow_run.head_branch}}
           repository: ${{github.event.workflow_run.head_repository.full_name}}
 
       # Download the patch
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: patch
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -40,7 +40,7 @@ jobs:
           rm git-diff.patch
 
       # Download the PR number
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v7
         with:
           name: pr_number
           github-token: ${{ secrets.GITHUB_TOKEN }}

@@ -25,15 +25,9 @@ import org.openrewrite.yaml.tree.Yaml;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class UpdateConcoursePipeline extends Recipe {
-    @Override
-    public String getDisplayName() {
-        return "Update concourse pipeline";
-    }
+    String displayName = "Update concourse pipeline";
 
-    @Override
-    public String getDescription() {
-        return "Update the tag filter on concourse pipelines.";
-    }
+    String description = "Update the tag filter on concourse pipelines.";
 
     @Option(displayName = "New tag filter version",
             description = "tag filter version.",

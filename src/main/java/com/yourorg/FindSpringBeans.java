@@ -33,16 +33,9 @@ public class FindSpringBeans extends Recipe {
 
     transient SpringBeansReport beansTable = new SpringBeansReport(this);
 
-    @Override
-    public String getDisplayName() {
-        return "Find Spring beans";
-    }
+    String displayName = "Find Spring beans";
 
-    @Override
-    public String getDescription() {
-        //language=markdown
-        return "Find all Spring bean names used in your application.";
-    }
+    String description = "Find all Spring bean names used in your application.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {

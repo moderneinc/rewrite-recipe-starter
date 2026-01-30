@@ -34,16 +34,9 @@ import java.util.List;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class AssertEqualsToAssertThat extends Recipe {
-    @Override
-    public String getDisplayName() {
-        // language=markdown
-        return "JUnit `assertEquals()` to Assertj `assertThat()`";
-    }
+    String displayName = "JUnit `assertEquals()` to Assertj `assertThat()`";
 
-    @Override
-    public String getDescription() {
-        return "Use AssertJ assertThat instead of JUnit assertEquals().";
-    }
+    String description = "Use AssertJ assertThat instead of JUnit assertEquals().";
 
     private static final MethodMatcher MATCHER = new MethodMatcher("org.junit.jupiter.api.Assertions assertEquals(..)");
 

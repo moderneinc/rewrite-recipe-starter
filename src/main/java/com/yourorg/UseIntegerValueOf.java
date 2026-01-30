@@ -17,6 +17,7 @@ package com.yourorg;
 
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Preconditions;
+import lombok.Getter;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaTemplate;
@@ -31,17 +32,11 @@ public class UseIntegerValueOf extends Recipe {
 
     private static final MethodMatcher INTEGER_CONSTRUCTOR = new MethodMatcher("java.lang.Integer#<init>(*)");
 
-    @Override
-    public String getDisplayName() {
-        //language=markdown
-        return "Use `Integer.valueOf(x)` or `Integer.parseInt(x)` instead of `new Integer(x)`";
-    }
+    @Getter
+    final String displayName = "Use Integer.valueOf(x) or Integer.parseInt(x) instead of new Integer(x)";
 
-    @Override
-    public String getDescription() {
-        //language=markdown
-        return "Replaces unnecessary boxing constructor calls with the more efficient `Integer.valueOf(x)` for `int` values, or `Integer.parseInt(x)` for `String` values.";
-    }
+    @Getter
+    final String description = "Replaces unnecessary boxing constructor calls with the more efficient Integer.valueOf(x) for int values, or Integer.parseInt(x) for String values.";
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
@@ -72,4 +67,3 @@ public class UseIntegerValueOf extends Recipe {
                 }
         );
     }
-}
