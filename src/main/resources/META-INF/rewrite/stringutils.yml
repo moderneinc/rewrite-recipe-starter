@@ -19,6 +19,8 @@ type: specs.openrewrite.org/v1beta/recipe
 name: com.yourorg.UseApacheStringUtils
 displayName: Use Apache `StringUtils`
 description: Replace Spring string utilities with Apache string utilities.
+preconditions:
+  - org.openrewrite.Singleton
 recipeList:
   - org.openrewrite.java.dependencies.AddDependency:
       groupId: org.apache.commons
