@@ -67,3 +67,4 @@ public class UseIntegerValueOf extends Recipe {
                 }
         );
     }
+}
