@@ -30,7 +30,6 @@ dependencies {
     implementation("org.openrewrite:rewrite-yaml")
     implementation("org.openrewrite:rewrite-xml")
     implementation("org.openrewrite.meta:rewrite-analysis")
-    implementation("org.assertj:assertj-core:latest.release")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
@@ -46,6 +45,7 @@ dependencies {
     testImplementation("org.openrewrite:rewrite-test") {
         exclude(group = "org.slf4j", module = "slf4j-nop")
     }
+    testImplementation("org.assertj:assertj-core:latest.release")
 
     // Support for parsing different Java versions
     testRuntimeOnly("org.openrewrite:rewrite-java-17")
