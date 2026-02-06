@@ -26,6 +26,8 @@ type: specs.openrewrite.org/v1beta/recipe
 name: com.yourorg.UseOpenRewriteNullable
 displayName: Prefer OpenRewrite Nullable
 description: Replaces JetBrains Nullable with OpenRewrite Nullable.
+preconditions:
+  - org.openrewrite.Singleton
 recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.jetbrains.annotations.Nullable
