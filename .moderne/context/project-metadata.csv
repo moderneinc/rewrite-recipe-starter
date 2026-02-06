@@ -1,0 +1,2 @@
+Source path,Artifact ID,Group ID,Name,Description,Version
+pom.xml,rewrite-maven-plugin,org.openrewrite.maven,,,6.22.1
