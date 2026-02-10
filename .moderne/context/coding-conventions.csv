@@ -1,0 +1,18 @@
+Convention type,Pattern,Example,Frequency,Scope
+imports,Static imports from java.util,java.util.Collections.emptyList,,project-wide
+imports,Static imports from java.util.stream,java.util.stream.Collectors.toList,,project-wide
+naming,get* method naming pattern,getInitialValue,,project-wide
+naming,UPPER_SNAKE_CASE for constants,MATCHER,,project-wide
+comments,Classes have Javadoc documentation,BootstrapIntoApplication,,project-wide
+comments,Methods have Javadoc documentation,isListMutationSelect,,project-wide
+naming,is* method naming pattern,isListMutationSelect,,project-wide
+imports,Static imports from org.openrewrite.test,org.openrewrite.test.SourceSpecs.text,,project-wide
+naming,Test suffix for classes,AppendToReleaseNotesTest,,project-wide
+naming,create* method naming pattern,createNewReleaseNotes,,project-wide
+imports,Static imports from org.openrewrite.java,org.openrewrite.java.Assertions.java,,project-wide
+imports,Static imports from org.openrewrite.yaml,org.openrewrite.yaml.Assertions.yaml,,project-wide
+naming,delete* method naming pattern,deleteOldBootstrap,,project-wide
+imports,Static imports from org.assertj.core.api,org.assertj.core.api.Assertions.assertThat,,project-wide
+naming,find* method naming pattern,findSpringBeans,,project-wide
+imports,Static imports from org.openrewrite.xml,org.openrewrite.xml.Assertions.xml,,project-wide
+naming,update* method naming pattern,updateTagFilter,,project-wide
