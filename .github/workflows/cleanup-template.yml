@@ -1,0 +1,50 @@
+---
+name: Cleanup Template
+
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - "*"
+
+jobs:
+  template-cleanup:
+    name: Cleanup Template
+    if: github.event.repository.name != 'rewrite-recipe-starter'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create issue to use rewrite-module-template
+        if: >-
+          contains(github.event.repository.owner.login, 'openrewrite') ||
+          contains(github.event.repository.owner.login, 'moderneinc')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create \
+            --title "Migrate to rewrite-module-template" \
+            --body "$(cat <<'EOF'
+          This repository was created from [rewrite-recipe-starter](https://github.com/moderneinc/rewrite-recipe-starter), but repositories under the **openrewrite** and **moderneinc** organizations should use [rewrite-module-template](https://github.com/moderneinc/rewrite-module-template) instead.
+
+          `rewrite-module-template` includes a cleanup template and other defaults that we prefer for organization-owned modules.
+
+          ## Steps
+          1. Create a new repository from [rewrite-module-template](https://github.com/moderneinc/rewrite-module-template)
+          2. Migrate your recipes and tests to the new repository
+          3. Archive or delete this repository
+          EOF
+          )"
+
+      - name: Remove cleanup workflow and commit
+        run: |
+          rm -f .github/workflows/cleanup-template.yml
+          git config --local user.email "team@moderne.io"
+          git config --local user.name "team-moderne[bot]"
+          git add .
+          git commit -m "Remove cleanup template workflow"
+          git push origin main
