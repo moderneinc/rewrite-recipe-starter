@@ -6,7 +6,8 @@ import org.openrewrite.java.marker.JavaSourceSet;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-import static java.util.Collections.emptyList;
+import java.util.List;
+
 import static org.openrewrite.yaml.Assertions.yaml;
 
 class BootstrapIntoApplicationTest implements RewriteTest {
@@ -19,7 +20,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
     @DocumentExample
     @Test
     void mergeWithExistingApplication() {
-        JavaSourceSet main = JavaSourceSet.build("main", emptyList());
+        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           yaml(
             //language=yaml
@@ -52,7 +53,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
     void createNewApplicationYaml() {
         // The test framework does not automatically add markers like JavaSourceSet or JavaProject
         // These are added during the parsing of real projects, but must be explicitly added to tests
-        JavaSourceSet main = JavaSourceSet.build("main", emptyList());
+        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           yaml(
             //language=yaml
@@ -79,7 +80,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
 
     @Test
     void deleteOldBootstrap() {
-        JavaSourceSet main = JavaSourceSet.build("main", emptyList());
+        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           spec -> spec.recipe(new BootstrapIntoApplication(true)),
           yaml(
