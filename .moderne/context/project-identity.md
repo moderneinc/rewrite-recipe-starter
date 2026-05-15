@@ -1,8 +1,8 @@
-# Architecture
+# Project Identity
 
-## FINOS CALM architecture diagram
+## Build system coordinates, names, and module structure
 
-FINOS CALM (Common Architecture Language Model) architecture diagram showing services, databases, external integrations, and messaging connections. Use this to understand the high-level system architecture and component relationships.
+Project-level identification for each build module including artifact ID, group ID, version, display name, and description. Also includes parent project coordinates (e.g., Spring Boot starter parent) and submodule counts for aggregator projects. Use this to identify what the project is, understand parent-child relationships between modules, and determine whether a project is a simple or multi-module build.
 
 ## Data Tables
 
