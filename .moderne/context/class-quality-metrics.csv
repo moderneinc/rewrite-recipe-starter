@@ -17,7 +17,7 @@ src/main/java/com/yourorg/table/SpringBeansReport.java,com.yourorg.table.SpringB
 src/main/java/com/yourorg/table/TodoCommentsReport.java,com.yourorg.table.TodoCommentsReport,24,1,0,1,1,1.0,1,62.3017436496961
 src/test/java/com/yourorg/AppendToReleaseNotesTest.java,com.yourorg.AppendToReleaseNotesTest,42,3,0,3,3,0.0,6,63.536109045768896
 src/test/java/com/yourorg/AssertEqualsToAssertThatTest.java,com.yourorg.AssertEqualsToAssertThatTest,65,3,0,3,3,0.0,6,60.77535761576792
-src/test/java/com/yourorg/BootstrapIntoApplicationTest.java,com.yourorg.BootstrapIntoApplicationTest,97,4,0,4,4,0.0,7,55.07176306169871
+src/test/java/com/yourorg/BootstrapIntoApplicationTest.java,com.yourorg.BootstrapIntoApplicationTest,97,4,0,4,4,0.0,7,54.947904205317045
 src/test/java/com/yourorg/ClassHierarchyTest.java,com.yourorg.ClassHierarchyTest,64,4,0,4,4,0.0,9,59.25712799293468
 src/test/java/com/yourorg/EqualsAvoidsNullTest.java,com.yourorg.EqualsAvoidsNullTest,73,3,0,3,3,0.0,4,61.848299073982
 src/test/java/com/yourorg/FindSpringBeansTest.java,com.yourorg.FindSpringBeansTest,85,2,0,2,2,0.0,12,49.46448100536907
