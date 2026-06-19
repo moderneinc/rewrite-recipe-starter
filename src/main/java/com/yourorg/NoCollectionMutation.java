@@ -114,6 +114,11 @@ public class NoCollectionMutation extends Recipe {
                             return m;
                         }
 
+                        // Already wrapped in a defensive copy (e.g. from a previous cycle); nothing to do.
+                        if (inDefensiveCopy(getCursor())) {
+                            return m;
+                        }
+
                         boolean isMutated = Dataflow.startingAt(getCursor()).findSinks(new DataFlowSpec() {
                                     @Override
                                     public boolean isSource(DataFlowNode srcNode) {
