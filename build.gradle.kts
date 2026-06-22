@@ -1,8 +1,13 @@
 plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
 
-    // This uses the nexus publishing plugin to publish to the moderne-dev repository
-    // Remove it if you prefer to publish by other means, such as the maven-publish plugin
+    // Publishes to the moderne-dev repository via the nexus publishing plugin. It also
+    // applies Nebula's MavenResolvedDependenciesPlugin, which pins dynamic versions
+    // (e.g. "1.5.+", "latest.release") to the concrete versions Gradle resolved when
+    // writing the published POM. If you replace this with the plain maven-publish plugin,
+    // add `versionMapping { allVariants { fromResolutionResult() } }` to your publication --
+    // otherwise dynamic versions are published verbatim and consumers resolving the recipe
+    // through a private/virtual Maven repository may fail to resolve them.
     id("org.openrewrite.build.publish") version "latest.release"
     id("nebula.release") version "latest.release"
 
@@ -77,6 +82,20 @@ configure<PublishingExtension> {
         named("nebula", MavenPublication::class.java) {
             suppressPomMetadataWarningsFor("runtimeElements")
         }
+
+        // If you replace `org.openrewrite.build.publish` above with the plain `maven-publish`
+        // plugin, uncomment the block below so dynamic versions (e.g. "1.5.+", "latest.release")
+        // are pinned to the concrete versions Gradle resolved when the POM is written. Without
+        // it those selectors are published verbatim and consumers resolving the recipe through a
+        // private/virtual Maven repository may fail to resolve them.
+        //
+        // withType<MavenPublication> {
+        //     versionMapping {
+        //         allVariants {
+        //             fromResolutionResult()
+        //         }
+        //     }
+        // }
     }
 }
 
