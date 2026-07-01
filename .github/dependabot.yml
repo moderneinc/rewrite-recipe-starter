@@ -7,3 +7,11 @@ updates:
       interval: weekly
     commit-message:
       prefix: "chore(ci)"
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      openrewrite:
+        patterns:
+          - "org.openrewrite*:*"
