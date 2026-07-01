@@ -31,7 +31,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
       - name: build
         run: ./gradlew ${{ env.GRADLE_SWITCHES }} build test
       - name: verify
