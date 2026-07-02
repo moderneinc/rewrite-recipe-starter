@@ -15,7 +15,6 @@
  */
 package com.yourorg;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
@@ -32,7 +31,6 @@ class TrackJavaTodosFileTest implements RewriteTest {
         spec.recipe(new TrackJavaTodosFile("## Test Header"));
     }
 
-    @Disabled
     @DocumentExample
     @Test
     void createNewTodoFile() {
@@ -68,7 +66,6 @@ class TrackJavaTodosFileTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void editExistingTodoFile() {
         // When the file does already exist, we assert the content is modified as expected.
@@ -102,7 +99,6 @@ class TrackJavaTodosFileTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void doNotTouchExistingCorrectFile() {
         // When the file does already exist and is equal, we assert no changes are made by not having an after String.
