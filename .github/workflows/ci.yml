@@ -18,11 +18,7 @@ env:
 
 jobs:
   gradle:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
@@ -39,11 +35,7 @@ jobs:
           ORG_GRADLE_PROJECT_codegenomePassword: ${{ secrets.CODEGENOME_TOKEN }}
 
   maven:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest"]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
