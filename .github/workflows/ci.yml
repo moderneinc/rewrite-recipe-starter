@@ -31,8 +31,17 @@ jobs:
         with:
           distribution: temurin
           java-version: 25
+          server-id: codegenome
+          server-username: CODEGENOME_USERNAME
+          server-password: CODEGENOME_TOKEN
       - uses: gradle/actions/setup-gradle@v6
       - name: build
         run: ./gradlew ${{ env.GRADLE_SWITCHES }} build test
+        env:
+          ORG_GRADLE_PROJECT_codegenomeUsername: ${{ secrets.CODEGENOME_USERNAME }}
+          ORG_GRADLE_PROJECT_codegenomePassword: ${{ secrets.CODEGENOME_TOKEN }}
       - name: verify
         run: mvn --show-version --no-transfer-progress --update-snapshots --fail-at-end --batch-mode -Dstyle.color=always verify
+        env:
+          CODEGENOME_USERNAME: ${{ secrets.CODEGENOME_USERNAME }}
+          CODEGENOME_TOKEN: ${{ secrets.CODEGENOME_TOKEN }}
