@@ -19,8 +19,9 @@ jobs:
           distribution: temurin
           java-version: 25
           cache: maven
-          server-id: ossrh
-          settings-path: ${{ github.workspace }}
+          server-id: codegenome
+          server-username: CODEGENOME_USERNAME
+          server-password: CODEGENOME_TOKEN
       - name: configure-git-user
         run: |
           git config user.email "team@moderne.io"
@@ -30,3 +31,6 @@ jobs:
         run: |
           mvn versions:use-latest-releases
           git diff-index --quiet HEAD pom.xml || (git commit -m "Use latest releases for Maven" pom.xml && git push origin main && rm -f pom.xml.versionsBackup)
+        env:
+          CODEGENOME_USERNAME: ${{ secrets.CODEGENOME_USERNAME }}
+          CODEGENOME_TOKEN: ${{ secrets.CODEGENOME_TOKEN }}
