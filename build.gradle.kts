@@ -21,6 +21,20 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
+// Code Genome Project (Moderne-hosted) repository for OpenRewrite and Moderne artifacts.
+// Credentials come from Gradle properties `codegenomeUsername`/`codegenomePassword`
+// (e.g. ~/.gradle/gradle.properties) or the matching ORG_GRADLE_PROJECT_* environment
+// variables, and are kept out of source control. The typed PasswordCredentials accessor
+// makes Gradle fail fast when they are absent, instead of silently falling back to Maven
+// Central and resolving stale versions once new artifacts are no longer published there.
+repositories {
+    maven {
+        name = "codegenome"
+        url = uri("https://artifacts.codegenomeproject.org/maven")
+        credentials(PasswordCredentials::class)
+    }
+}
+
 recipeDependencies {
     parserClasspath("org.jspecify:jspecify:1.0.0")
 }
