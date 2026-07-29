@@ -163,20 +163,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>codegenome</id>
-            <url>https://artifacts.codegenomeproject.org/maven</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>codegenome</id>
-            <url>https://artifacts.codegenomeproject.org/maven</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <build>
         <plugins>
             <plugin>
@@ -249,6 +235,34 @@
     </build>
 
     <profiles>
+        <!--
+            The Code Genome Project repository rejects anonymous requests, so declaring it
+            unconditionally makes every lookup 401 for contributors without credentials. Until the
+            2026-08-12 cutover the artifacts are still on Maven Central, so it is only added when
+            CODEGENOME_USERNAME is set to pair with the matching settings.xml server. After the
+            cutover, move these out of the profile so all builds resolve from it.
+        -->
+        <profile>
+            <id>codegenome</id>
+            <activation>
+                <property>
+                    <name>env.CODEGENOME_USERNAME</name>
+                </property>
+            </activation>
+            <repositories>
+                <repository>
+                    <id>codegenome</id>
+                    <url>https://artifacts.codegenomeproject.org/maven</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>codegenome</id>
+                    <url>https://artifacts.codegenomeproject.org/maven</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
         <!--
             When you want to generate a TypeTable for use in JavaParser for JavaTemplate, run the following command:
             ./mvnw generate-resources -Ptypetable
