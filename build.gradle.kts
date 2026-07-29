@@ -24,15 +24,28 @@ description = "Rewrite recipes."
 // Code Genome Project (Moderne-hosted) repository for OpenRewrite and Moderne artifacts.
 // Credentials come from Gradle properties `codegenomeUsername`/`codegenomePassword`
 // (e.g. ~/.gradle/gradle.properties) or the matching ORG_GRADLE_PROJECT_* environment
-// variables, and are kept out of source control. The typed PasswordCredentials accessor
-// makes Gradle fail fast when they are absent, instead of silently falling back to Maven
-// Central and resolving stale versions once new artifacts are no longer published there.
-repositories {
-    maven {
-        name = "codegenome"
-        url = uri("https://artifacts.codegenomeproject.org/maven")
-        credentials(PasswordCredentials::class)
+// variables, and are kept out of source control.
+//
+// Until the 2026-08-12 cutover the artifacts are still published to Maven Central, so the
+// repository is only declared when credentials are available; builds without them keep
+// resolving from Maven Central. After the cutover, drop this conditional and use
+// `credentials(PasswordCredentials::class)` so the build fails fast on missing credentials
+// instead of silently resolving stale versions from Maven Central.
+val codegenomeUsername = providers.gradleProperty("codegenomeUsername").orNull?.takeIf { it.isNotBlank() }
+val codegenomePassword = providers.gradleProperty("codegenomePassword").orNull?.takeIf { it.isNotBlank() }
+if (codegenomeUsername != null && codegenomePassword != null) {
+    repositories {
+        maven {
+            name = "codegenome"
+            url = uri("https://artifacts.codegenomeproject.org/maven")
+            credentials {
+                username = codegenomeUsername
+                password = codegenomePassword
+            }
+        }
     }
+} else {
+    logger.lifecycle("No codegenomeUsername/codegenomePassword found; resolving from Maven Central. Set them before the 2026-08-12 Code Genome Project cutover.")
 }
 
 recipeDependencies {
