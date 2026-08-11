@@ -256,6 +256,37 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.StringIsEmptyRecipe
+examples:
+- description: '`StringIsEmptyTest#standardizeStringIsEmpty`'
+  sources:
+  - before: |
+      class A {
+          void test(String s, boolean b) {
+              b = s.length() == 0;
+              b = 0 == s.length();
+              b = s.length() < 1;
+              b = 1 > s.length();
+              b = s.equals("");
+              b = "".equals(s);
+              b = s.isEmpty();
+          }
+      }
+    after: |
+      class A {
+          void test(String s, boolean b) {
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+              b = s.isEmpty();
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.TrackJavaTodos
 examples:
 - description: '`TrackJavaTodosTest#findTodos`'

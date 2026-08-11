@@ -6,17 +6,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
+import org.openrewrite.text.PlainText;
+import org.openrewrite.text.PlainTextParser;
+import org.openrewrite.text.PlainTextVisitor;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
-// TODO - This is a placeholder for a scanning recipe that uses traits and data tables.
-// Implement a recipe that finds any comments in Java, XML, or YAML source files that contain `TODO`, and add them to a file called `TODO.md`.
-// Also store the data in a data table using TodoCommentsReport.
-// You're done when all of the tests in `TrackTodosTest` pass.
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
@@ -46,20 +48,67 @@ public class TrackTodos extends ScanningRecipe<TrackTodos.TodoComments> {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getScanner(TodoComments acc) {
-        // TODO Leverage TodoComment.Matcher to find TODO comments in Java, YAML, and XML files.
-        return TreeVisitor.noop();
+        return new TreeVisitor<Tree, ExecutionContext>() {
+            @Override
+            public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
+                if (!(tree instanceof SourceFile)) {
+                    return tree;
+                }
+                SourceFile s = (SourceFile) tree;
+                if (s.getSourcePath().endsWith("TODO.md")) {
+                    acc.foundTodoFile = true;
+                    return tree; // Don't scan the TODO.md file itself
+                }
+                return new TodoComment.Matcher()
+                        .asVisitor(todo -> {
+                            acc.todos.add(todo);
+                            return todo.getTree();
+                        })
+                        .visit(tree, ctx);
+            }
+        };
     }
 
     @Override
     public Collection<? extends SourceFile> generate(TodoComments acc, ExecutionContext ctx) {
-        // TODO Insert a row for each todo comment into todoCommentsTable
-        // TODO Potentially create a new plain text source file named TODO.md
-        return emptyList();
+        // Insert data table rows first
+        for (TodoComment todo : acc.todos) {
+            for (String item : todo.getTodos()) {
+                String sourcePath = todo.getCursor().firstEnclosingOrThrow(SourceFile.class).getSourcePath().toString();
+                todoCommentsTable.insertRow(ctx, new TodoCommentsReport.Row(sourcePath, item, todo.getTree().getClass().toString()));
+            }
+        }
+        if (acc.foundTodoFile) {
+            return emptyList();
+        }
+        // If the file was not found, create it
+        return PlainTextParser.builder().build()
+                // We start with an empty string that we then append to in the visitor
+                .parse("")
+                // Be sure to set the source path for any generated file to specify where to put it when the recipe run is completed
+                .map(it -> (SourceFile) it.withSourcePath(Paths.get("TODO.md")))
+                .collect(toList());
     }
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor(TodoComments acc) {
-        // TODO Write all the todo comments to TODO.md
-        return TreeVisitor.noop();
+        return Preconditions.check(
+                new FindSourceFiles("TODO.md"),
+                new PlainTextVisitor<ExecutionContext>() {
+                    @Override
+                    public PlainText visitText(PlainText text, ExecutionContext ctx) {
+                        PlainText t = super.visitText(text, ctx);
+                        // OpenRewrite uses referential equality checks to detect when the LST returned by a method is different than the one that was passed into the method.
+                        // If a referentially un-equal object with otherwise the same contents is returned it can result in empty changes.
+                        // Thanks to String interning all Strings with equivalent content are the same instance and therefore referentially equal.
+                        return t.withText(
+                                acc.todos.stream()
+                                        .flatMap(todo -> todo.getTodos().stream())
+                                        .map(String::trim)
+                                        .collect(joining("\n", (header == null ? "## To Do List" : header) + "\n", "\n"))
+                        );
+                    }
+                }
+        );
     }
 }
