@@ -32,6 +32,16 @@ require(
         "https://artifacts.codegenomeproject.org/maven"
 }
 
+// org.openrewrite.tools artifacts are not published to the Code Genome Project repository, while
+// the recipe-repositories plugin excludes org.openrewrite and its subgroups from Maven Central.
+repositories {
+    mavenCentral {
+        content {
+            includeGroupAndSubgroups("org.openrewrite.tools")
+        }
+    }
+}
+
 recipeDependencies {
     parserClasspath("org.jspecify:jspecify:1.0.0")
 }
