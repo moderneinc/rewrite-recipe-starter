@@ -144,39 +144,6 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
-recipeName: com.yourorg.NoCollectionMutation
-examples:
-- description: '`NoCollectionMutationTest#inlineMutation`'
-  sources:
-  - before: |
-      import org.openrewrite.ExecutionContext;
-      import org.openrewrite.java.JavaIsoVisitor;
-      import org.openrewrite.java.tree.J;
-
-      public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
-          @Override
-          public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
-              method.getArguments().clear();
-              return method;
-          }
-      }
-    after: |
-      import org.openrewrite.ExecutionContext;
-      import org.openrewrite.java.JavaIsoVisitor;
-      import org.openrewrite.java.tree.J;
-
-      import java.util.ArrayList;
-
-      public class ManipulateMethodArguments extends JavaIsoVisitor<ExecutionContext> {
-          @Override
-          public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
-              new ArrayList<>(method.getArguments()).clear();
-              return method;
-          }
-      }
-    language: java
----
-type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.NoGuavaListsNewArrayList
 examples:
 - description: '`NoGuavaListsNewArrayListTest#replaceWithNewArrayList`'
