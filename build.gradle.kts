@@ -21,31 +21,15 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
-// Code Genome Project (Moderne-hosted) repository for OpenRewrite and Moderne artifacts.
-// Credentials come from Gradle properties `codegenomeUsername`/`codegenomePassword`
-// (e.g. ~/.gradle/gradle.properties) or the matching ORG_GRADLE_PROJECT_* environment
-// variables, and are kept out of source control.
-//
-// Until the 2026-08-12 cutover the artifacts are still published to Maven Central, so the
-// repository is only declared when credentials are available; builds without them keep
-// resolving from Maven Central. After the cutover, drop this conditional and use
-// `credentials(PasswordCredentials::class)` so the build fails fast on missing credentials
-// instead of silently resolving stale versions from Maven Central.
-val codegenomeUsername = providers.gradleProperty("codegenomeUsername").orNull?.takeIf { it.isNotBlank() }
-val codegenomePassword = providers.gradleProperty("codegenomePassword").orNull?.takeIf { it.isNotBlank() }
-if (codegenomeUsername != null && codegenomePassword != null) {
-    repositories {
-        maven {
-            name = "codegenome"
-            url = uri("https://artifacts.codegenomeproject.org/maven")
-            credentials {
-                username = codegenomeUsername
-                password = codegenomePassword
-            }
-        }
-    }
-} else {
-    logger.lifecycle("No codegenomeUsername/codegenomePassword found; resolving from Maven Central. Set them before the 2026-08-12 Code Genome Project cutover.")
+// OpenRewrite and Moderne artifacts are only available from the Code Genome Project repository,
+// which requires credentials. The recipe-repositories plugin adds that repository only when the
+// `codegenomeUsername`/`codegenomePassword` Gradle properties are set, so fail fast without them.
+require(
+    providers.gradleProperty("codegenomeUsername").isPresent &&
+        providers.gradleProperty("codegenomePassword").isPresent
+) {
+    "Set the codegenomeUsername and codegenomePassword Gradle properties to resolve from " +
+        "https://artifacts.codegenomeproject.org/maven"
 }
 
 recipeDependencies {
@@ -56,6 +40,13 @@ dependencies {
     // The bom version can also be set to a specific version
     // https://github.com/openrewrite/rewrite-recipe-bom/releases
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
+
+    // The bom still resolves rewrite-core versions that request java-object-diff 1.0.1, which is
+    // not published to the Code Genome Project repository; 1.0.2 is, and is what newer rewrite-core
+    // versions use.
+    constraints {
+        implementation("org.openrewrite.tools:java-object-diff:1.0.2")
+    }
 
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
