@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: actions/setup-java@v5
@@ -19,8 +19,9 @@ jobs:
           distribution: temurin
           java-version: 25
           cache: maven
-          server-id: ossrh
-          settings-path: ${{ github.workspace }}
+          server-id: codegenome
+          server-username: CODEGENOME_USERNAME
+          server-password: CODEGENOME_TOKEN
       - name: configure-git-user
         run: |
           git config user.email "team@moderne.io"
@@ -29,4 +30,7 @@ jobs:
       - name: maven-versions-use-latest-releases
         run: |
           mvn versions:use-latest-releases
-          git diff-index --quiet HEAD pom.xml || (git commit -m "Use latest releases for Maven" pom.xml && git push origin main && rm -f pom.xml.versionsBackup)
+          git diff-index --quiet HEAD pom.xml || (git commit -m "Use latest releases for Maven" pom.xml && git push origin main)
+        env:
+          CODEGENOME_USERNAME: ${{ secrets.CODEGENOME_USERNAME }}
+          CODEGENOME_TOKEN: ${{ secrets.CODEGENOME_TOKEN }}

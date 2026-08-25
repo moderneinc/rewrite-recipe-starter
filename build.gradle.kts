@@ -1,8 +1,13 @@
 plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
 
-    // This uses the nexus publishing plugin to publish to the moderne-dev repository
-    // Remove it if you prefer to publish by other means, such as the maven-publish plugin
+    // Publishes to the moderne-dev repository via the nexus publishing plugin. It also
+    // applies Nebula's MavenResolvedDependenciesPlugin, which pins dynamic versions
+    // (e.g. "1.5.+", "latest.release") to the concrete versions Gradle resolved when
+    // writing the published POM. If you replace this with the plain maven-publish plugin,
+    // add `versionMapping { allVariants { fromResolutionResult() } }` to your publication --
+    // otherwise dynamic versions are published verbatim and consumers resolving the recipe
+    // through a private/virtual Maven repository may fail to resolve them.
     id("org.openrewrite.build.publish") version "latest.release"
     id("nebula.release") version "latest.release"
 
@@ -16,6 +21,17 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
+// OpenRewrite and Moderne artifacts are only available from the Code Genome Project repository,
+// which requires credentials. The recipe-repositories plugin adds that repository only when the
+// `codegenomeUsername`/`codegenomePassword` Gradle properties are set, so fail fast without them.
+require(
+    providers.gradleProperty("codegenomeUsername").isPresent &&
+        providers.gradleProperty("codegenomePassword").isPresent
+) {
+    "Set the codegenomeUsername and codegenomePassword Gradle properties to resolve from " +
+        "https://artifacts.codegenomeproject.org/maven"
+}
+
 recipeDependencies {
     parserClasspath("org.jspecify:jspecify:1.0.0")
 }
@@ -25,12 +41,17 @@ dependencies {
     // https://github.com/openrewrite/rewrite-recipe-bom/releases
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
 
+    // The bom still resolves rewrite-core versions that request java-object-diff 1.0.1, which is
+    // not published to the Code Genome Project repository; 1.0.2 is, and is what newer rewrite-core
+    // versions use.
+    constraints {
+        implementation("org.openrewrite.tools:java-object-diff:1.0.2")
+    }
+
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite:rewrite-yaml")
     implementation("org.openrewrite:rewrite-xml")
-    implementation("org.openrewrite.meta:rewrite-analysis")
-    implementation("org.assertj:assertj-core:latest.release")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
@@ -46,6 +67,7 @@ dependencies {
     testImplementation("org.openrewrite:rewrite-test") {
         exclude(group = "org.slf4j", module = "slf4j-nop")
     }
+    testImplementation("org.assertj:assertj-core:latest.release")
 
     // Support for parsing different Java versions
     testRuntimeOnly("org.openrewrite:rewrite-java-17")
@@ -77,6 +99,20 @@ configure<PublishingExtension> {
         named("nebula", MavenPublication::class.java) {
             suppressPomMetadataWarningsFor("runtimeElements")
         }
+
+        // If you replace `org.openrewrite.build.publish` above with the plain `maven-publish`
+        // plugin, uncomment the block below so dynamic versions (e.g. "1.5.+", "latest.release")
+        // are pinned to the concrete versions Gradle resolved when the POM is written. Without
+        // it those selectors are published verbatim and consumers resolving the recipe through a
+        // private/virtual Maven repository may fail to resolve them.
+        //
+        // withType<MavenPublication> {
+        //     versionMapping {
+        //         allVariants {
+        //             fromResolutionResult()
+        //         }
+        //     }
+        // }
     }
 }
 

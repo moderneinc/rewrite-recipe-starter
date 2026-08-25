@@ -1,0 +1,4 @@
+Package name,Afferent coupling (Ca),Efferent coupling (Ce),Instability,Abstractness,Distance from main sequence,In cycle,Cycle members
+com.yourorg,0,1,1.0,0.0,0.0,false,
+com.yourorg.trait,0,0,0.0,0.0,1.0,false,
+com.yourorg.table,1,0,0.0,0.0,1.0,false,

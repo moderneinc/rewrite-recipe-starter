@@ -1,0 +1,10 @@
+{
+  "nodes" : [ {
+    "uniqueId" : "rewrite-maven-plugin",
+    "nodeType" : "system",
+    "name" : "rewrite-maven-plugin",
+    "description" : "System containing rewrite-maven-plugin services"
+  } ],
+  "relationships" : [ ],
+  "$schema" : "https://calm.finos.org/draft/2025-03/meta/calm.json"
+}

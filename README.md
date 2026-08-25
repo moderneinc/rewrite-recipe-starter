@@ -19,6 +19,27 @@ You might be interested to watch some of the [videos available on OpenRewrite an
 Once you want to dive into the code there is a [comprehensive getting started guide](https://docs.openrewrite.org/authoring-recipes/recipe-development-environment)
 available in the OpenRewrite docs that provides more details than the below README.
 
+### Code Genome Project credentials
+
+OpenRewrite and Moderne artifacts are only available from the Code Genome Project repository,
+which requires credentials. Without them dependencies do not resolve, so set them up before
+building.
+
+For Gradle, set `codegenomeUsername` and `codegenomePassword` in `~/.gradle/gradle.properties`,
+or use the matching `ORG_GRADLE_PROJECT_codegenomeUsername`/`ORG_GRADLE_PROJECT_codegenomePassword`
+environment variables. The build fails immediately when they are absent.
+
+For Maven, add a `codegenome` server matching the repository id in `pom.xml` to your
+`~/.m2/settings.xml`:
+
+```xml
+<server>
+    <id>codegenome</id>
+    <username>your-username</username>
+    <password>your-token</password>
+</server>
+```
+
 ## Reference recipes
 
 * [META-INF/rewrite/stringutils.yml](./src/main/resources/META-INF/rewrite/stringutils.yml) - A declarative YAML recipe that replaces usages of `org.springframework.util.StringUtils` with `org.apache.commons.lang3.StringUtils`.
