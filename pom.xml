@@ -164,6 +164,24 @@
     </dependencies>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.21.0</version>
+                    <configuration>
+                        <generateBackupPoms>false</generateBackupPoms>
+                        <!-- Spring and AssertJ publish milestones to Maven Central; ignore any pre-release version -->
+                        <ignoredVersions>
+                            <ignoredVersion>(?i).*[.-]M\d+</ignoredVersion>
+                            <ignoredVersion>(?i).*[.-](RC|CR)\d*</ignoredVersion>
+                            <ignoredVersion>(?i).*[.-](alpha|beta|preview|dev|ea)[.\d-]*</ignoredVersion>
+                        </ignoredVersions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
