@@ -21,12 +21,9 @@ plugins {
 group = "com.yourorg"
 description = "Rewrite recipes."
 
-// The recipe-repositories plugin adds the Code Genome Project (Moderne-hosted) repository
-// for OpenRewrite and Moderne artifacts, but only when credentials are present; without them
-// it silently falls back to Maven Central and resolves stale versions once new artifacts are
-// no longer published there. Fail fast instead. Credentials come from Gradle properties
-// `codegenomeUsername`/`codegenomePassword` (e.g. ~/.gradle/gradle.properties) or the matching
-// ORG_GRADLE_PROJECT_* environment variables, and are kept out of source control.
+// OpenRewrite and Moderne artifacts are only available from the Code Genome Project repository,
+// which requires credentials. The recipe-repositories plugin adds that repository only when the
+// `codegenomeUsername`/`codegenomePassword` Gradle properties are set, so fail fast without them.
 require(
     providers.gradleProperty("codegenomeUsername").isPresent &&
         providers.gradleProperty("codegenomePassword").isPresent

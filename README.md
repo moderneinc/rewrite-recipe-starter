@@ -21,14 +21,13 @@ available in the OpenRewrite docs that provides more details than the below READ
 
 ### Code Genome Project credentials
 
-OpenRewrite and Moderne artifacts are published to the Code Genome Project repository, which
-rejects anonymous requests. Without credentials dependencies do not resolve, so set them up
-before building.
+OpenRewrite and Moderne artifacts are only available from the Code Genome Project repository,
+which requires credentials. Without them dependencies do not resolve, so set them up before
+building.
 
 For Gradle, set `codegenomeUsername` and `codegenomePassword` in `~/.gradle/gradle.properties`,
 or use the matching `ORG_GRADLE_PROJECT_codegenomeUsername`/`ORG_GRADLE_PROJECT_codegenomePassword`
-environment variables. The build fails immediately when they are absent, rather than silently
-falling back to Maven Central and resolving stale versions.
+environment variables. The build fails immediately when they are absent.
 
 For Maven, add a `codegenome` server matching the repository id in `pom.xml` to your
 `~/.m2/settings.xml`:
