@@ -32,16 +32,6 @@ require(
         "https://artifacts.codegenomeproject.org/maven"
 }
 
-// org.openrewrite.tools artifacts are not published to the Code Genome Project repository, while
-// the recipe-repositories plugin excludes org.openrewrite and its subgroups from Maven Central.
-repositories {
-    mavenCentral {
-        content {
-            includeGroupAndSubgroups("org.openrewrite.tools")
-        }
-    }
-}
-
 recipeDependencies {
     parserClasspath("org.jspecify:jspecify:1.0.0")
 }
@@ -50,6 +40,13 @@ dependencies {
     // The bom version can also be set to a specific version
     // https://github.com/openrewrite/rewrite-recipe-bom/releases
     implementation(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
+
+    // The bom still resolves rewrite-core versions that request java-object-diff 1.0.1, which is
+    // not published to the Code Genome Project repository; 1.0.2 is, and is what newer rewrite-core
+    // versions use.
+    constraints {
+        implementation("org.openrewrite.tools:java-object-diff:1.0.2")
+    }
 
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
