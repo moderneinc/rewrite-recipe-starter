@@ -30,7 +30,7 @@ jobs:
       - name: maven-versions-use-latest-releases
         run: |
           mvn versions:use-latest-releases
-          git diff-index --quiet HEAD pom.xml || (git commit -m "Use latest releases for Maven" pom.xml && git push origin main && rm -f pom.xml.versionsBackup)
+          git diff-index --quiet HEAD pom.xml || (git commit -m "Use latest releases for Maven" pom.xml && git push origin main)
         env:
           CODEGENOME_USERNAME: ${{ secrets.CODEGENOME_USERNAME }}
           CODEGENOME_TOKEN: ${{ secrets.CODEGENOME_TOKEN }}
