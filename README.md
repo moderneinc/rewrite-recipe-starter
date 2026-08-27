@@ -29,6 +29,33 @@ For Gradle, set `codegenomeUsername` and `codegenomePassword` in `~/.gradle/grad
 or use the matching `ORG_GRADLE_PROJECT_codegenomeUsername`/`ORG_GRADLE_PROJECT_codegenomePassword`
 environment variables. The build fails immediately when they are absent.
 
+The rewrite Gradle plugin comes from the Code Genome Project repository as well, so builds that
+apply it must declare that repository for plugin resolution. Its Gradle plugin marker is not
+published there, so map the plugin id onto the `org.openrewrite:plugin` module in `settings.gradle`:
+
+```groovy
+pluginManagement {
+    repositories {
+        maven {
+            name = "codegenome"
+            url = "https://artifacts.codegenomeproject.org/maven"
+            credentials(PasswordCredentials)
+        }
+        gradlePluginPortal()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "org.openrewrite.rewrite") {
+                useModule("org.openrewrite:plugin:${requested.version}")
+            }
+        }
+    }
+}
+```
+
+The Gradle Plugin Portal stays in that list because the `org.openrewrite.build.*` plugins this
+project builds with are still published there.
+
 For Maven, add a `codegenome` server matching the repository id in `pom.xml` to your
 `~/.m2/settings.xml`:
 
@@ -111,7 +138,8 @@ In the pom.xml of a different project you wish to test your recipe out in, make 
 ```
 
 Unlike Maven, Gradle must be explicitly configured to resolve dependencies from Maven local.
-The root project of your Gradle build, make your recipe module a dependency of the `rewrite` configuration:
+The root project of your Gradle build, make your recipe module a dependency of the `rewrite` configuration,
+alongside the `pluginManagement` block shown [above](#code-genome-project-credentials) in `settings.gradle`:
 
 ```groovy
 plugins {
@@ -121,6 +149,11 @@ plugins {
 
 repositories {
     mavenLocal()
+    maven {
+        name = "codegenome"
+        url = "https://artifacts.codegenomeproject.org/maven"
+        credentials(PasswordCredentials)
+    }
     mavenCentral()
 }
 

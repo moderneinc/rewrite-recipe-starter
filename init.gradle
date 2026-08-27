@@ -1,6 +1,13 @@
 initscript {
     repositories {
-        maven { url "https://plugins.gradle.org/m2" }
+        // The rewrite Gradle plugin is only published to the Code Genome Project repository;
+        // its third party dependencies still come from Maven Central.
+        maven {
+            name = "codegenome"
+            url = "https://artifacts.codegenomeproject.org/maven"
+            credentials(PasswordCredentials)
+        }
+        mavenCentral()
     }
     dependencies {
         classpath("org.openrewrite:plugin:latest.release")
@@ -14,6 +21,11 @@ rootProject {
     afterEvaluate {
         if (repositories.isEmpty()) {
             repositories {
+                maven {
+                    name = "codegenome"
+                    url = "https://artifacts.codegenomeproject.org/maven"
+                    credentials(PasswordCredentials)
+                }
                 mavenCentral()
             }
         }
