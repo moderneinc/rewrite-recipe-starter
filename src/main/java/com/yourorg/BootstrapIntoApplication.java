@@ -18,12 +18,10 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * This recipe is similar in structure to AppendToReleaseNotes, but uses more advanced techniques.
- * Once you have understood the basics of scanning recipes from AppendToReleaseNotes this is a good
- * place to come to see those techniques applied in a more involved way.
- * BootstrapIntoApplication demonstrates various useful techniques:
+ * This recipe demonstrates:
  * - Copying information from one file into another
  * - Using markers like JavaSourceSet to operate correctly in single-module and multi-module projects
- * - Organizing the logic into multiple visitors to keep separate concerns separate
+ * - Organizing logic into multiple visitors to keep separate concerns separate
  * - Using other recipes, in this case MergeYaml, as building blocks
  */
 @Value
@@ -155,7 +153,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
         Accumulator acc;
 
         @Override
-        public Yaml.@Nullable Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
+        public Yaml.Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
             if (documents.getSourcePath().toString().endsWith("bootstrap.yml") && deleteBootstrap) {
                 // Returning "null" is how you tell OpenRewrite to delete an individual LST element or an entire file.
                 //noinspection DataFlowIssue

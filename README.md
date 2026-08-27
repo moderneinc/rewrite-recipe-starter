@@ -85,6 +85,10 @@ For Maven, add a `codegenome` server matching the repository id in `pom.xml` to 
   * [FindSpringBeansTest](./src/test/java/com/yourorg/FindSpringBeansTest.java) - A test class for the `FindSpringBeans` recipe.
 * [ClassHierarchy](./src/main/java/com/yourorg/ClassHierarchy.java) - A recipe that demonstrates how to produce a data table on the class hierarchy of a project.
   * [ClassHierarchyTest](./src/test/java/com/yourorg/ClassHierarchyTest.java) - A test class for the `ClassHierarchy` recipe.
+* [FindSensitiveDataInLogs](./src/main/java/com/yourorg/FindSensitiveDataInLogs.java) - A recipe that demonstrates taint tracking, finding sensitive values that reach a logging call even after being copied into a local variable and concatenated with other text.
+  * [FindSensitiveDataInLogsTest](./src/test/java/com/yourorg/FindSensitiveDataInLogsTest.java) - A test class for the `FindSensitiveDataInLogs` recipe.
+* [UseStringBuilderForLocalStringBuffer](./src/main/java/com/yourorg/UseStringBuilderForLocalStringBuffer.java) - A recipe that demonstrates using data flow analysis to prove a transformation safe, only replacing a `StringBuffer` when it provably never escapes its method.
+  * [UseStringBuilderForLocalStringBufferTest](./src/test/java/com/yourorg/UseStringBuilderForLocalStringBufferTest.java) - A test class for the `UseStringBuilderForLocalStringBuffer` recipe.
 * [UpdateConcoursePipeline](./src/main/java/com/yourorg/UpdateConcoursePipeline.java) - A recipe that demonstrates how to update a Concourse pipeline, as an example of operating on Yaml files.
   * [UpdateConcoursePipelineTest](./src/test/java/com/yourorg/UpdateConcoursePipelineTest.java) - A test class for the `UpdateConcoursePipeline` recipe.
 

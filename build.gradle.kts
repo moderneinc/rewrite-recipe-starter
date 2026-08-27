@@ -50,6 +50,7 @@ dependencies {
 
     implementation("org.openrewrite:rewrite-java")
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
+    implementation("org.openrewrite.meta:rewrite-analysis")
     implementation("org.openrewrite:rewrite-yaml")
     implementation("org.openrewrite:rewrite-xml")
 
@@ -82,6 +83,8 @@ dependencies {
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
     testRuntimeOnly("org.springframework:spring-context:latest.release")
+    // Our data flow recipe tracks sensitive values into SLF4J log statements
+    testRuntimeOnly("org.slf4j:slf4j-api:latest.release")
 }
 
 signing {
