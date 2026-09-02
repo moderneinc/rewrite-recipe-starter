@@ -24,8 +24,6 @@ plugins {
     // dependency here, since Gradle resolves plugins before project dependencies; on skew the plugin
     // fails the compile with a message naming the version to use.
     kotlin("jvm") version "2.4.10"
-    kotlin("plugin.lombok") version "2.4.10"
-    kotlin("kapt") version "2.4.10"
 }
 
 // Set as appropriate for your organization
@@ -74,7 +72,6 @@ dependencies {
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
     annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
-    kapt("org.openrewrite:rewrite-templating:latest.release")
     implementation("org.openrewrite:rewrite-templating")
     // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
     compileOnly("com.google.errorprone:error_prone_core:latest.release") {
@@ -151,10 +148,4 @@ tasks.named<KotlinCompile>("compileTestKotlin") {
 
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Arewrite.javaParserClasspathFrom=resources")
-}
-repositories {
-    mavenCentral()
-}
-kapt {
-    keepJavacAnnotationProcessors = true
 }
