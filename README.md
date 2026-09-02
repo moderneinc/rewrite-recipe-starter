@@ -91,6 +91,28 @@ For Maven, add a `codegenome` server matching the repository id in `pom.xml` to 
   * [UseStringBuilderForLocalStringBufferTest](./src/test/java/com/yourorg/UseStringBuilderForLocalStringBufferTest.java) - A test class for the `UseStringBuilderForLocalStringBuffer` recipe.
 * [UpdateConcoursePipeline](./src/main/java/com/yourorg/UpdateConcoursePipeline.java) - A recipe that demonstrates how to update a Concourse pipeline, as an example of operating on Yaml files.
   * [UpdateConcoursePipelineTest](./src/test/java/com/yourorg/UpdateConcoursePipelineTest.java) - A test class for the `UpdateConcoursePipeline` recipe.
+* [UseModernCharacterChecks.kt](./src/main/kotlin/com/yourorg/UseModernCharacterChecks.kt) - Recipes written in the [Kotlin recipe DSL](https://docs.moderne.io/user-documentation/recipes/authoring-recipes/writing-recipes/writing-kotlin-recipes/), where each `rewrite { } to { }` clause is a type-checked before/after pair the rewrite-kotlin K2 compiler plugin turns into a recipe, plus a `recipes(...)` composite.
+  * [UseModernCharacterChecksTest.kt](./src/test/kotlin/com/yourorg/UseModernCharacterChecksTest.kt) - Shows that a recipe targeting a Java API rewrites both Kotlin and Java sources.
+* [FindPrintlnOutsideMain.kt](./src/main/kotlin/com/yourorg/FindPrintlnOutsideMain.kt) - The imperative side of the same DSL: a `kotlin { visitMethodInvocation { } }` scope with cursor access, guarded by a `check(usesMethod(...), ...)` precondition.
+  * [FindPrintlnOutsideMainTest.kt](./src/test/kotlin/com/yourorg/FindPrintlnOutsideMainTest.kt) - A test class for the `FindPrintlnOutsideMain` recipe.
+
+### Kotlin recipes
+
+The Kotlin recipes live in `src/main/kotlin` and are compiled by both builds. Two things are load
+bearing in either build file: `rewrite-kotlin` has to be on the Kotlin *compiler plugin* classpath
+(`kotlinCompilerPluginClasspath` in Gradle, the `kotlin-maven-plugin` `<dependencies>` in Maven), and
+the Kotlin version has to match the one rewrite-kotlin was built against, currently 2.4.10. Without
+the compiler plugin, `rewrite { } to { }` still compiles but fails at runtime; under a mismatched
+Kotlin version the plugin refuses to load.
+
+Both build files pin that version by hand, because neither Gradle nor Maven resolves a compiler
+plugin's version from the project's dependency graph. To find the right number, look at the version
+rewrite-kotlin's POM pins `org.jetbrains.kotlin:kotlin-compiler-embeddable` to; on a mismatch the
+compile fails with a message naming it.
+
+The plugin names each generated recipe after the property it came from, suffixed with `$KtRecipe`,
+e.g. `com.yourorg.UseSpaceCheck$KtRecipe`. Quote that id when passing it to the Moderne CLI or the
+build plugins, since `$` is meaningful to most shells.
 
 ## Local Publishing for Testing
 

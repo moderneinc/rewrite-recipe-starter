@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("org.openrewrite.build.recipe-library-base") version "latest.release"
 
@@ -15,6 +17,15 @@ plugins {
     // If you are operating in an environment where public repositories are not accessible, we recommend using a
     // virtual repository which mirrors both maven central and nexus snapshots.
     id("org.openrewrite.build.recipe-repositories") version "latest.release"
+
+    // Needed to compile the Kotlin recipe DSL examples in src/main/kotlin. This version must match
+    // the Kotlin version rewrite-kotlin's K2 compiler plugin was built against, which is the version
+    // rewrite-kotlin's POM pins kotlin-compiler-embeddable to. It cannot be derived from that
+    // dependency here, since Gradle resolves plugins before project dependencies; on skew the plugin
+    // fails the compile with a message naming the version to use.
+    kotlin("jvm") version "2.4.10"
+    kotlin("plugin.lombok") version "2.4.10"
+    kotlin("kapt") version "2.4.10"
 }
 
 // Set as appropriate for your organization
@@ -26,10 +37,10 @@ description = "Rewrite recipes."
 // `codegenomeUsername`/`codegenomePassword` Gradle properties are set, so fail fast without them.
 require(
     providers.gradleProperty("codegenomeUsername").isPresent &&
-        providers.gradleProperty("codegenomePassword").isPresent
+            providers.gradleProperty("codegenomePassword").isPresent
 ) {
     "Set the codegenomeUsername and codegenomePassword Gradle properties to resolve from " +
-        "https://artifacts.codegenomeproject.org/maven"
+            "https://artifacts.codegenomeproject.org/maven"
 }
 
 recipeDependencies {
@@ -52,16 +63,23 @@ dependencies {
     implementation("org.openrewrite.recipe:rewrite-java-dependencies")
     implementation("org.openrewrite.meta:rewrite-analysis")
     implementation("org.openrewrite:rewrite-yaml")
+    implementation("org.openrewrite:rewrite-kotlin")
+
+    // Registers rewrite-kotlin's K2 compiler plugin, which turns `rewrite { } to { }` declarations
+    // into Recipe subclasses at compile time. Without it those declarations compile but fail at runtime.
+    kotlinCompilerPluginClasspath(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
+    kotlinCompilerPluginClasspath("org.openrewrite:rewrite-kotlin")
     implementation("org.openrewrite:rewrite-xml")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
     annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
+    kapt("org.openrewrite:rewrite-templating:latest.release")
     implementation("org.openrewrite:rewrite-templating")
     // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
     compileOnly("com.google.errorprone:error_prone_core:latest.release") {
         exclude("com.google.auto.service", "auto-service-annotations")
-        exclude("io.github.eisop","dataflow-errorprone")
+        exclude("io.github.eisop", "dataflow-errorprone")
     }
 
     // The RewriteTest class needed for testing recipes
@@ -83,6 +101,7 @@ dependencies {
     testRuntimeOnly("org.apache.commons:commons-lang3:latest.release")
     testRuntimeOnly("org.springframework:spring-core:latest.release")
     testRuntimeOnly("org.springframework:spring-context:latest.release")
+    testImplementation(kotlin("test"))
 }
 
 signing {
@@ -121,6 +140,21 @@ tasks.register("licenseFormat") {
     println("License format task not implemented for rewrite-recipe-starter")
 }
 
+tasks.named<KotlinCompile>("compileKotlin") {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+}
+
+// Tests, like their Java counterparts, compile against a newer release for text blocks and friends.
+tasks.named<KotlinCompile>("compileTestKotlin") {
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+}
+
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Arewrite.javaParserClasspathFrom=resources")
+}
+repositories {
+    mavenCentral()
+}
+kapt {
+    keepJavacAnnotationProcessors = true
 }

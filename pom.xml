@@ -18,6 +18,15 @@
         <maven.compiler.release>8</maven.compiler.release>
         <!-- For tests, we recommend a java version newer than 15 to have textblocks available -->
         <maven.compiler.testRelease>21</maven.compiler.testRelease>
+        <!--
+            Must match the Kotlin version rewrite-kotlin's K2 compiler plugin was built against, which
+            is the version rewrite-kotlin's POM pins kotlin-compiler-embeddable to. Maven cannot derive
+            it from that dependency, as plugin versions resolve outside the project dependency graph;
+            on skew the plugin fails the compile with a message naming the version to use.
+        -->
+        <kotlin.version>2.4.10</kotlin.version>
+        <!-- Pinned because Maven does not apply dependencyManagement to plugin dependencies -->
+        <rewrite-kotlin.version>8.91.0</rewrite-kotlin.version>
     </properties>
 
     <dependencyManagement>
@@ -81,6 +90,19 @@
         <dependency>
             <groupId>org.openrewrite</groupId>
             <artifactId>rewrite-yaml</artifactId>
+        </dependency>
+
+        <!-- The Gradle Kotlin plugin adds the standard library implicitly; Maven does not -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
+        <!-- Supplies the Kotlin recipe DSL used by the recipes in src/main/kotlin -->
+        <dependency>
+            <groupId>org.openrewrite</groupId>
+            <artifactId>rewrite-kotlin</artifactId>
         </dependency>
 
         <dependency>
@@ -196,6 +218,52 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!--
+                Compiles the Kotlin recipe DSL examples in src/main/kotlin. Kotlin has to compile
+                before Java, hence the process-sources/process-test-sources phases. The rewrite-kotlin
+                dependency below puts its K2 compiler plugin on the compiler plugin classpath, which is
+                what turns `rewrite { } to { }` declarations into Recipe subclasses.
+            -->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <jvmTarget>1.8</jvmTarget>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-compile</id>
+                        <phase>process-test-sources</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <jvmTarget>${maven.compiler.testRelease}</jvmTarget>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.openrewrite</groupId>
+                        <artifactId>rewrite-kotlin</artifactId>
+                        <version>${rewrite-kotlin.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
