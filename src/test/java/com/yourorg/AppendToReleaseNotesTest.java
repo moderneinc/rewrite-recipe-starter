@@ -64,4 +64,18 @@ class AppendToReleaseNotesTest implements RewriteTest {
           )
         );
     }
+
+    @Test
+    void noDuplicateNotes() {
+        rewriteRun(
+          text(
+            """
+              You say goodbye, I say
+              Hello world
+              """,
+            spec -> spec.path(Path.of("RELEASE.md"))
+          )
+        );
+    }
+
 }

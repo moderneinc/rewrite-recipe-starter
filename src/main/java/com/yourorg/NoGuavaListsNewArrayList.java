@@ -33,6 +33,7 @@ import org.openrewrite.java.tree.J;
 public class NoGuavaListsNewArrayList extends Recipe {
     // These matchers use a syntax described on https://docs.openrewrite.org/reference/method-patterns
     private static final MethodMatcher NEW_ARRAY_LIST = new MethodMatcher("com.google.common.collect.Lists newArrayList()");
+    private static final MethodMatcher NEW_ARRAY_LIST_ARRAY = new MethodMatcher("com.google.common.collect.Lists newArrayList(String[])");
     private static final MethodMatcher NEW_ARRAY_LIST_CAPACITY = new MethodMatcher("com.google.common.collect.Lists newArrayListWithCapacity(int)");
     private static final MethodMatcher NEW_ARRAY_LIST_ITERABLE = new MethodMatcher("com.google.common.collect.Lists newArrayList(java.lang.Iterable)");
 
@@ -48,6 +49,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                 // No changes made by the preconditions check will be kept
                 Preconditions.or(
                         new UsesMethod<>(NEW_ARRAY_LIST),
+                        new UsesMethod<>(NEW_ARRAY_LIST_ARRAY),
                         new UsesMethod<>(NEW_ARRAY_LIST_CAPACITY),
                         new UsesMethod<>(NEW_ARRAY_LIST_ITERABLE)),
 
@@ -83,6 +85,20 @@ public class NoGuavaListsNewArrayList extends Recipe {
                                     .apply(
                                             getCursor(),
                                             method.getCoordinates().replace());
+                        }
+                        if (NEW_ARRAY_LIST_ARRAY.matches(method)) {
+                            maybeRemoveImport("com.google.common.collect.Lists");
+                            maybeAddImport("java.util.ArrayList");
+
+                            // The `#{any(int)}` syntax means "insert any expression here of that type"
+                            return JavaTemplate.builder("new ArrayList<>(List.of(#{any(int)}))")
+                                    .imports("java.util.ArrayList", "java.util.List")
+                                    .build()
+                                    .apply(
+                                            getCursor(),
+                                            method.getCoordinates().replace(),
+                                            // Reuse the `int` argument passed to the Guava method
+                                            method.getArguments().get(0));
                         }
                         if (NEW_ARRAY_LIST_CAPACITY.matches(method)) {
                             maybeRemoveImport("com.google.common.collect.Lists");

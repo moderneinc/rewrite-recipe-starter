@@ -15,23 +15,24 @@
  */
 package com.yourorg;
 
+import com.yourorg.table.TodoCommentsReport;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
+import org.openrewrite.SourceFile;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaIsoVisitor;
+import org.openrewrite.java.tree.Comment;
 import org.openrewrite.java.tree.Space;
+import org.openrewrite.java.tree.TextComment;
 
-// TODO - This is a placeholder for a recipe that uses data tables.
-// Implement a recipe that finds any comments in Java source files that contain `TODO`, and add them to a data table.
-// You're done when all of the tests in `TrackJavaTodosTest` pass.
-// The Java LST element `org.openrewrite.java.tree.Space` carries java comments in Java source files.
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class TrackJavaTodos extends Recipe {
 
+    transient TodoCommentsReport todoCommentsTable = new TodoCommentsReport(this);
 
     String displayName = "Export TODOs from Java comments";
 
@@ -42,8 +43,21 @@ public class TrackJavaTodos extends Recipe {
         return new JavaIsoVisitor<ExecutionContext>() {
             @Override
             public Space visitSpace(@Nullable Space space, Space.Location loc, ExecutionContext ctx) {
-                // TODO implement me to find comments with TODO and add them to a data table
-                return super.visitSpace(space, loc, ctx);
+                Space s = super.visitSpace(space, loc, ctx);
+                for (Comment comment : s.getComments()) {
+                    // Let's just match TextComments and ignore Javadoc comments
+                    if (comment instanceof TextComment) {
+                        String text = ((TextComment) comment).getText().trim();
+                        if (text.contains("TODO")) {
+                            String sourcePath = getCursor().firstEnclosingOrThrow(SourceFile.class).getSourcePath().toString();
+                            todoCommentsTable.insertRow(ctx, new TodoCommentsReport.Row(
+                                    sourcePath,
+                                    text,
+                                    getCursor().getValue().getClass().toString()));
+                        }
+                    }
+                }
+                return s;
             }
         };
     }
