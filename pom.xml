@@ -24,7 +24,7 @@
             it from that dependency, as plugin versions resolve outside the project dependency graph;
             on skew the plugin fails the compile with a message naming the version to use.
         -->
-        <kotlin.version>2.4.10</kotlin.version>
+        <kotlin.version>2.4.20</kotlin.version>
         <!-- Pinned because Maven does not apply dependencyManagement to plugin dependencies -->
         <rewrite-kotlin.version>8.91.0</rewrite-kotlin.version>
     </properties>
