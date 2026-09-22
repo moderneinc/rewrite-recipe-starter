@@ -126,7 +126,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!acc.sourceSetsWithExistingApplicationYaml.contains(jss)) {
                 results.addAll(yp.parse("")
                         .map(it -> (SourceFile) it.withMarkers(it.getMarkers().add(jss)))
-                        .map(it -> it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
+                        .map(it -> (SourceFile) it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
                         .collect(toList()));
             }
         }
@@ -153,7 +153,7 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
         Accumulator acc;
 
         @Override
-        public  Yaml.@Nullable Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
+        public Yaml.@Nullable Documents visitDocuments(Yaml.Documents documents, ExecutionContext ctx) {
             if (documents.getSourcePath().toString().endsWith("bootstrap.yml") && deleteBootstrap) {
                 // Returning "null" is how you tell OpenRewrite to delete an individual LST element or an entire file.
                 //noinspection DataFlowIssue
