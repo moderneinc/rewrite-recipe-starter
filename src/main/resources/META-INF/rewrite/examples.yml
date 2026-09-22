@@ -85,6 +85,46 @@ examples:
     language: java
 ---
 type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.FindSensitiveDataInLogs
+examples:
+- description: '`FindSensitiveDataInLogsTest#sensitiveValueReachesLogThroughLocalVariableAndConcatenation`'
+  parameters:
+  - com.yourorg.Account getPassword()
+  - 'null'
+  sources:
+  - before: |
+      package com.yourorg;
+
+      import org.slf4j.Logger;
+      import org.slf4j.LoggerFactory;
+
+      class LoginService {
+          private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+
+          void login(Account account) {
+              String password = account.getPassword();
+              String message = "Login failed for " + password;
+              logger.info(message);
+          }
+      }
+    after: |
+      package com.yourorg;
+
+      import org.slf4j.Logger;
+      import org.slf4j.LoggerFactory;
+
+      class LoginService {
+          private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+
+          void login(Account account) {
+              String password = /*~~>*/account.getPassword();
+              String message = "Login failed for " + password;
+              logger.info(message);
+          }
+      }
+    language: java
+---
+type: specs.openrewrite.org/v1beta/example
 recipeName: com.yourorg.FindSpringBeans
 examples:
 - description: '`FindSpringBeansTest#findSpringBeans`'
@@ -389,3 +429,28 @@ examples:
     language: java
   - before: test
     language: mavenProject
+---
+type: specs.openrewrite.org/v1beta/example
+recipeName: com.yourorg.UseStringBuilderForLocalStringBuffer
+examples:
+- description: '`UseStringBuilderForLocalStringBufferTest#stringBufferThatNeverEscapes`'
+  sources:
+  - before: |
+      class Greeter {
+          String greet(String name) {
+              StringBuffer sb = new StringBuffer();
+              sb.append("Hello, ").append(name);
+              sb.append('!');
+              return sb.toString();
+          }
+      }
+    after: |
+      class Greeter {
+          String greet(String name) {
+              StringBuilder sb = new StringBuilder();
+              sb.append("Hello, ").append(name);
+              sb.append('!');
+              return sb.toString();
+          }
+      }
+    language: java

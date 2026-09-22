@@ -30,8 +30,8 @@ class UseModernCharacterChecksTest : RewriteTest {
         spec.recipe(UseModernCharacterChecks)
     }
 
-    @Suppress("LombokKotlinCompilerPlugin")
     @DocumentExample
+    @Suppress("LombokKotlinCompilerPlugin")
     @Test
     fun rewritesKotlin() = rewriteRun(
         kotlin(
