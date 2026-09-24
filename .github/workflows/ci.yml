@@ -28,6 +28,23 @@ jobs:
           distribution: temurin
           java-version: 25
       - uses: gradle/actions/setup-gradle@v6
+      - name: diagnose codegenome
+        run: |
+          R=https://artifacts.codegenomeproject.org/maven
+          for p in \
+            org/openrewrite/recipe/rewrite-recipe-bom/maven-metadata.xml \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.39.0/rewrite-recipe-bom-3.39.0.pom \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/rewrite-recipe-bom-3.40.0.pom \
+            org/openrewrite/rewrite-templating/1.45.2/rewrite-templating-1.45.2.pom \
+            org/openrewrite/rewrite-core/8.92.8/rewrite-core-8.92.8.pom; do
+            echo "== $p"
+            curl -s -o /tmp/body -D /tmp/headers -w 'status=%{http_code}\n' -u "$U:$P" "$R/$p"
+            grep -viE '^(location|set-cookie|authorization)' /tmp/headers
+            head -c 400 /tmp/body; echo
+          done
+        env:
+          U: ${{ secrets.CODEGENOME_USERNAME }}
+          P: ${{ secrets.CODEGENOME_TOKEN }}
       - name: build
         run: ./gradlew ${{ env.GRADLE_SWITCHES }} build test
         env:
