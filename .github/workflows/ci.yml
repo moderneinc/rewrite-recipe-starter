@@ -34,13 +34,18 @@ jobs:
           for p in \
             org/openrewrite/recipe/rewrite-recipe-bom/maven-metadata.xml \
             org/openrewrite/recipe/rewrite-recipe-bom/3.39.0/rewrite-recipe-bom-3.39.0.pom \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/ \
             org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/rewrite-recipe-bom-3.40.0.pom \
+            "org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/rewrite-recipe-bom-3.40.0.pom?nocache=$RANDOM" \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/rewrite-recipe-bom-3.40.0.pom.sha1 \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.40.0/rewrite-recipe-bom-3.40.0.module \
+            org/openrewrite/recipe/rewrite-recipe-bom/3.39.0/ \
             org/openrewrite/rewrite-templating/1.45.2/rewrite-templating-1.45.2.pom \
             org/openrewrite/rewrite-core/8.92.8/rewrite-core-8.92.8.pom; do
             echo "== $p"
             curl -s -o /tmp/body -D /tmp/headers -w 'status=%{http_code}\n' -u "$U:$P" "$R/$p"
             grep -viE '^(location|set-cookie|authorization)' /tmp/headers
-            head -c 400 /tmp/body; echo
+            head -c 1500 /tmp/body; echo
           done
         env:
           U: ${{ secrets.CODEGENOME_USERNAME }}
