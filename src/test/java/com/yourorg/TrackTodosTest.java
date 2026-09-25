@@ -1,7 +1,6 @@
 package com.yourorg;
 
 import com.yourorg.table.TodoCommentsReport;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
@@ -23,7 +22,6 @@ class TrackTodosTest implements RewriteTest {
           .allSources(SourceSpec::noTrim);
     }
 
-    @Disabled
     @DocumentExample
     @Test
     void createNewTodoFileJava() {
@@ -66,7 +64,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void editExistingTodoFileJava() {
         // When the file does already exist, we assert the content is modified as expected.
@@ -107,7 +104,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void createNewTodoFileYAML() {
         // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
@@ -147,7 +143,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void editExistingTodoFileYAML() {
         // When the file does already exist, we assert the content is modified as expected.
@@ -186,7 +181,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void createNewTodoFileXML() {
         // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
@@ -226,7 +220,6 @@ class TrackTodosTest implements RewriteTest {
         );
     }
 
-    @Disabled
     @Test
     void editExistingTodoFileXML() {
         // When the file does already exist, we assert the content is modified as expected.
