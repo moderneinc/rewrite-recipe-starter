@@ -23,7 +23,7 @@ plugins {
     // rewrite-kotlin's POM pins kotlin-compiler-embeddable to. It cannot be derived from that
     // dependency here, since Gradle resolves plugins before project dependencies; on skew the plugin
     // fails the compile with a message naming the version to use.
-    kotlin("jvm") version "2.4.10"
+    kotlin("jvm") version "2.4.20"
 }
 
 // Set as appropriate for your organization
