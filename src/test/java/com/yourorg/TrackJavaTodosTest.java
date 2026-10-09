@@ -16,7 +16,6 @@
 package com.yourorg;
 
 import com.yourorg.table.TodoCommentsReport;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.test.RecipeSpec;
@@ -31,17 +30,16 @@ class TrackJavaTodosTest implements RewriteTest {
         spec.recipe(new TrackJavaTodos());
     }
 
-    @Disabled
     @DocumentExample
     @Test
     void findTodos() {
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
-            assertThat(rows)
-              .containsExactly(
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+              assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("A.java", "TODO: Have fun", "class org.openrewrite.java.tree.J$MethodDeclaration"),
                 new TodoCommentsReport.Row("A.java", "TODO: Test your code", "class org.openrewrite.java.tree.J$MethodDeclaration"),
-                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"))),
+                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"));
+          }),
           //language=java
           java(
             """

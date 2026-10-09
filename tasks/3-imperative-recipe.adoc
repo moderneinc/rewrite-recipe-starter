@@ -1,0 +1,25 @@
+= Imperative Recipe
+
+Time 20 minutes
+
+== Takeaways
+
+* Write a Refaster template that matches various ways to check if a String is empty.
+* Extend the recipe, using the tests to cover the various aspects.
+
+== ToDo
+
+1. Use the newly created Recipe Repository with IntelliJ
+2. Explore how `MethodMatcher` and `JavaTemplate` are used in xref:../src/main/java/com/yourorg/NoGuavaListsNewArrayList.java[NoGuavaListsNewArrayList] to find and migrate method calls
+3. Run the recipe against Apache Maven using the Moderne IntelliJ Plugin
+4. define a test in xref:../src/test/java/com/yourorg/NoGuavaListsNewArrayListTest.java[NoGuavaListsNewArrayListTest] to migrate `Lists.newArrayList(new String[]{"a", "b", "c"})` to `new ArrayList(List.of(new String[]{"a", "b", "c"}))`
+5. Define a `MethodMatcher` that matches `Lists.newArrayList(new String[]{"a", "b", "c"})`
+6. Define a `JavaTemplate` to create `new ArrayList(List.of(new String[]{"a", "b", "c"}))`
+7. Implement the migration logic in xref:../src/main/java/com/yourorg/NoGuavaListsNewArrayList.java[NoGuavaListsNewArrayList#visitMethodInvocation]
+
+== Links
+
+* https://docs.openrewrite.org/reference/method-patterns[MethodMatcher Documentation]
+* https://docs.openrewrite.org/concepts-and-explanations/javatemplate[JavaTemplate Documentation]
+* https://docs.openrewrite.org/authoring-recipes/writing-a-java-refactoring-recipe[Imperative Java Recipe]
+
