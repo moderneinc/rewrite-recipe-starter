@@ -15,7 +15,6 @@
  */
 package com.yourorg;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
 import org.openrewrite.Recipe;
@@ -24,16 +23,13 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-@Disabled("Remove this annotation to run the tests once you implement the recipe")
 class StringIsEmptyTest implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
         // Note that we instantiate a generated class here, with `Recipes` appended to the Refaster class name
         // You might need to trigger an explicit build of your project to generate this class with Ctrl + F9
-
-        // TODO: Uncomment the line below once you have implemented the recipe
-        //spec.recipe(new StringIsEmptyRecipe());
+        spec.recipe(new StringIsEmptyRecipe());
     }
 
     @DocumentExample
@@ -161,7 +157,7 @@ class StringIsEmptyTest implements RewriteTest {
     void recipeDocumentation() {
         // This is a test to validate the correctness of the documentation in the recipe
         // By default you get generated documentation, but you can customize it through the RecipeDescriptor annotation
-        Recipe recipe = null; // TODO: = new StringIsEmptyRecipe();
+        Recipe recipe = new StringIsEmptyRecipe();
         String displayName = recipe.getDisplayName();
         String description = recipe.getDescription();
         assert "Standardize empty String checks".equals(displayName) : displayName;
