@@ -74,9 +74,9 @@ dependencies {
     annotationProcessor("org.openrewrite:rewrite-templating:latest.release")
     implementation("org.openrewrite:rewrite-templating")
     // The `@BeforeTemplate` and `@AfterTemplate` annotations are needed for refaster style recipes
+    // Only the annotations are needed, and error_prone_core's transitive dependencies require a newer JVM than main targets.
     compileOnly("com.google.errorprone:error_prone_core:latest.release") {
-        exclude("com.google.auto.service", "auto-service-annotations")
-        exclude("io.github.eisop", "dataflow-errorprone")
+        isTransitive = false
     }
 
     // The RewriteTest class needed for testing recipes
