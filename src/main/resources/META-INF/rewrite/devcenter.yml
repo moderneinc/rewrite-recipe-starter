@@ -14,14 +14,34 @@
 # limitations under the License.
 #
 
-# A custom DevCenter, adapted from io.moderne.devcenter.DevCenterStarter in rewrite-devcenter. See
-# https://docs.moderne.io/administrator-documentation/moderne-platform/how-to-guides/recipe-based-devcenter/
+# An example custom DevCenter.:
+# Each card is backed by data tables produced from a recipe.
+# Also see: Writing DevCenter recipes and the available cards
+# https://docs.moderne.io/administrator-documentation/moderne-platform/how-to-guides/creating-a-devcenter-recipe
+#
+# To run it with the Moderne CLI:
+#   1. The CLI discovers recipes through META-INF/rewrite/recipes.csv, so regenerate it after editing this file:
+#        ./gradlew recipeCsvGenerate
+#      Maven has no equivalent, manually update recipes.csv
+#   2. Publish this module to your local Maven repository:
+#        ./gradlew publishToMavenLocal    (or ./mvnw install)
+#   3. Install it into the CLI's recipe marketplace, using the version the build published:
+#        mod config recipes jar install com.yourorg:rewrite-recipe-starter:<version>
+#   4. Build LSTs for a directory of cloned repositories, run the DevCenter, and generate the dashboard:
+#        mod build <repos-dir>
+#        mod run <repos-dir> --recipe com.yourorg.DevCenter
+#        mod devcenter <repos-dir> --last-recipe-run
+# More on generating DevCenters with the CLI:
+# https://docs.moderne.io/user-documentation/moderne-cli/how-to-guides/cli-dev-center
+#
+# To show this DevCenter in the Moderne Platform instead, publish this module, import it into your tenant, and then:
+# https://docs.moderne.io/administrator-documentation/moderne-platform/how-to-guides/recipe-based-devcenter
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: com.yourorg.DevCenter
 displayName: Your organization's DevCenter
 description: >-
-  A custom DevCenter tracking Spring Boot, Java, and Angular upgrades alongside OWASP top ten issues.
+  A custom DevCenter tracking Spring Boot, Java, and Angular upgrades, a move off Guava's `Lists.newArrayList`, and OWASP top ten issues.
 recipeList:
   - io.moderne.devcenter.LibraryUpgrade:
       cardName: Move to Spring Boot 4.1
@@ -35,6 +55,7 @@ recipeList:
   - io.moderne.devcenter.AngularVersionUpgrade:
       majorVersion: 22
       upgradeRecipe: org.openrewrite.angular.UpgradeToAngular22
+  - com.yourorg.GuavaListsMigration
   - io.moderne.devcenter.SecurityStarter
   - io.moderne.devcenter.FindOrganizationStatistics
   - io.moderne.devcenter.FindActiveCommitters
