@@ -111,6 +111,17 @@
         </dependency>
 
         <dependency>
+            <groupId>io.moderne.recipe</groupId>
+            <artifactId>rewrite-devcenter</artifactId>
+            <version>1.33.4</version>
+        </dependency>
+        <dependency>
+            <groupId>io.moderne.recipe</groupId>
+            <artifactId>rewrite-angular</artifactId>
+            <version>1.14.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.openrewrite.recipe</groupId>
             <artifactId>rewrite-java-dependencies</artifactId>
         </dependency>

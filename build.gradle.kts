@@ -68,6 +68,8 @@ dependencies {
     kotlinCompilerPluginClasspath(platform("org.openrewrite.recipe:rewrite-recipe-bom:latest.release"))
     kotlinCompilerPluginClasspath("org.openrewrite:rewrite-kotlin")
     implementation("org.openrewrite:rewrite-xml")
+    implementation("io.moderne.recipe:rewrite-devcenter:latest.release")
+    implementation("io.moderne.recipe:rewrite-angular:latest.release")
 
     // Refaster style recipes need the rewrite-templating annotation processor and dependency for generated recipes
     // https://github.com/openrewrite/rewrite-templating/releases
