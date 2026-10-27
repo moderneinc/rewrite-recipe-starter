@@ -1,0 +1,26 @@
+= Refaster Recipe
+
+Time 20 minutes
+
+== Takeaways
+
+* Write a Refaster template that matches various ways to check if a String is empty.
+* Extend the recipe, using the tests to cover the various aspects.
+* Create Refaster recipes with Moderne IntelliJ Plugin
+
+== ToDo
+
+1. Use the newly created Recipe Repository with IntelliJ
+2. Enable xref:../src/test/java/com/yourorg/StringIsEmptyTest.java[StringIsEmptyTest] by removing the class level `@Disable` annotation
+3. Enable the `new StringIsEmptyTest()` instanciation in `StringIsEmptyTest#defaults` and `StringIsEmptyTest#recipeDocumentation`
+4. Write the `@AfterTemplate` method to define desired outcome
+5. Write multiple `@BeforeTemplate` methods to define the search patters
+6. Verify with the UnitTest
+7. Use the implementation in src/main/java/com/yourorg/usercode/UsingStrings.java[UsingStrings#anyEmpty] and the Moderne IntelliJ Plugin to generate additional templates
+
+== Links
+
+* https://docs.openrewrite.org/authoring-recipes/types-of-recipes#refaster-template-recipes[https://docs.openrewrite.org/authoring-recipes/types-of-recipes#declarative-recipes][Refaster Recipe short Documentation]
+* https://docs.openrewrite.org/authoring-recipes/refaster-recipes[Refaster Recipe full Documentation]
+* https://docs.moderne.io/user-documentation/moderne-ide-integration/how-to-guides/creating-recipes[Recipe Creation with Moderne IntelliJ Plugin]
+
