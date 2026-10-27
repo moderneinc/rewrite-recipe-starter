@@ -4,13 +4,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.*;
-import org.openrewrite.java.marker.JavaSourceSet;
 import org.openrewrite.yaml.MergeYaml;
 import org.openrewrite.yaml.YamlIsoVisitor;
 import org.openrewrite.yaml.YamlParser;
 import org.openrewrite.yaml.tree.Yaml;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
@@ -20,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * This recipe is similar in structure to AppendToReleaseNotes, but uses more advanced techniques.
  * This recipe demonstrates:
  * - Copying information from one file into another
- * - Using markers like JavaSourceSet to operate correctly in single-module and multi-module projects
+ * - Pairing files by path to operate correctly in single-module and multi-module projects
  * - Organizing logic into multiple visitors to keep separate concerns separate
  * - Using other recipes, in this case MergeYaml, as building blocks
  */
@@ -44,19 +43,13 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
      * A common recipe authoring mistake is to treat all repositories like single module repositories.
      * But there might be multiple modules with their own application/bootstrap, and a single project might have
      * separate application/bootstrap yaml in its main and test source sets.
-     * This accumulator keeps track of all of this using the OpenRewrite-provided JavaSourceSet marker.
+     * This accumulator keeps track of all of this by the path of the application.yml next to each bootstrap.yml.
+     * It holds paths and text rather than LSTs or markers like JavaSourceSet, as it stays in memory for the whole
+     * scan of what may be a very large repository.
      */
     public static class Accumulator {
-
-        /**
-         * Keep track of the bootstrap.yml in each source set where they appear.
-         * If there were many/large files caching whole LSTs here could cause memory pressure
-         */
-        Map<JavaSourceSet, Yaml.Documents> sourceSetToBootstrapYaml = new HashMap<>();
-        /**
-         * Keep track of which source sets already have an application.yml
-         */
-        Set<JavaSourceSet> sourceSetsWithExistingApplicationYaml = new HashSet<>();
+        Map<Path, String> applicationYamlToBootstrapContents = new HashMap<>();
+        Set<Path> existingApplicationYaml = new HashSet<>();
     }
 
     @Override
@@ -91,10 +84,13 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!documents.getSourcePath().toString().endsWith("bootstrap.yml")) {
                 return documents;
             }
-            documents.getMarkers().findFirst(JavaSourceSet.class).ifPresent(it -> acc.sourceSetToBootstrapYaml
-                    .put(it, documents));
+            acc.applicationYamlToBootstrapContents.put(applicationYamlNextTo(documents), documents.printAll());
             return documents;
         }
+    }
+
+    private static Path applicationYamlNextTo(Yaml.Documents bootstrapYaml) {
+        return bootstrapYaml.getSourcePath().resolveSibling("application.yml");
     }
 
     @Value
@@ -107,26 +103,22 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!documents.getSourcePath().toString().endsWith("application.yml")) {
                 return documents;
             }
-            documents.getMarkers().findFirst(JavaSourceSet.class).ifPresent(jss ->
-                    acc.sourceSetsWithExistingApplicationYaml.add(jss));
+            acc.existingApplicationYaml.add(documents.getSourcePath());
             return documents;
         }
     }
 
     @Override
     public Collection<? extends SourceFile> generate(Accumulator acc, ExecutionContext ctx) {
-        if (acc.sourceSetToBootstrapYaml.isEmpty()) {
+        if (acc.applicationYamlToBootstrapContents.isEmpty()) {
             return emptyList();
         }
         List<SourceFile> results = new ArrayList<>();
         YamlParser yp = YamlParser.builder().build();
-        for (Map.Entry<JavaSourceSet, Yaml.Documents> javaSourceSetDocumentsEntry : acc.sourceSetToBootstrapYaml.entrySet()) {
-            JavaSourceSet jss = javaSourceSetDocumentsEntry.getKey();
-            Yaml.Documents docs = javaSourceSetDocumentsEntry.getValue();
-            if (!acc.sourceSetsWithExistingApplicationYaml.contains(jss)) {
+        for (Path applicationYaml : acc.applicationYamlToBootstrapContents.keySet()) {
+            if (!acc.existingApplicationYaml.contains(applicationYaml)) {
                 results.addAll(yp.parse("")
-                        .map(it -> (SourceFile) it.withMarkers(it.getMarkers().add(jss)))
-                        .map(it -> (SourceFile) it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
+                        .map(it -> (SourceFile) it.withSourcePath(applicationYaml))
                         .collect(toList()));
             }
         }
@@ -173,16 +165,11 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!documents.getSourcePath().toString().endsWith("application.yml")) {
                 return documents;
             }
-            Optional<JavaSourceSet> maybeJss = documents.getMarkers().findFirst(JavaSourceSet.class);
-            if (!maybeJss.isPresent()) {
+            String bootstrapContents = acc.applicationYamlToBootstrapContents.get(documents.getSourcePath());
+            if (bootstrapContents == null) {
                 return documents;
             }
-            JavaSourceSet jss = maybeJss.get();
-            Yaml.Documents bootstrapYaml = acc.sourceSetToBootstrapYaml.get(jss);
-            if (bootstrapYaml == null) {
-                return documents;
-            }
-            return (Yaml.Documents) new MergeYaml("$", bootstrapYaml.printAll(), false, null, null, null, null, true)
+            return (Yaml.Documents) new MergeYaml("$", bootstrapContents, false, null, null, null, null, true)
                     .getVisitor()
                     .visitNonNull(documents, ctx);
         }

@@ -2,11 +2,8 @@ package com.yourorg;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.DocumentExample;
-import org.openrewrite.java.marker.JavaSourceSet;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
-
-import java.util.List;
 
 import static org.openrewrite.yaml.Assertions.yaml;
 
@@ -20,7 +17,6 @@ class BootstrapIntoApplicationTest implements RewriteTest {
     @DocumentExample
     @Test
     void mergeWithExistingApplication() {
-        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           yaml(
             //language=yaml
@@ -29,7 +25,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                 application:
                   name: "foo"
               """,
-            spec -> spec.path("bootstrap.yml").markers(main)
+            spec -> spec.path("src/main/resources/bootstrap.yml")
           ),
           yaml(
             //language=yaml
@@ -44,16 +40,13 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                 application:
                   name: "foo"
               """,
-            spec -> spec.path("application.yml").markers(main)
+            spec -> spec.path("src/main/resources/application.yml")
           )
         );
     }
 
     @Test
     void createNewApplicationYaml() {
-        // The test framework does not automatically add markers like JavaSourceSet or JavaProject
-        // These are added during the parsing of real projects, but must be explicitly added to tests
-        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           yaml(
             //language=yaml
@@ -62,7 +55,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                 application:
                   name: "foo"
               """,
-            spec -> spec.path("bootstrap.yml").markers(main)
+            spec -> spec.path("src/main/resources/bootstrap.yml")
           ),
           // Use "null" as the "before" argument to assert that the recipe creates a file
           yaml(
@@ -73,14 +66,62 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                 application:
                   name: "foo"
               """,
-            spec -> spec.path("application.yml")
+            spec -> spec.path("src/main/resources/application.yml")
+          )
+        );
+    }
+
+    @Test
+    void pairFilesPerModule() {
+        rewriteRun(
+          yaml(
+            //language=yaml
+            """
+              spring:
+                application:
+                  name: "a"
+              """,
+            spec -> spec.path("module-a/src/main/resources/bootstrap.yml")
+          ),
+          yaml(
+            //language=yaml
+            """
+              spring:
+                foo: bar
+              """,
+            //language=yaml
+            """
+              spring:
+                foo: bar
+                application:
+                  name: "a"
+              """,
+            spec -> spec.path("module-a/src/main/resources/application.yml")
+          ),
+          yaml(
+            //language=yaml
+            """
+              spring:
+                application:
+                  name: "b"
+              """,
+            spec -> spec.path("module-b/src/main/resources/bootstrap.yml")
+          ),
+          yaml(
+            doesNotExist(),
+            //language=yaml
+            """
+              spring:
+                application:
+                  name: "b"
+              """,
+            spec -> spec.path("module-b/src/main/resources/application.yml")
           )
         );
     }
 
     @Test
     void deleteOldBootstrap() {
-        JavaSourceSet main = JavaSourceSet.build("main", List.of());
         rewriteRun(
           spec -> spec.recipe(new BootstrapIntoApplication(true)),
           yaml(
@@ -91,7 +132,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                   name: "foo"
               """,
             doesNotExist(),
-            spec -> spec.path("bootstrap.yml").markers(main)
+            spec -> spec.path("src/main/resources/bootstrap.yml")
           ),
           yaml(
             doesNotExist(),
@@ -101,7 +142,7 @@ class BootstrapIntoApplicationTest implements RewriteTest {
                 application:
                   name: "foo"
               """,
-            spec -> spec.path("application.yml")
+            spec -> spec.path("src/main/resources/application.yml")
           )
         );
     }
