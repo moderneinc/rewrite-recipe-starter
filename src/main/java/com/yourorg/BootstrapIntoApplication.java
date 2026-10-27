@@ -10,7 +10,7 @@ import org.openrewrite.yaml.YamlIsoVisitor;
 import org.openrewrite.yaml.YamlParser;
 import org.openrewrite.yaml.tree.Yaml;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
@@ -49,14 +49,25 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
     public static class Accumulator {
 
         /**
-         * Keep track of the bootstrap.yml in each source set where they appear.
-         * If there were many/large files caching whole LSTs here could cause memory pressure
+         * Keep track of the bootstrap.yml in each source set where they appear, keyed by the JavaSourceSet id.
+         * The accumulator stays in memory for the whole recipe run, so it keeps the path and printed contents only:
+         * a JavaSourceSet holds a whole classpath and a Yaml.Documents a whole LST.
          */
-        Map<JavaSourceSet, Yaml.Documents> sourceSetToBootstrapYaml = new HashMap<>();
+        Map<UUID, BootstrapYaml> sourceSetToBootstrapYaml = new HashMap<>();
         /**
          * Keep track of which source sets already have an application.yml
          */
-        Set<JavaSourceSet> sourceSetsWithExistingApplicationYaml = new HashSet<>();
+        Set<UUID> sourceSetsWithExistingApplicationYaml = new HashSet<>();
+        /**
+         * An application.yml generated in an earlier cycle has no JavaSourceSet marker, so is only recognized by path
+         */
+        Set<Path> applicationYamlPaths = new HashSet<>();
+    }
+
+    @Value
+    static class BootstrapYaml {
+        Path sourcePath;
+        String contents;
     }
 
     @Override
@@ -91,8 +102,8 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!documents.getSourcePath().toString().endsWith("bootstrap.yml")) {
                 return documents;
             }
-            documents.getMarkers().findFirst(JavaSourceSet.class).ifPresent(it -> acc.sourceSetToBootstrapYaml
-                    .put(it, documents));
+            documents.getMarkers().findFirst(JavaSourceSet.class).ifPresent(jss -> acc.sourceSetToBootstrapYaml
+                    .put(jss.getId(), new BootstrapYaml(documents.getSourcePath(), documents.printAll())));
             return documents;
         }
     }
@@ -107,8 +118,9 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!documents.getSourcePath().toString().endsWith("application.yml")) {
                 return documents;
             }
+            acc.applicationYamlPaths.add(documents.getSourcePath());
             documents.getMarkers().findFirst(JavaSourceSet.class).ifPresent(jss ->
-                    acc.sourceSetsWithExistingApplicationYaml.add(jss));
+                    acc.sourceSetsWithExistingApplicationYaml.add(jss.getId()));
             return documents;
         }
     }
@@ -120,13 +132,13 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
         }
         List<SourceFile> results = new ArrayList<>();
         YamlParser yp = YamlParser.builder().build();
-        for (Map.Entry<JavaSourceSet, Yaml.Documents> javaSourceSetDocumentsEntry : acc.sourceSetToBootstrapYaml.entrySet()) {
-            JavaSourceSet jss = javaSourceSetDocumentsEntry.getKey();
-            Yaml.Documents docs = javaSourceSetDocumentsEntry.getValue();
-            if (!acc.sourceSetsWithExistingApplicationYaml.contains(jss)) {
-                results.addAll(yp.parse("")
-                        .map(it -> (SourceFile) it.withMarkers(it.getMarkers().add(jss)))
-                        .map(it -> (SourceFile) it.withSourcePath(Paths.get(docs.getSourcePath().toString().replace("bootstrap.yml", "application.yml"))))
+        for (Map.Entry<UUID, BootstrapYaml> sourceSetBootstrapEntry : acc.sourceSetToBootstrapYaml.entrySet()) {
+            BootstrapYaml bootstrap = sourceSetBootstrapEntry.getValue();
+            Path applicationYamlPath = bootstrap.getSourcePath().resolveSibling("application.yml");
+            if (!acc.sourceSetsWithExistingApplicationYaml.contains(sourceSetBootstrapEntry.getKey()) &&
+                !acc.applicationYamlPaths.contains(applicationYamlPath)) {
+                results.addAll(yp.parse(bootstrap.getContents())
+                        .map(it -> (SourceFile) it.withSourcePath(applicationYamlPath))
                         .collect(toList()));
             }
         }
@@ -177,12 +189,11 @@ public class BootstrapIntoApplication extends ScanningRecipe<BootstrapIntoApplic
             if (!maybeJss.isPresent()) {
                 return documents;
             }
-            JavaSourceSet jss = maybeJss.get();
-            Yaml.Documents bootstrapYaml = acc.sourceSetToBootstrapYaml.get(jss);
+            BootstrapYaml bootstrapYaml = acc.sourceSetToBootstrapYaml.get(maybeJss.get().getId());
             if (bootstrapYaml == null) {
                 return documents;
             }
-            return (Yaml.Documents) new MergeYaml("$", bootstrapYaml.printAll(), false, null, null, null, null, true)
+            return (Yaml.Documents) new MergeYaml("$", bootstrapYaml.getContents(), false, null, null, null, null, true)
                     .getVisitor()
                     .visitNonNull(documents, ctx);
         }
