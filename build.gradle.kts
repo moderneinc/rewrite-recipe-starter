@@ -144,7 +144,7 @@ tasks.named<KotlinCompile>("compileKotlin") {
 
 // Tests, like their Java counterparts, compile against a newer release for text blocks and friends.
 tasks.named<KotlinCompile>("compileTestKotlin") {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
 }
 
 tasks.withType<JavaCompile> {

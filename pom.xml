@@ -17,7 +17,7 @@
         <!-- By convention, we develop recipes with Java 8 to be applicable to legacy code -->
         <maven.compiler.release>8</maven.compiler.release>
         <!-- For tests, we recommend a java version newer than 15 to have textblocks available -->
-        <maven.compiler.testRelease>21</maven.compiler.testRelease>
+        <maven.compiler.testRelease>25</maven.compiler.testRelease>
         <!--
             Must match the Kotlin version rewrite-kotlin's K2 compiler plugin was built against, which
             is the version rewrite-kotlin's POM pins kotlin-compiler-embeddable to. Maven cannot derive
