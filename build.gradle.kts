@@ -142,11 +142,6 @@ tasks.named<KotlinCompile>("compileKotlin") {
     compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
 }
 
-// Tests, like their Java counterparts, compile against a newer release for text blocks and friends.
-tasks.named<KotlinCompile>("compileTestKotlin") {
-    compilerOptions.jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
-}
-
 tasks.withType<JavaCompile> {
     options.compilerArgs.add("-Arewrite.javaParserClasspathFrom=resources")
 }
