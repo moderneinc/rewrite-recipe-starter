@@ -30,12 +30,11 @@ class TrackTodosTest implements RewriteTest {
         // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("A.java", "TODO: Have fun", "class org.openrewrite.java.tree.J$MethodDeclaration"),
                 new TodoCommentsReport.Row("A.java", "TODO: Test your code", "class org.openrewrite.java.tree.J$MethodDeclaration"),
-                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"));
-          }),
+                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"))),
           //language=java
           java(
             """
@@ -71,12 +70,11 @@ class TrackTodosTest implements RewriteTest {
     void editExistingTodoFileJava() {
         // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("A.java", "TODO: Have fun", "class org.openrewrite.java.tree.J$MethodDeclaration"),
                 new TodoCommentsReport.Row("A.java", "TODO: Test your code", "class org.openrewrite.java.tree.J$MethodDeclaration"),
-                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"));
-          }),
+                new TodoCommentsReport.Row("A.java", "TODO: Learn", "class org.openrewrite.java.tree.J$Return"))),
           //language=java
           java(
             """
@@ -113,12 +111,11 @@ class TrackTodosTest implements RewriteTest {
         // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("file.yaml", "TODO: Have fun", "class org.openrewrite.yaml.tree.Yaml$Document"),
                 new TodoCommentsReport.Row("file.yaml", "TODO: Test your code", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"),
-                new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"));
-          }),
+                new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"))),
           //language=yaml
           yaml(
             """
@@ -152,12 +149,11 @@ class TrackTodosTest implements RewriteTest {
     void editExistingTodoFileYAML() {
         // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("file.yaml", "TODO: Have fun", "class org.openrewrite.yaml.tree.Yaml$Document"),
                 new TodoCommentsReport.Row("file.yaml", "TODO: Test your code", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"),
-                new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"));
-          }),
+                new TodoCommentsReport.Row("file.yaml", "TODO: Learn", "class org.openrewrite.yaml.tree.Yaml$Mapping$Entry"))),
           //language=yaml
           yaml(
             """
@@ -192,12 +188,11 @@ class TrackTodosTest implements RewriteTest {
         // Notice how the before text is doesNotExist(), indicating that the file does not exist yet.
         // The after text is the content of the file after the recipe is applied.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("file.xml", "TODO: Have fun", "class org.openrewrite.xml.tree.Xml$Prolog"),
                 new TodoCommentsReport.Row("file.xml", "TODO: Test your code", "class org.openrewrite.xml.tree.Xml$Prolog"),
-                new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"));
-          }),
+                new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"))),
           //language=xml
           xml(
             """
@@ -231,12 +226,11 @@ class TrackTodosTest implements RewriteTest {
     void editExistingTodoFileXML() {
         // When the file does already exist, we assert the content is modified as expected.
         rewriteRun(
-          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows -> {
+          spec -> spec.dataTable(TodoCommentsReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new TodoCommentsReport.Row("file.xml", "TODO: Have fun", "class org.openrewrite.xml.tree.Xml$Prolog"),
                 new TodoCommentsReport.Row("file.xml", "TODO: Test your code", "class org.openrewrite.xml.tree.Xml$Prolog"),
-                new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"));
-          }),
+                new TodoCommentsReport.Row("file.xml", "TODO: Learn", "class org.openrewrite.xml.tree.Xml$Tag"))),
           //language=xml
           xml(
             """

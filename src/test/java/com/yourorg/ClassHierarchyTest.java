@@ -33,9 +33,8 @@ class ClassHierarchyTest implements RewriteTest {
     @Test
     void basic() {
         rewriteRun(
-          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows -> {
-              assertThat(rows).containsExactly(new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.EXTENDS, "java.lang.Object"));
-          }),
+          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows ->
+              assertThat(rows).containsExactly(new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.EXTENDS, "java.lang.Object"))),
           //language=java
           java(
             """
@@ -48,11 +47,10 @@ class ClassHierarchyTest implements RewriteTest {
     @Test
     void bExtendsA() {
         rewriteRun(
-          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows -> {
+          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.EXTENDS, "java.lang.Object"),
-                new ClassHierarchyReport.Row("B", ClassHierarchyReport.Relationship.EXTENDS, "A"));
-          }),
+                new ClassHierarchyReport.Row("B", ClassHierarchyReport.Relationship.EXTENDS, "A"))),
           //language=java
           java(
             """
@@ -71,11 +69,10 @@ class ClassHierarchyTest implements RewriteTest {
     @Test
     void interfaceRelationship() {
         rewriteRun(
-          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows -> {
+          spec -> spec.dataTable(ClassHierarchyReport.Row.class, rows ->
               assertThat(rows).containsExactly(
                 new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.EXTENDS, "java.lang.Object"),
-                new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.IMPLEMENTS, "java.io.Serializable"));
-          }),
+                new ClassHierarchyReport.Row("A", ClassHierarchyReport.Relationship.IMPLEMENTS, "java.io.Serializable"))),
           // language=java
           java(
             """
