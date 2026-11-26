@@ -34,7 +34,7 @@
             <dependency>
                 <groupId>org.openrewrite.recipe</groupId>
                 <artifactId>rewrite-recipe-bom</artifactId>
-                <version>3.61.0</version>
+                <version>3.66.0</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -114,12 +114,12 @@
         <dependency>
             <groupId>io.moderne.recipe</groupId>
             <artifactId>rewrite-devcenter</artifactId>
-            <version>1.53.0</version>
+            <version>1.58.0</version>
         </dependency>
         <dependency>
             <groupId>io.moderne.recipe</groupId>
             <artifactId>rewrite-angular</artifactId>
-            <version>1.34.0</version>
+            <version>1.40.0</version>
         </dependency>
 
         <dependency>
